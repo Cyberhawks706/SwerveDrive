@@ -35,6 +35,7 @@ public final class Constants {
 		public static final boolean USE_XBOX = false;
 		public static final boolean LOGGING_ENABLED = false;
 		public static final boolean JOYDEADZONE = true; //enables both rotation and xy deadzone
+		public static final double ROT_SIZE = 4 * Math.PI; //length of 1 full rotation
 
 		//Driving Constants
 
