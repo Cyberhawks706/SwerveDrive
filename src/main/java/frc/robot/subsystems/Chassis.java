@@ -9,8 +9,7 @@ import frc.robot.IO;
 import frc.robot.Robot;
 import frc.robot.commands.Drive;
 import frc.robot.config.Config;
-
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -34,35 +33,14 @@ public class Chassis extends Subsystem {
 
 	public void periodic() {
 
-		/* if(IO.xboxManipulator.getAButtonPressed()){
-			Components.limelighttrack.execute();
-		} else {
-			Components.drive.execute();
-		}
-	
-		/* 
-		if(valuesAdded < totalValues){
-			gyroTotal += (double) Components.ahrs.getYaw();
-			valuesAdded++;
-		}else{
-			valuesAdded = 0;
-			Config.gyroAngle.value = gyroTotal/ ((double) totalValues);
-			gyroTotal = 0;
-		}
-
-		if(IO.xboxDrive.getAButtonPressed())Components.ahrs.calibrate();//calibrate when needed
-		if(IO.xboxDrive.getYButtonPressed())Components.ahrs.zeroYaw();
-		*/
-
-		//Components.sparkWheelBR.setPower(0.25);
-		//Components.sparkWheelBL.setPower(0.25);
-		//Components.sparkWheelFR.setPower(0.25);
-		//Components.sparkWheelFL.setPower(0.25);
-
 		Components.sparkWheelTurnBR.setPos(4*Math.PI);
 		Components.sparkWheelTurnBL.setPos(4*Math.PI);
 		Components.sparkWheelTurnFR.setPos(4*Math.PI);
 		Components.sparkWheelTurnFL.setPos(4*Math.PI);
+
+		
+
+		
 	
 		
 	}

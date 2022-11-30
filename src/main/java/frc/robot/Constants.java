@@ -35,10 +35,14 @@ public final class Constants {
 		public static final boolean USE_XBOX = false;
 		public static final boolean LOGGING_ENABLED = false;
 		public static final boolean JOYDEADZONE = true; //enables both rotation and xy deadzone
-		public static final double ROT_SIZE = 4 * Math.PI; //length of 1 full rotation
-
 		//Driving Constants
 
+	}
+
+	public class Drive {
+		public static final double ROT_SIZE = 4 * Math.PI; //length of 1 full rotation
+		public static final double PWR_MODIFIER = 0.25;
+		public static final double PI = 3.141592653589793;
 	}
 
 	public class IO {
@@ -90,9 +94,9 @@ public final class Constants {
 		}
 
 		public class TurnMotor{
-			public static final double kP = 2.1e-4; 
-			public static final double kI = 0;//1e-7;
-			public static final double kD = 0;//6e-5; 
+			public static final double kP = 1.5e-4; 
+			public static final double kI = 2.5e-20;
+			public static final double kD = 2.5e-5; 
 			public static final double kIz = 0; 
 			public static final double kFF = 0.000156; 
 			public static final double kMaxOutput = 1; 
@@ -100,9 +104,9 @@ public final class Constants {
 			public static final double maxRPM = 5700;
 		
 			// Smart Motion Coefficients
-			public static final double maxVel = 2000; // rpm
+			public static final double maxVel = 9000; // rpm
 			public static final double minVel = 0; // rpm
-			public static final double 	maxAcc = 1500;
+			public static final double 	maxAcc = 5000;
 
 			public static final double allowedErr = 0;
 		}

@@ -42,7 +42,6 @@ public class Components {
    
     public static Timer timer;
     public static Clock ClimbClock;
-    //public static AHRS ahrs;
 
 
     public static void init(){
@@ -71,11 +70,8 @@ public class Components {
 
         ClimbClock = new Clock(Constants.TimingArrays.climbStateLengths);
         
-        /* 
-        ahrs = new AHRS(SPI.Port.kMXP);
-        ahrs.calibrate();
-        while(ahrs.isCalibrating());
-        */
+      
+        
     }
 
 }
