@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 import frc.robot.Components;
 import frc.robot.Constants;
 import frc.robot.IO;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class Drive extends Command {
@@ -29,8 +29,9 @@ public class Drive extends Command {
 
 			//Angle of xbox right joystick, in radians ranging from -pi to pi
 			double stickAngle = Math.atan2(xboxY, -xboxX);
+			stickAngle = (Constants.Drive.PI/Math.PI)*stickAngle;
 			//Add pi to get a range of 0 to 2pi for simplicity, then multiply by 2 to match motors
-			stickAngle = 2*(stickAngle + Constants.Drive.PI);
+			stickAngle = 2*(stickAngle + 0.5*Constants.Drive.PI);
         	double driveAngle = 0; //Final angle of the motors, in radians
         	double power = 0;//Final power of the motors, ranging from 0 to 1
         	double angleDiff = prevStickAngle - stickAngle;//Difference between current stick angle and previous angle
@@ -56,9 +57,10 @@ public class Drive extends Command {
             	driveAngle = stickAngle + fullRotations*Constants.Drive.ROT_SIZE;
 				power = Math.sqrt(Math.pow(xboxX, 2) + Math.pow(xboxY, 2));
         	}
+			power = 0;
+        	move(driveAngle, power*Constants.Drive.PWR_MODIFIER);
+			System.out.println(driveAngle);
 
-        	move(driveAngle-Constants.Drive.PI, power*Constants.Drive.PWR_MODIFIER);
-       	 
         	// Reset the previous angle to the current angle for the next iteration
         	prevStickAngle = stickAngle;
 			prevDriveAngle = driveAngle;
