@@ -16,6 +16,8 @@ public class Drive extends Command {
 	// Number of full rotations of the joystick since the last time the angle was reset
 	public double fullRotations = 0;
 	public double prevDriveAngle = 0;
+	double x = 0 ;
+	double y = 0;
 
 	public Drive() {
     	requires(Components.chassis);
@@ -24,11 +26,13 @@ public class Drive extends Command {
 	public void execute(){
          	//DRIVE CODE!!
 			//Get stick axes
-			double xboxX = IO.xboxDrive.getRightX();
-			double xboxY = IO.xboxDrive.getRightY();
+			double xboxLX = IO.xboxDrive.getLeftX();
+			double xboxLY = IO.xboxDrive.getLeftY();
+			double xboxRX = IO.xboxDrive.getRightX();
+			double xboxRY = IO.xboxDrive.getRightY();
 
 			//Angle of xbox right joystick, in radians ranging from -pi to pi
-			double stickAngle = Math.atan2(xboxY, -xboxX);
+			double stickAngle = Math.atan2(xboxRY, -xboxRX);
 			stickAngle = (Constants.Drive.PI/Math.PI)*stickAngle;
 			//Add pi to get a range of 0 to 2pi for simplicity, then multiply by 2 to match motors
 			stickAngle = 2*(stickAngle + 0.5*Constants.Drive.PI);
@@ -48,47 +52,47 @@ public class Drive extends Command {
         	}
 
         	// Check if the joystick is in the deadzone
-        	if(Math.abs(xboxX) < 0.1 && Math.abs(xboxY) < 0.1){
+        	if(Math.abs(xboxRX) < 0.1 && Math.abs(xboxRY) < 0.1){
             	//If the joystick is in the deadzone, set the angle to the previous angle
             	driveAngle = prevDriveAngle;
         	} else {
             	//If the joystick is not in the deadzone, set the drive angle to
             	//the stick angle plus the number of full rotations times the size of a full rotation
             	driveAngle = stickAngle + fullRotations*Constants.Drive.ROT_SIZE;
-				power = Math.sqrt(Math.pow(xboxX, 2) + Math.pow(xboxY, 2));
+				power = Math.sqrt(Math.pow(xboxRX, 2) + Math.pow(xboxRY, 2));
         	}
-			power = 0;
-        	move(driveAngle, power*Constants.Drive.PWR_MODIFIER);
-			System.out.println(driveAngle);
-
+			
+        	//move(driveAngle, power*Constants.Drive.PWR_MODIFIER, power*Constants.Drive.PWR_MODIFIER);
+			x += 0.05;
+			y -= 0.05;
+			move(driveAngle, xboxLX+power, -xboxLX+power);
+			
+			double x = (Components.sparkWheelBR.motorPos-Components.sparkWheelBL.motorPos);
+			System.out.println(Components.sparkWheelBR.encoder.getPosition());
         	// Reset the previous angle to the current angle for the next iteration
         	prevStickAngle = stickAngle;
 			prevDriveAngle = driveAngle;
+
 	}
 
-	/*
-	 * if (xboxDrive.getRightX() > 0){
-	 * 
-	 * }
-	 */
 
 	/*
 	* Moves the robot in the given direction at the given power
 	* @param angle The angle of the direction to move in, in radians
 	* @param power The power to move at, ranging from 0 to 1
 	*/
-	private void move(double angle, double power) {
+	private void move(double angle, double leftPower, double rightPower) {
     	// Set turn motors to drive angle
     	Components.sparkWheelTurnFR.setPos(angle);
     	Components.sparkWheelTurnFL.setPos(angle);
     	Components.sparkWheelTurnBR.setPos(angle);
     	Components.sparkWheelTurnBL.setPos(angle);
    	 
-    	// Set drive motors to drive power
-    	Components.sparkWheelFR.setPower(power);
-    	Components.sparkWheelFL.setPower(power);
-    	Components.sparkWheelBR.setPower(power);
-    	Components.sparkWheelBL.setPower(power);
+    	// Set drive motors to left and right drive power
+    	Components.sparkWheelFR.setPower(rightPower*Constants.Drive.PWR_MODIFIER);
+    	Components.sparkWheelBR.setPower(rightPower*Constants.Drive.PWR_MODIFIER);
+    	Components.sparkWheelFL.setPower(leftPower*Constants.Drive.PWR_MODIFIER);
+    	Components.sparkWheelBL.setPower(leftPower*Constants.Drive.PWR_MODIFIER);
 	}
 
 	protected void initialize() {
