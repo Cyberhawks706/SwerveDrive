@@ -31,12 +31,12 @@ public class Drive extends Command {
 	public void execute(){
          	//DRIVE CODE!!
 			//Get stick axes
-			double xboxLX = IO.xboxDrive.getLeftX();
-			double xboxRX = IO.xboxDrive.getRightX();
-			double xboxRY = IO.xboxDrive.getRightY();
+			double turnX = IO.xboxDrive.getRightX();
+			double driveX = IO.xboxDrive.getLeftX();
+			double driveY = IO.xboxDrive.getLeftY();
 
 			//Angle of xbox right joystick, in radians ranging from -pi to pi
-			double stickAngle = Math.atan2(xboxRY, -xboxRX);
+			double stickAngle = Math.atan2(driveY, -driveX);
 			stickAngle = (PI/Math.PI)*stickAngle;
 			//Add pi to get a range of 0 to 2pi for simplicity, then multiply by 2 to match motors
 			stickAngle = 2*(stickAngle + 0.5*PI);
@@ -56,30 +56,44 @@ public class Drive extends Command {
         	}
 			
 			// Check if we need to change turnOffset
-			if(Math.abs(xboxLX) > 0.1) {
-				turnOffset += xboxLX * 0.1; //TODO: mess with turn speeds
+			if(Math.abs(turnX) > 0.02) {
+				turnOffset += turnX * 0.06; //TODO: mess with turn speeds
 			}
 
         	// Check if the joystick is in the deadzone
-        	if(Math.abs(xboxRX) < 0.1 && Math.abs(xboxRY) < 0.1){
+        	if(Math.abs(driveX) < 0.1 && Math.abs(driveY) < 0.1 && Math.abs(turnX) < 0.02){
             	//If the joystick is in the deadzone, set the angle to the previous angle
             	driveAngle = prevDriveAngle;
-        	} else {
+        	} else if (Math.abs(driveX) < 0.1 && Math.abs(driveY) < 0.1 && Math.abs(turnX) >= 0.02) {
+				driveAngle = prevStickAngle + fullRotations*Constants.Drive.ROT_SIZE + turnOffset;
+			} else {
             	//If the joystick is not in the deadzone, set the drive angle to
             	//the stick angle plus the number of full rotations times the size of a full rotation
 				// plus the offset from previous turns
             	driveAngle = stickAngle + fullRotations*Constants.Drive.ROT_SIZE + turnOffset;
-				power = Math.sqrt(Math.pow(xboxRX, 2) + Math.pow(xboxRY, 2));
+				power = Math.sqrt(Math.pow(driveX, 2) + Math.pow(driveY, 2));
         	}
 			
         	//move(driveAngle, power*Constants.Drive.PWR_MODIFIER, power*Constants.Drive.PWR_MODIFIER);
+			//power=0;
+			move(driveAngle, power, power, driveAngle%Constants.Drive.ROT_SIZE, turnX * 0.35);
 			
-			move(driveAngle, power, power, stickAngle, xboxLX * 0.35);
-			
-			System.out.println(stickAngle);
+			//System.out.println(driveAngle%Constants.Drive.ROT_SIZE);
+			System.out.println(driveAngle);
         	// Reset the previous angle to the current angle for the next iteration
         	prevStickAngle = stickAngle;
 			prevDriveAngle = driveAngle;
+
+
+			if(IO.xboxDrive.getRightStickButtonPressed()){
+				Components.sparkWheelTurnBL.rezero(driveAngle%Constants.Drive.ROT_SIZE);
+				Components.sparkWheelTurnBR.rezero(driveAngle%Constants.Drive.ROT_SIZE);
+				Components.sparkWheelTurnFL.rezero(driveAngle%Constants.Drive.ROT_SIZE);
+				Components.sparkWheelTurnFR.rezero(driveAngle%Constants.Drive.ROT_SIZE);
+				driveAngle = 0;
+				turnOffset = 0;
+				fullRotations = 0;
+			}
 	}
 
 

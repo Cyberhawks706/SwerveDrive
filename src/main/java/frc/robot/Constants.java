@@ -42,7 +42,7 @@ public final class Constants {
 	public class Drive {
 		public static final double PI = 3.2;
 		public static final double ROT_SIZE = 12.8; //length of 1 full rotation
-		public static final double PWR_MODIFIER = 0.25;
+		public static final double PWR_MODIFIER = 1;
 	}
 
 	public class IO {
@@ -95,8 +95,8 @@ public final class Constants {
 
 		public class TurnMotor{
 			public static final double kP = 1.5e-4; 
-			public static final double kI = 2.5e-20;
-			public static final double kD = 2.5e-5; 
+			public static final double kI = 3.5e-10;
+			public static final double kD = 5.5e-5; 
 			public static final double kIz = 0; 
 			public static final double kFF = 0.000156; 
 			public static final double kMaxOutput = 1; 
