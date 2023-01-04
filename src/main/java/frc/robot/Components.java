@@ -2,6 +2,8 @@ package frc.robot;
 
 import java.util.Timer;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import frc.robot.config.Config;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.DashboardDaemon;
@@ -10,6 +12,7 @@ import frc.robot.subsystems.DashboardDaemon;
 import frc.robot.commands.Clock;
 import frc.robot.commands.Drive;
 import frc.robot.commands.LimelightTrack;
+
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
@@ -39,6 +42,7 @@ public class Components {
     public static BrushlessSparkWithPID sparkWheelTurnFL;
     public static BrushlessSparkWithPID sparkWheelTurnBR;
     public static BrushlessSparkWithPID sparkWheelTurnBL;
+    public static AHRS ahrs;
    
     public static Timer timer;
     public static Clock ClimbClock;
@@ -58,6 +62,10 @@ public class Components {
         networkTableInstance = NetworkTableInstance.getDefault();
         drive = new Drive();
         limelighttrack = new LimelightTrack();
+
+        ahrs = new AHRS();
+        ahrs.reset();
+
         
         sparkWheelFR = new BrushlessSparkWithPID(Constants.SparkIDs.sparkWheelFR, Constants.PID.Wheels.kP, Constants.PID.Wheels.kI, Constants.PID.Wheels.kD, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
         sparkWheelFL = new BrushlessSparkWithPID(Constants.SparkIDs.sparkWheelFL, Constants.PID.Wheels.kP, Constants.PID.Wheels.kI, Constants.PID.Wheels.kD, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);

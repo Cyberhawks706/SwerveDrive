@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import frc.robot.Components;
 
 
 public class Chassis extends Subsystem {
@@ -34,10 +35,9 @@ public class Chassis extends Subsystem {
 
 	public void periodic() {
 
-		Components.sparkWheelTurnBR.setPos(4*Math.PI);
-		Components.sparkWheelTurnBL.setPos(4*Math.PI);
-		Components.sparkWheelTurnFR.setPos(4*Math.PI);
-		Components.sparkWheelTurnFL.setPos(4*Math.PI);
+
+		//double x = Components.ahrs.getYaw();
+		//System.out.println(x);
 
 		
 

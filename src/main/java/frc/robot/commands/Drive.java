@@ -21,15 +21,76 @@ public class Drive extends Command {
 	public double fullRotations = 0;
 	public double prevDriveAngle = 0;
 	public double turnOffset = 0;
-	double x = 0 ;
 	double y = 0;
+
+	double FWD = -IO.xboxDrive.getLeftY();
+	double STR = IO.xboxDrive.getLeftX();
+	double RCW = IO.xboxDrive.getRightX();
+
+
+	
 
 	public Drive() {
     	requires(Components.chassis);
 	}
     
 	public void execute(){
-         	//DRIVE CODE!!
+     	/*double theta = Components.ahrs.getYaw()*Math.PI/180;
+		double temp=FWD*Math.cos(theta)+STR*Math.sin(theta);
+		STR=-FWD*Math.sin(theta)+STR*Math.cos(theta);
+		FWD=temp;
+
+		final double S=24;
+		final double R=Math.sqrt(576+576);
+
+		double A=STR-RCW*(S/R);
+		double B=STR+RCW*(S/R);
+		double C=STR-RCW*(S/R);
+		double D=STR+RCW*(S/R);
+
+		double ws1=Math.sqrt(B*B+C*C);
+		double ws2=Math.sqrt(B*B+D*D);
+		double ws3=Math.sqrt(A*A+D*D);
+		double ws4=Math.sqrt(A*A+C*C);
+
+		double wa1=((Math.atan2(B,C)*180/Math.PI)+180)/28.125;
+		double wa2=((Math.atan2(B,D)*180/Math.PI)+180)/28.125;
+		double wa3=((Math.atan2(A,D)*180/Math.PI)+180)/28.125;
+		double wa4=((Math.atan2(A,C)*180/Math.PI)+180)/28.125;
+
+
+		double max = ws1;
+		if(ws2>max){
+			max = ws2;
+		}
+		if(ws3>max){
+			max = ws3;
+		}
+		if(ws4>max){
+			max = ws4;
+		}
+		if(max>1){
+			ws1/=max;
+			ws2/=max;
+			ws3/=max;
+			ws4/=max;
+		}
+
+
+		Components.sparkWheelFR.setPos(wa1);
+		Components.sparkWheelFL.setPos(wa2);
+		Components.sparkWheelBL.setPos(wa3);
+		Components.sparkWheelBR.setPos(wa4);
+
+		Components.sparkWheelFR.setPos(ws1);
+		Components.sparkWheelFR.setPos(ws2);
+		Components.sparkWheelFR.setPos(ws3);
+		Components.sparkWheelFR.setPos(ws4);
+		*/
+		
+
+			
+			//DRIVE CODE!!
 			//Get stick axes
 			double turnX = IO.xboxDrive.getRightX();
 			double driveX = IO.xboxDrive.getLeftX();
@@ -57,7 +118,7 @@ public class Drive extends Command {
 			
 			// Check if we need to change turnOffset
 			if(Math.abs(turnX) > 0.02) {
-				turnOffset += turnX * 0.06; //TODO: mess with turn speeds
+				turnOffset += turnX * 0.06;
 			}
 
         	// Check if the joystick is in the deadzone
@@ -79,13 +140,13 @@ public class Drive extends Command {
 			move(driveAngle, power, power, driveAngle%Constants.Drive.ROT_SIZE, turnX * 0.35);
 			
 			//System.out.println(driveAngle%Constants.Drive.ROT_SIZE);
-			System.out.println(driveAngle);
+			//System.out.println(driveAngle);
         	// Reset the previous angle to the current angle for the next iteration
         	prevStickAngle = stickAngle;
 			prevDriveAngle = driveAngle;
 
 
-			if(IO.xboxDrive.getRightStickButtonPressed()){
+			if(IO.xboxDrive.getAButtonPressed()){
 				Components.sparkWheelTurnBL.rezero(driveAngle%Constants.Drive.ROT_SIZE);
 				Components.sparkWheelTurnBR.rezero(driveAngle%Constants.Drive.ROT_SIZE);
 				Components.sparkWheelTurnFL.rezero(driveAngle%Constants.Drive.ROT_SIZE);
@@ -94,6 +155,8 @@ public class Drive extends Command {
 				turnOffset = 0;
 				fullRotations = 0;
 			}
+
+			
 	}
 
 
@@ -102,8 +165,14 @@ public class Drive extends Command {
 	* @param angle The angle of the direction to move in, in radians
 	* @param power The power to move at, ranging from 0 to 1
 	*/
+
+	
+
+
+	
 	private void move(double angle, double leftPower, double rightPower, double stickAngle, double turnSpeed) {
     	// Set turn motors to drive angle
+		
     	Components.sparkWheelTurnFR.setPos(angle);
     	Components.sparkWheelTurnFL.setPos(angle);
     	Components.sparkWheelTurnBR.setPos(angle);
@@ -133,6 +202,8 @@ public class Drive extends Command {
 			Components.sparkWheelFL.setPower(leftPower-turnSpeed);
 		}
 	}
+
+
 
 	protected void initialize() {
 	}

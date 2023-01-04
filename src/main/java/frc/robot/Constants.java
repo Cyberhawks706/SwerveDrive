@@ -42,7 +42,7 @@ public final class Constants {
 	public class Drive {
 		public static final double PI = 3.2;
 		public static final double ROT_SIZE = 12.8; //length of 1 full rotation
-		public static final double PWR_MODIFIER = 1;
+		public static final double PWR_MODIFIER = 0.25;
 	}
 
 	public class IO {
