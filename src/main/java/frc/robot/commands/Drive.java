@@ -27,7 +27,7 @@ public class Drive extends Command {
 	double STR = IO.xboxDrive.getLeftX();
 	double RCW = IO.xboxDrive.getRightX();
 
-
+	boolean locked = false;
 	
 
 	public Drive() {
@@ -88,7 +88,18 @@ public class Drive extends Command {
 		Components.sparkWheelFR.setPos(ws4);
 		*/
 		
-
+			if(IO.xboxDrive.getYButtonPressed() && !locked) {
+				Components.sparkWheelTurnBR.setPos(-1.6);
+				Components.sparkWheelTurnBL.setPos(1.6);
+				Components.sparkWheelTurnFR.setPos(1.6);
+				Components.sparkWheelTurnFL.setPos(-1.6);
+				locked = true;
+				return;
+			} else if (locked && IO.xboxDrive.getXButtonPressed()) {
+				locked = false;
+			} else if (locked) {
+				return;
+			} 
 			
 			//DRIVE CODE!!
 			//Get stick axes
