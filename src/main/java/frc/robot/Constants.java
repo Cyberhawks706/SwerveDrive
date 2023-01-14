@@ -1,5 +1,6 @@
 package frc.robot;
 
+
 public final class Constants {
 
 	public static class TimingArrays {
@@ -9,6 +10,7 @@ public final class Constants {
 
 	public class SparkIDs {
 		//Driving IDs
+		/* 
 		public static final int sparkWheelFR = 8;
 		public static final int sparkWheelFL = 13;
 		public static final int sparkWheelBR = 5;
@@ -17,6 +19,8 @@ public final class Constants {
 		public static final int sparkWheelTurnFL = 14;
 		public static final int sparkWheelTurnBR = 10;
 		public static final int sparkWheelTurnBL = 12;
+
+		*/
 
 	}
 
@@ -110,8 +114,11 @@ public final class Constants {
 
 			public static final double allowedErr = 0;
 		}
+		
+
 
 	}
+}
 
 	
-}
+

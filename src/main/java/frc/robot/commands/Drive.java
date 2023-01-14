@@ -10,6 +10,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.*;;
 
 public class Drive extends Command {
@@ -35,58 +40,9 @@ public class Drive extends Command {
 	}
     
 	public void execute(){
-     	/*double theta = Components.ahrs.getYaw()*Math.PI/180;
-		double temp=FWD*Math.cos(theta)+STR*Math.sin(theta);
-		STR=-FWD*Math.sin(theta)+STR*Math.cos(theta);
-		FWD=temp;
 
-		final double S=24;
-		final double R=Math.sqrt(576+576);
-
-		double A=STR-RCW*(S/R);
-		double B=STR+RCW*(S/R);
-		double C=STR-RCW*(S/R);
-		double D=STR+RCW*(S/R);
-
-		double ws1=Math.sqrt(B*B+C*C);
-		double ws2=Math.sqrt(B*B+D*D);
-		double ws3=Math.sqrt(A*A+D*D);
-		double ws4=Math.sqrt(A*A+C*C);
-
-		double wa1=((Math.atan2(B,C)*180/Math.PI)+180)/28.125;
-		double wa2=((Math.atan2(B,D)*180/Math.PI)+180)/28.125;
-		double wa3=((Math.atan2(A,D)*180/Math.PI)+180)/28.125;
-		double wa4=((Math.atan2(A,C)*180/Math.PI)+180)/28.125;
-
-
-		double max = ws1;
-		if(ws2>max){
-			max = ws2;
-		}
-		if(ws3>max){
-			max = ws3;
-		}
-		if(ws4>max){
-			max = ws4;
-		}
-		if(max>1){
-			ws1/=max;
-			ws2/=max;
-			ws3/=max;
-			ws4/=max;
-		}
-
-
-		Components.sparkWheelFR.setPos(wa1);
-		Components.sparkWheelFL.setPos(wa2);
-		Components.sparkWheelBL.setPos(wa3);
-		Components.sparkWheelBR.setPos(wa4);
-
-		Components.sparkWheelFR.setPos(ws1);
-		Components.sparkWheelFR.setPos(ws2);
-		Components.sparkWheelFR.setPos(ws3);
-		Components.sparkWheelFR.setPos(ws4);
-		*/
+			
+			/* 
 		
 			if(IO.xboxDrive.getYButtonPressed() && !locked) {
 				Components.sparkWheelTurnBR.setPos(-1.6);
@@ -167,7 +123,7 @@ public class Drive extends Command {
 				fullRotations = 0;
 			}
 
-			
+			*/
 	}
 
 
@@ -183,7 +139,9 @@ public class Drive extends Command {
 	
 	private void move(double angle, double leftPower, double rightPower, double stickAngle, double turnSpeed) {
     	// Set turn motors to drive angle
-		
+		/*
+		 
+		 
     	Components.sparkWheelTurnFR.setPos(angle);
     	Components.sparkWheelTurnFL.setPos(angle);
     	Components.sparkWheelTurnBR.setPos(angle);
@@ -212,6 +170,8 @@ public class Drive extends Command {
 			Components.sparkWheelFR.setPower(rightPower-turnSpeed);
 			Components.sparkWheelFL.setPower(leftPower-turnSpeed);
 		}
+
+		*/
 	}
 
 
