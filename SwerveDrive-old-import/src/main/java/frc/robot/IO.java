@@ -13,7 +13,7 @@ public class IO {
 
         
         xboxDrive = new XboxController(2);
-        System.out.println("Reaching" + xboxDrive);
+
     }
     
 //   public JoystickButton a = new JoystickButton(xbox, Constants.IO.A), b = new JoystickButton(xbox, Constants.IO.Y);

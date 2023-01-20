@@ -7,18 +7,6 @@ public final class Constants {
 
 	}
 
-	public class SparkIDs {
-		//Driving IDs
-		public static final int sparkWheelFR = 8;
-		public static final int sparkWheelFL = 13;
-		public static final int sparkWheelBR = 5;
-		public static final int sparkWheelBL = 7;
-		public static final int sparkWheelTurnFR = 4;
-		public static final int sparkWheelTurnFL = 14;
-		public static final int sparkWheelTurnBR = 10;
-		public static final int sparkWheelTurnBL = 12;
-
-	}
 
 	public static final int PID_TIMEOUT = 30;
 

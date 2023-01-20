@@ -39,13 +39,7 @@ public class LimelightTrack extends CommandBase {
 
 
 
-            Components.sparkWheelBL.setVel(0.1);;
-            // Components.sparkWheelBR.setPower(leftPower);
-            // Components.sparkWheelFL.setPower(rightPower);
-            // Components.sparkWheelFR.setPower(rightPower);
-
-
-
+          
 
 	}
     @Override

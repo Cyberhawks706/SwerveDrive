@@ -7,11 +7,9 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -25,24 +23,29 @@ public class RobotContainer {
 
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
-    private final XboxController driverJoytick = new XboxController(2);
+    public static final XboxController driverJoystick = new XboxController(2);
 
     public RobotContainer() {
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
                 swerveSubsystem,
-                () -> -driverJoytick.getLeftY(),
-                () -> driverJoytick.getLeftX(),
-                () -> driverJoytick.getRightX(),
-                () -> !driverJoytick.getAButtonPressed()));
+                () -> -driverJoystick.getLeftY(),
+                () -> driverJoystick.getLeftX(),
+                () -> driverJoystick.getRightX(),
+                () -> !driverJoystick.getAButtonPressed()));
+
+                
 
         configureButtonBindings();
     }
 
     private void configureButtonBindings() {
-        new JoystickButton(driverJoytick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
+        new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
     }
 
     public Command getAutonomousCommand() {
+        return null;
+
+        /* 
         // 1. Create trajectory settings
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
                 SwerveConstants.kMaxSpeedMetersPerSecond,
@@ -53,9 +56,9 @@ public class RobotContainer {
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
                 List.of(
-                        new Translation2d(1, 0),
-                        new Translation2d(1, -1)),
-                new Pose2d(2, -1, Rotation2d.fromDegrees(180)),
+                        new Translation2d(0, 0),
+                        new Translation2d(0, 0)),
+                new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
                 trajectoryConfig);
 
         // 3. Define PID controllers for tracking trajectory
@@ -81,5 +84,8 @@ public class RobotContainer {
                 new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
                 swerveControllerCommand,
                 new InstantCommand(() -> swerveSubsystem.stopModules()));
+
+
+        */
     }
 }
