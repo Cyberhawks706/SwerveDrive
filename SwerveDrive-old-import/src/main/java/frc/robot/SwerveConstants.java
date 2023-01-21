@@ -48,8 +48,8 @@ public class SwerveConstants {
 
     public static final boolean kFrontLeftDriveEncoderReversed = true;
     public static final boolean kBackLeftDriveEncoderReversed = true;
-    public static final boolean kFrontRightDriveEncoderReversed = false;
-    public static final boolean kBackRightDriveEncoderReversed = false;
+    public static final boolean kFrontRightDriveEncoderReversed = true;
+    public static final boolean kBackRightDriveEncoderReversed = true;
 
     public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
     public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
