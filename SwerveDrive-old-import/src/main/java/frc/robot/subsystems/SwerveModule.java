@@ -21,6 +21,8 @@ public class SwerveModule {
 
     private final PIDController turningPidController;
 
+    private final PIDController drivingPidController;
+
 
     public SwerveModule(int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed) {
 
@@ -38,8 +40,13 @@ public class SwerveModule {
         turningEncoder.setPositionConversionFactor(SwerveConstants.kTurningEncoderRot2Rad);
         turningEncoder.setVelocityConversionFactor(SwerveConstants.kTurningEncoderRPM2RadPerSec);
 
-        turningPidController = new PIDController(SwerveConstants.kPTurning, 0, 0);
+        turningPidController = new PIDController(SwerveConstants.kPTurning, 0, 0); 
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
+
+        drivingPidController = new PIDController(0, 0, 0);
+
+
+
 
         resetEncoders();
     }
@@ -71,10 +78,15 @@ public class SwerveModule {
     }
 
     public void setDesiredState(SwerveModuleState state) {
+        
+        
         if (Math.abs(state.speedMetersPerSecond) < 0.001) {
             stop();
             return;
         }
+
+
+        
         state = SwerveModuleState.optimize(state, getState().angle);
         driveMotor.set(state.speedMetersPerSecond / SwerveConstants.kPhysicalMaxSpeedMetersPerSecond);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));

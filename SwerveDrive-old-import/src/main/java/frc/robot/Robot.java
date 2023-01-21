@@ -33,33 +33,9 @@ public class Robot extends TimedRobot {
 	public static SwerveJoystickCmd swerveJoystickCmd;
 
 
-	public final static SwerveModule frontLeft = new SwerveModule(
-		SwerveConstants.kFrontLeftDriveMotorPort,
-		SwerveConstants.kFrontLeftTurningMotorPort,
-		SwerveConstants.kFrontLeftDriveEncoderReversed,
-		SwerveConstants.kFrontLeftTurningEncoderReversed);
-
-	public final static SwerveModule frontRight = new SwerveModule(
-		SwerveConstants.kFrontRightDriveMotorPort,
-		SwerveConstants.kFrontRightTurningMotorPort,
-		SwerveConstants.kFrontRightDriveEncoderReversed,
-		SwerveConstants.kFrontRightTurningEncoderReversed);
-
-	public final static SwerveModule backLeft = new SwerveModule(
-		SwerveConstants.kBackLeftDriveMotorPort,
-		SwerveConstants.kBackLeftTurningMotorPort,
-		SwerveConstants.kBackLeftDriveEncoderReversed,
-		SwerveConstants.kBackLeftTurningEncoderReversed);
-
-	public final static SwerveModule backRight = new SwerveModule(
-		SwerveConstants.kBackRightDriveMotorPort,
-		SwerveConstants.kBackRightTurningMotorPort,
-		SwerveConstants.kBackRightDriveEncoderReversed,
-		SwerveConstants.kBackRightTurningEncoderReversed);
 
 	
 
-	private Command m_autonomouscommand;
 	private RobotContainer m_robotContainer;
 	
 
@@ -68,18 +44,8 @@ public class Robot extends TimedRobot {
 		CameraDaemon.robotInit(); //Starts cameraserver
 		System.out.println("Started");
 		Components.init();
-		auto = DriverStation.isAutonomous();
 		m_robotContainer = new RobotContainer();
-		swerveJoystickCmd = new SwerveJoystickCmd(null, null, null, null, null);
 
-		
-		
-		modulePosition = new SwerveModulePosition[4];
-
-		modulePosition[0] = new SwerveModulePosition(frontLeft.driveEncoder.getPosition(), frontRight.getState().angle);
-		modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(), frontRight.getState().angle);
-		modulePosition[2] = new SwerveModulePosition(backLeft.driveEncoder.getPosition(), frontRight.getState().angle);
-		modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), frontRight.getState().angle);
 
 		//Components.ahrs.calibrate();
 		
@@ -88,13 +54,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic(){
 		
-		//CommandScheduler.getInstance().run();
-
-		swerveJoystickCmd.execute();
-
-		
-
-	
+		CommandScheduler.getInstance().run();
 
 		
 	}
@@ -107,13 +67,12 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		CommandScheduler.getInstance().run();
 	}
 
 
 	@Override
 	public void autonomousInit() {
-		m_autonomouscommand = m_robotContainer.getAutonomousCommand();
+		//m_autonomouscommand = m_robotContainer.getAutonomousCommand();
 	}
 
 
@@ -124,13 +83,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		
-		if(m_autonomouscommand != null){
-			m_autonomouscommand.cancel();
-		}
-		
-
-
+	
 	}
 
 	@Override

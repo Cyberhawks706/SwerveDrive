@@ -65,8 +65,8 @@ public final class Constants {
 		// PID coefficients
 		public class Wheels{
 			public static final double kP = 2.1e-4; 
-			public static final double kI = 0;//1e-7;
-			public static final double kD = 0;//6e-5; 
+			public static final double kI = 0;
+			public static final double kD = 0; 
 			public static final double kIz = 0; 
 			public static final double kFF = 0.000156; 
 			public static final double kMaxOutput = 1; 

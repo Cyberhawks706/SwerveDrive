@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,8 +19,45 @@ public class SwerveSubsystem extends SubsystemBase {
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
     private SwerveDriveOdometry odometer;
 
+    public final SwerveModule frontLeft = new SwerveModule(
+		SwerveConstants.kFrontLeftDriveMotorPort,
+		SwerveConstants.kFrontLeftTurningMotorPort,
+		SwerveConstants.kFrontLeftDriveEncoderReversed,
+		SwerveConstants.kFrontLeftTurningEncoderReversed);
+
+	public final SwerveModule frontRight = new SwerveModule(
+		SwerveConstants.kFrontRightDriveMotorPort,
+		SwerveConstants.kFrontRightTurningMotorPort,
+		SwerveConstants.kFrontRightDriveEncoderReversed,
+		SwerveConstants.kFrontRightTurningEncoderReversed);
+
+	public final SwerveModule backLeft = new SwerveModule(
+		SwerveConstants.kBackLeftDriveMotorPort,
+		SwerveConstants.kBackLeftTurningMotorPort,
+		SwerveConstants.kBackLeftDriveEncoderReversed,
+		SwerveConstants.kBackLeftTurningEncoderReversed);
+
+	public final SwerveModule backRight = new SwerveModule(
+		SwerveConstants.kBackRightDriveMotorPort,
+		SwerveConstants.kBackRightTurningMotorPort,
+		SwerveConstants.kBackRightDriveEncoderReversed,
+		SwerveConstants.kBackRightTurningEncoderReversed);
+
+
+
+		
+		
+		private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
+
+		
+
 
     public SwerveSubsystem() {
+        modulePosition[0] = new SwerveModulePosition(frontLeft.driveEncoder.getPosition(), frontRight.getState().angle);
+		modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(), frontRight.getState().angle);
+		modulePosition[2] = new SwerveModulePosition(backLeft.driveEncoder.getPosition(), frontRight.getState().angle);
+		modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), frontRight.getState().angle);
+
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -28,6 +65,8 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e) {
             }
         }).start();
+
+
     }
 
     public void zeroHeading() {
@@ -42,10 +81,6 @@ public class SwerveSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(getHeading());
     }
 
-    public Pose2d getPose() {
-        return odometer.getPoseMeters();
-    }
-
 
 
     public void resetOdometry(Pose2d pose) {
@@ -54,26 +89,49 @@ public class SwerveSubsystem extends SubsystemBase {
     
     @Override
     public void periodic() {
-        odometer = new SwerveDriveOdometry(SwerveConstants.kDriveKinematics ,new Rotation2d(), Robot.modulePosition);
+        //odometer = new SwerveDriveOdometry(SwerveConstants.kDriveKinematics ,new Rotation2d(), Robot.modulePosition);
 
-        odometer.update(getRotation2d(), Robot.modulePosition);
+        //odometer.update(getRotation2d(), Robot.modulePosition);
 
         SmartDashboard.putNumber("Robot Heading", getHeading());
-        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     }
 
     public void stopModules() {
-        Robot.frontLeft.stop();
-        Robot.frontRight.stop();
-        Robot.backLeft.stop();
-        Robot.backRight.stop();
+        frontLeft.stop();
+        frontRight.stop();
+        backLeft.stop();
+        backRight.stop();
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Math.IEEEremainder(gyro.getAngle(), 360));
-        Robot.frontLeft.setDesiredState(desiredStates[0]);
-        Robot.frontRight.setDesiredState(desiredStates[1]);
-        Robot.backLeft.setDesiredState(desiredStates[2]);
-        Robot.backRight.setDesiredState(desiredStates[3]);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.kPhysicalMaxSpeedMetersPerSecond);
+        
+
+
+        if(desiredStates[0].speedMetersPerSecond < 1){
+        } else {
+            desiredStates[0].speedMetersPerSecond = 0;
+        }
+
+        if(desiredStates[1].speedMetersPerSecond < 1){
+        } else {
+            desiredStates[1].speedMetersPerSecond = 0;
+        }
+
+        if(desiredStates[2].speedMetersPerSecond < 1){
+        } else {
+            desiredStates[2].speedMetersPerSecond = 0;
+        }
+
+        if(desiredStates[3].speedMetersPerSecond < 1){
+        } else {
+            desiredStates[3].speedMetersPerSecond = 0;
+        }
+
+
+        frontLeft.setDesiredState(desiredStates[0]);
+        frontRight.setDesiredState(desiredStates[1]);
+        backLeft.setDesiredState(desiredStates[2]);
+        backRight.setDesiredState(desiredStates[3]);
     }
 }
