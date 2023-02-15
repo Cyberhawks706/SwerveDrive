@@ -38,6 +38,12 @@ public class Components {
     public static BrushlessSparkWithPID sparkWheelTurnFL;
     public static BrushlessSparkWithPID sparkWheelTurnBR;
     public static BrushlessSparkWithPID sparkWheelTurnBL;
+
+
+    public static BrushlessSparkWithPID frontLiftMotor;
+    public static BrushlessSparkWithPID backLiftMotor;
+
+
     //public static AHRS ahrs;
    
     public static Timer timer;
@@ -62,6 +68,10 @@ public class Components {
         chassis = new Chassis();
         limelight = new Limelight();
         limelightTrack = new LimelightTrack(limelight);
+
+        frontLiftMotor = new BrushlessSparkWithPID(10, 2.1e-4, 0, 0, 0.000156, 0, 1, -1, 2000, 0, 1500, 0);
+        backLiftMotor = new BrushlessSparkWithPID(9, 2.1e-4, 0, 0, 0.000156, 0, 1, -1, 2000, 0, 1500, 0);
+
         
         
 

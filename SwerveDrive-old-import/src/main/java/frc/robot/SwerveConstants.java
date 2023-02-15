@@ -6,6 +6,28 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public class SwerveConstants {
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        //Absolute Encoders
+     public static final double kFrontLeftDriveAbsoluteEncoderPort = 1;
+     public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 0;
+     public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = true;
+
+     public static final double kBackLeftDriveAbsoluteEncoderPort = 1;
+     public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 0;
+     public static final boolean kBackLeftDriveAbsoluteEncoderReversed = true;
+
+     public static final double kBackRightDriveAbsoluteEncoderPort = 2;
+     public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0;
+     public static final boolean kBackRightDriveAbsoluteEncoderReversed = true;
+
+     public static final double kFrontRightDriveAbsoluteEncoderPort = 3;
+     public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0;
+     public static final boolean kFrontRightDriveAbsoluteEncoderReversed = true;
+
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Module Constants
     
@@ -31,15 +53,15 @@ public class SwerveConstants {
             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
             new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
 
-    public static final int kFrontLeftDriveMotorPort = 13;
-    public static final int kBackLeftDriveMotorPort = 7;
-    public static final int kFrontRightDriveMotorPort = 8;
-    public static final int kBackRightDriveMotorPort = 5;
+    public static final int kFrontLeftDriveMotorPort = 6;
+    public static final int kBackLeftDriveMotorPort = 1;
+    public static final int kFrontRightDriveMotorPort = 11;
+    public static final int kBackRightDriveMotorPort = 8;
 
-    public static final int kFrontLeftTurningMotorPort = 14;
-    public static final int kBackLeftTurningMotorPort = 12;
-    public static final int kFrontRightTurningMotorPort = 4;
-    public static final int kBackRightTurningMotorPort = 10;
+    public static final int kFrontLeftTurningMotorPort = 5;
+    public static final int kBackLeftTurningMotorPort = 2;
+    public static final int kFrontRightTurningMotorPort = 12;
+    public static final int kBackRightTurningMotorPort = 7;
 
     public static final boolean kFrontLeftTurningEncoderReversed = true;
     public static final boolean kBackLeftTurningEncoderReversed = true;
@@ -82,7 +104,7 @@ public class SwerveConstants {
 
         public static final int kDriverControllerPort = 2;
 
-        public static final double kDeadband = 0.05;
+        public static final double kDeadband = 0.08;
 
 
 }
