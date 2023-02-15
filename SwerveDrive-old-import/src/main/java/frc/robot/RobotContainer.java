@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.commands.AutonMover;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
@@ -48,7 +49,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return null;
+        return new AutonMover(swerveSubsystem);
 
         /* 
         // 1. Create trajectory settings

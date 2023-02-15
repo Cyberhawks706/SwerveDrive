@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 
 public class Robot extends TimedRobot {
-
+	private Command m_autonomousCommand;
 	public static boolean emergencyDisabled = false;
 
 	//Command autonomousCommand;
@@ -31,10 +31,6 @@ public class Robot extends TimedRobot {
 	public static XboxController xboxDrive;
 	public static SwerveModulePosition[] modulePosition;
 	public static SwerveJoystickCmd swerveJoystickCmd;
-
-
-
-	
 
 	private RobotContainer m_robotContainer;
 	
@@ -96,7 +92,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
-
+		CommandScheduler.getInstance().cancelAll();
 	}
 
 
@@ -105,20 +101,28 @@ public class Robot extends TimedRobot {
 	}
 
 
+	/** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
 	@Override
 	public void autonomousInit() {
-		//m_autonomouscommand = m_robotContainer.getAutonomousCommand();
+	  m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+  
+	  // schedule the autonomous command (example)
+	  if (m_autonomousCommand != null) {
+		m_autonomousCommand.schedule();
+	  }
 	}
 
 
 	@Override
 	public void autonomousPeriodic() {
-		//Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
 	public void teleopInit() {
-	
+		if (m_autonomousCommand != null) {
+			m_autonomousCommand.cancel();
+		}
 	}
 
 	@Override

@@ -35,7 +35,6 @@ public class AutonMover extends CommandBase {
         double xSpeed = Math.min(target.getX(), SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond);
         double ySpeed = Math.min(target.getY(), SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond);
         double turnSpeed = Math.min(angularDistance*rotMultiplier, SwerveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond);
-        // create a ChassisSpeeds object with the x, y, and theta components
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
         return chassisSpeeds;
         
