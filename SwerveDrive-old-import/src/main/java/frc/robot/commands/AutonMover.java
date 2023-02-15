@@ -3,6 +3,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.SwerveConstants;
@@ -20,11 +22,12 @@ public class AutonMover extends CommandBase {
 
     @Override
     public void execute() {
-
-        Transform3d target = new Transform3d();
+    // x is fwd/back
+        Transform3d target = new Transform3d(new Translation3d(0.5,0.25,0), new Rotation3d(0,0,0.5));
 
         ChassisSpeeds chassisSpeeds = calculateSpeedsToPoint(target);
         SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        System.out.println(swerveModuleStates);
         swerveSubsystem.setModuleStates(swerveModuleStates);
     }
 

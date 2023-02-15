@@ -28,13 +28,13 @@ public class RobotContainer {
     public static final XboxController driverJoystick = new XboxController(2);
 
     public RobotContainer() {
-        swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
-                swerveSubsystem,
-                () -> -driverJoystick.getLeftY(),
-                () -> driverJoystick.getLeftX(),
-                () -> driverJoystick.getRightX(),
-                () -> !driverJoystick.getAButtonPressed()));
-
+        // swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
+        //         swerveSubsystem,
+        //         () -> -driverJoystick.getLeftY(),
+        //         () -> driverJoystick.getLeftX(),
+        //         () -> driverJoystick.getRightX(),
+        //         () -> !driverJoystick.getAButtonPressed()));
+        swerveSubsystem.setDefaultCommand(new AutonMover(swerveSubsystem));
                 
 
         configureButtonBindings();
