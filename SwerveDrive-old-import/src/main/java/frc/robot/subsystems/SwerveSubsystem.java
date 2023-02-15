@@ -19,35 +19,50 @@ public class SwerveSubsystem extends SubsystemBase {
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
     private SwerveDriveOdometry odometer;
 
+    public static double x;
+
     public final SwerveModule frontLeft = new SwerveModule(
-		SwerveConstants.kFrontLeftDriveMotorPort,
-		SwerveConstants.kFrontLeftTurningMotorPort,
-		SwerveConstants.kFrontLeftDriveEncoderReversed,
-		SwerveConstants.kFrontLeftTurningEncoderReversed);
+        SwerveConstants.kFrontLeftDriveMotorPort,
+        SwerveConstants.kFrontLeftTurningMotorPort,
+        SwerveConstants.kFrontLeftDriveEncoderReversed,
+        SwerveConstants.kFrontLeftTurningEncoderReversed,
+        SwerveConstants.kFrontLeftDriveAbsoluteEncoderPort,
+        SwerveConstants.kFrontLeftDriveAbsoluteEncoderOffsetRad,
+        SwerveConstants.kFrontLeftDriveAbsoluteEncoderReversed);	
 
-	public final SwerveModule frontRight = new SwerveModule(
-		SwerveConstants.kFrontRightDriveMotorPort,
-		SwerveConstants.kFrontRightTurningMotorPort,
-		SwerveConstants.kFrontRightDriveEncoderReversed,
-		SwerveConstants.kFrontRightTurningEncoderReversed);
 
-	public final SwerveModule backLeft = new SwerveModule(
-		SwerveConstants.kBackLeftDriveMotorPort,
-		SwerveConstants.kBackLeftTurningMotorPort,
-		SwerveConstants.kBackLeftDriveEncoderReversed,
-		SwerveConstants.kBackLeftTurningEncoderReversed);
+	    public final SwerveModule frontRight = new SwerveModule(
+        SwerveConstants.kFrontRightDriveMotorPort,
+        SwerveConstants.kFrontRightTurningMotorPort,
+        SwerveConstants.kFrontRightDriveEncoderReversed,
+        SwerveConstants.kFrontRightTurningEncoderReversed,
+        SwerveConstants.kFrontRightDriveAbsoluteEncoderPort,
+        SwerveConstants.kFrontRightDriveAbsoluteEncoderOffsetRad,
+        SwerveConstants.kFrontRightDriveAbsoluteEncoderReversed);
 
-	public final SwerveModule backRight = new SwerveModule(
-		SwerveConstants.kBackRightDriveMotorPort,
-		SwerveConstants.kBackRightTurningMotorPort,
-		SwerveConstants.kBackRightDriveEncoderReversed,
-		SwerveConstants.kBackRightTurningEncoderReversed);
+	    public final SwerveModule backLeft = new SwerveModule(
+        SwerveConstants.kBackLeftDriveMotorPort,
+        SwerveConstants.kBackLeftTurningMotorPort,
+        SwerveConstants.kBackLeftDriveEncoderReversed,
+        SwerveConstants.kBackLeftTurningEncoderReversed,
+        SwerveConstants.kBackLeftDriveAbsoluteEncoderPort,
+        SwerveConstants.kBackLeftDriveAbsoluteEncoderOffsetRad,
+        SwerveConstants.kBackLeftDriveAbsoluteEncoderReversed);
+
+	    public final SwerveModule backRight = new SwerveModule(
+        SwerveConstants.kBackRightDriveMotorPort,
+        SwerveConstants.kBackRightTurningMotorPort,
+        SwerveConstants.kBackRightDriveEncoderReversed,
+        SwerveConstants.kBackRightTurningEncoderReversed,
+        SwerveConstants.kBackRightDriveAbsoluteEncoderPort,
+        SwerveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
+        SwerveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
 
 
 		
 		
-		private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
+		public SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
 
 		
 
@@ -104,26 +119,28 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
+        
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.kPhysicalMaxSpeedMetersPerSecond);
         
+        x = desiredStates[0].angle.getDegrees();
 
 
-        if(desiredStates[0].speedMetersPerSecond < 5){
+        if(desiredStates[0].speedMetersPerSecond < 10){
         } else {
             desiredStates[0].speedMetersPerSecond = 0;
         }
 
-        if(desiredStates[1].speedMetersPerSecond < 5){
+        if(desiredStates[1].speedMetersPerSecond < 10){
         } else {
             desiredStates[1].speedMetersPerSecond = 0;
         }
 
-        if(desiredStates[2].speedMetersPerSecond < 5){
+        if(desiredStates[2].speedMetersPerSecond < 10){
         } else {
             desiredStates[2].speedMetersPerSecond = 0;
         }
 
-        if(desiredStates[3].speedMetersPerSecond < 5){
+        if(desiredStates[3].speedMetersPerSecond < 10){
         } else {
             desiredStates[3].speedMetersPerSecond = 0;
         }
