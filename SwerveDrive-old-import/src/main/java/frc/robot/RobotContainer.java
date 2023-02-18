@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -43,7 +42,7 @@ public class RobotContainer {
                 () -> driverJoystick.getLeftX(),
                 () -> driverJoystick.getRightX(),
                 () -> !driverJoystick.getAButtonPressed()));
-        //swerveSubsystem.setDefaultCommand(new AutonMover(swerveSubsystem));
+
                 
 
         configureButtonBindings();
@@ -69,9 +68,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return new AutonMover(swerveSubsystem);
 
-        /*
-         
-        
+        /* 
         // 1. Create trajectory settings
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
                 SwerveConstants.kMaxSpeedMetersPerSecond,
@@ -95,9 +92,6 @@ public class RobotContainer {
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         // 4. Construct command to follow trajectory
-        /*
-         
-         
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
                 trajectory,
                 swerveSubsystem::getPose,
@@ -108,14 +102,13 @@ public class RobotContainer {
                 swerveSubsystem::setModuleStates,
                 swerveSubsystem);
 
-        
-
-        5. Add some init and wrap-up, and return everything
+        // 5. Add some init and wrap-up, and return everything
         return new SequentialCommandGroup(
                 new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
+                swerveControllerCommand,
                 new InstantCommand(() -> swerveSubsystem.stopModules()));
 
+
         */
-        
     }
 }

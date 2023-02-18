@@ -108,25 +108,34 @@ public class SwerveSubsystem extends SubsystemBase {
         
 
 
-        if(desiredStates[0].speedMetersPerSecond < 10){
+        if(desiredStates[0].speedMetersPerSecond < 5){
         } else {
             desiredStates[0].speedMetersPerSecond = 0;
         }
 
-        if(desiredStates[1].speedMetersPerSecond < 10){
+        if(desiredStates[1].speedMetersPerSecond < 5){
         } else {
             desiredStates[1].speedMetersPerSecond = 0;
         }
 
-        if(desiredStates[2].speedMetersPerSecond < 10){
+        if(desiredStates[2].speedMetersPerSecond < 5){
         } else {
             desiredStates[2].speedMetersPerSecond = 0;
         }
 
-        if(desiredStates[3].speedMetersPerSecond < 10){
+        if(desiredStates[3].speedMetersPerSecond < 5){
         } else {
             desiredStates[3].speedMetersPerSecond = 0;
         }
+
+        desiredStates[0].angle = desiredStates[0].angle.plus(getRotation2d().fromDegrees(90));
+        desiredStates[1].angle = desiredStates[1].angle.plus(getRotation2d().fromDegrees(90));
+        desiredStates[2].angle = desiredStates[2].angle.plus(getRotation2d().fromDegrees(90));
+        desiredStates[3].angle = desiredStates[3].angle.plus(getRotation2d().fromDegrees(90));
+
+        
+
+
 
 
         frontLeft.setDesiredState(desiredStates[0]);
