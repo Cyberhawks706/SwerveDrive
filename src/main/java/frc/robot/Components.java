@@ -7,7 +7,7 @@ import com.kauailabs.navx.frc.AHRS;
 import frc.robot.config.Config;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.DashboardDaemon;
-//import frc.robot.subsystems.PIDDaemon;
+import frc.robot.subsystems.PIDDaemon;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.Clock;
 import frc.robot.commands.Drive;
@@ -17,9 +17,7 @@ import frc.robot.commands.LimelightTrack;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-//import edu.wpi.first.wpilibj.AnalogInput;
-//import edu.wpi.first.wpilibj.SPI;
-//import edu.wpi.first.wpilibj.Solenoid;
+
 import edu.wpi.first.wpilibj.Joystick;
 
 
@@ -49,6 +47,7 @@ public class Components {
     public static Clock ClimbClock;
     public static SwerveSubsystem swerveSubsystem;
     public static Joystick driverJoystick;
+    private static PIDDaemon PIDDaemon;
 
 
     public static void init(){
@@ -63,7 +62,7 @@ public class Components {
 
         
         daemon = new DashboardDaemon();
-        //PIDDaemon = new PIDDaemon();
+        PIDDaemon = new PIDDaemon();
         configtable = new Config();
         networkTableInstance = NetworkTableInstance.getDefault();
         drive = new Drive();
