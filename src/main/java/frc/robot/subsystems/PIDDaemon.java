@@ -1,11 +1,11 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Components;
 
 // All cower in fear before the dashboard demon
 
-public final class PIDDaemon extends Subsystem {
+public final class PIDDaemon extends SubsystemBase {
 
 	public void initDefaultCommand() {
         //No default command, is a daemon

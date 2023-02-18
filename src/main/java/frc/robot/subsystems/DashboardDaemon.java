@@ -1,11 +1,11 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 // All cower in fear before the dashboard demon
 
-public final class DashboardDaemon extends Subsystem {
+public final class DashboardDaemon extends SubsystemBase {
 
         { // You can set callbacks here
                 /*

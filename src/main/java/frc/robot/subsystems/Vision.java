@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public final class Vision extends Subsystem {
+public final class Vision extends SubsystemBase {
 
 	public void initDefaultCommand() {
 		 setDefaultCommand(new Limelight());

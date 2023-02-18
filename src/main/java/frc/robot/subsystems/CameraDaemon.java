@@ -4,9 +4,9 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class CameraDaemon extends Subsystem{
+public class CameraDaemon extends SubsystemBase{
 
     public static UsbCamera cam1;
     public static UsbCamera cam2;
@@ -19,10 +19,4 @@ public class CameraDaemon extends Subsystem{
         
     }
 
-
-    @Override
-    protected void initDefaultCommand() {
-        // TODO Auto-generated method stub
-        
-    }
 }
