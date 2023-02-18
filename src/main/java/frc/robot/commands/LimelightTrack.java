@@ -8,9 +8,14 @@ import frc.robot.Constants;
 import frc.robot.IO;
 import frc.robot.subsystems.Limelight;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
-public class LimelightTrack extends Command {
+public class LimelightTrack extends CommandBase {
+
+    public LimelightTrack(Subsystem limelight){
+        addRequirements(limelight);
+    }
 	
 
 	public void execute(){
@@ -34,20 +39,14 @@ public class LimelightTrack extends Command {
 
 
 
-            Components.sparkWheelBL.setVel(0.1);;
-            // Components.sparkWheelBR.setPower(leftPower);
-            // Components.sparkWheelFL.setPower(rightPower);
-            // Components.sparkWheelFR.setPower(rightPower);
-
-
-
+          
 
 	}
-
-	protected void initialize() {
+    @Override
+	public void initialize() {
 	}
-
-	protected boolean isFinished() {
+    @Override
+	public boolean isFinished() {
 		return false;
 	}
 

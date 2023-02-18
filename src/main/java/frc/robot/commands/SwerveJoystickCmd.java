@@ -1,12 +1,15 @@
 package frc.robot.commands;
 
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.DriveConstants;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
+import frc.robot.SwerveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class SwerveJoystickCmd extends CommandBase {
@@ -24,9 +27,9 @@ public class SwerveJoystickCmd extends CommandBase {
         this.ySpdFunction = ySpdFunction;
         this.turningSpdFunction = turningSpdFunction;
         this.fieldOrientedFunction = fieldOrientedFunction;
-        this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
-        this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
-        this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
+        this.xLimiter = new SlewRateLimiter(SwerveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
+        this.yLimiter = new SlewRateLimiter(SwerveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
+        this.turningLimiter = new SlewRateLimiter(SwerveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
         addRequirements(swerveSubsystem);
     }
 
@@ -37,34 +40,52 @@ public class SwerveJoystickCmd extends CommandBase {
     @Override
     public void execute() {
         // 1. Get real-time joystick inputs
-        double xSpeed = xSpdFunction.get();
-        double ySpeed = ySpdFunction.get();
-        double turningSpeed = turningSpdFunction.get();
+
+        //double xSpeed = xSpdFunction.get();
+        //double ySpeed = ySpdFunction.get();
+        //double turningSpeed = turningSpdFunction.get();
+
+
+
+
+
+        double xSpeed = -RobotContainer.driverJoystick.getLeftX();
+        double ySpeed = -RobotContainer.driverJoystick.getLeftY();
+        double turningSpeed = RobotContainer.driverJoystick.getRightX();
 
         // 2. Apply deadband
-        xSpeed = Math.abs(xSpeed) > 0.05 ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > 0.05 ? ySpeed : 0.0;
-        turningSpeed = Math.abs(turningSpeed) > 0.05 ? turningSpeed : 0.0;
-
+        xSpeed = Math.abs(xSpeed) > SwerveConstants.kDeadband ? xSpeed : 0.0;
+        ySpeed = Math.abs(ySpeed) > SwerveConstants.kDeadband ? ySpeed : 0.0;
+        turningSpeed = Math.abs(turningSpeed) > SwerveConstants.kDeadband ? turningSpeed : 0.0;
         // 3. Make the driving smoother
-        xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-        ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+        xSpeed *= SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+        ySpeed *= SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+
         turningSpeed = turningLimiter.calculate(turningSpeed)
-                * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
+                * SwerveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
+
+
 
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
+
+        
+        
         if (fieldOrientedFunction.get()) {
             // Relative to field
-            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
-        } else {
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+
+            //chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+        } 
+        else {
             // Relative to robot
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
         }
+        
+        
 
         // 5. Convert chassis speeds to individual module states
-        SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveModuleState[] moduleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
         // 6. Output each module states to wheels
         swerveSubsystem.setModuleStates(moduleStates);
@@ -80,5 +101,3 @@ public class SwerveJoystickCmd extends CommandBase {
         return false;
     }
 }
-
-
