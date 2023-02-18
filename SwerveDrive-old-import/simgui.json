@@ -1,22 +1,12 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "SPARK MAX [1]": {
+      "SPARK MAX [13]": {
         "header": {
           "open": true
         }
       },
-      "SPARK MAX [2]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [5]": {
-        "header": {
-          "open": true
-        }
-      },
-      "navX-Sensor[0]": {
+      "SPARK MAX [8]": {
         "header": {
           "open": true
         }
@@ -36,11 +26,6 @@
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro"
-    }
-  },
-  "NetworkTables": {
-    "Transitory Values": {
-      "open": false
     }
   }
 }

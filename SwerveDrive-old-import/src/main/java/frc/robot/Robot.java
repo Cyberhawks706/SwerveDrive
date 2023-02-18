@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.config.Config;
 import frc.robot.subsystems.CameraDaemon;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.SwerveModule;
@@ -87,22 +86,8 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic(){
 		
 		CommandScheduler.getInstance().run();
-
-		Config.inputXvalue.value = SwerveJoystickCmd.xSpeed;
-        Config.inputXvalue.push();
-
-
-			//Config.outputSpeed.value = SwerveSubsystem.x;
-			//Config.outputSpeed.push();
-		
-		//Components.frontLiftMotor.setPower(0.3);
-		//Components.backLiftMotor.setPower(-0.3);
-
-
-		
-
-		
 	}
+
 
 	@Override
 	public void disabledInit() {

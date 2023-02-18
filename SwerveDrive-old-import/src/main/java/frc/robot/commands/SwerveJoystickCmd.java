@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.SwerveConstants;
-import frc.robot.config.Config;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class SwerveJoystickCmd extends CommandBase {
@@ -19,7 +18,6 @@ public class SwerveJoystickCmd extends CommandBase {
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
     private final Supplier<Boolean> fieldOrientedFunction;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-    public static double xSpeed, ySpeed, turningSpeed;
 
     public SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
             Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
@@ -51,17 +49,17 @@ public class SwerveJoystickCmd extends CommandBase {
 
 
 
-        xSpeed = RobotContainer.driverJoystick.getLeftX();
-        ySpeed = RobotContainer.driverJoystick.getLeftY();
-        turningSpeed = RobotContainer.driverJoystick.getRightX();
+        double xSpeed = -RobotContainer.driverJoystick.getLeftX();
+        double ySpeed = -RobotContainer.driverJoystick.getLeftY();
+        double turningSpeed = RobotContainer.driverJoystick.getRightX();
 
         // 2. Apply deadband
         xSpeed = Math.abs(xSpeed) > SwerveConstants.kDeadband ? xSpeed : 0.0;
         ySpeed = Math.abs(ySpeed) > SwerveConstants.kDeadband ? ySpeed : 0.0;
         turningSpeed = Math.abs(turningSpeed) > SwerveConstants.kDeadband ? turningSpeed : 0.0;
         // 3. Make the driving smoother
-        xSpeed *= SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond*3;
-        ySpeed *= SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond*3;
+        xSpeed *= SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+        ySpeed *= SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond;
 
         turningSpeed = turningLimiter.calculate(turningSpeed)
                 * SwerveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
