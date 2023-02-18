@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
 			//Config.outputSpeed.value = SwerveSubsystem.x;
 			//Config.outputSpeed.push();
 		
-		Components.frontLiftMotor.setPower(0.3);
+		//Components.frontLiftMotor.setPower(0.3);
 		//Components.backLiftMotor.setPower(-0.3);
 
 

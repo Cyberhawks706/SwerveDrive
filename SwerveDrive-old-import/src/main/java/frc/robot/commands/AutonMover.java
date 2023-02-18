@@ -7,12 +7,15 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.SwerveConstants;
 import java.lang.Math;
 
 // class to move the robot in autonomous
 public class AutonMover extends CommandBase {
     private final SwerveSubsystem swerveSubsystem;
+    public static NetworkTable table = NetworkTableInstance.getDefault().getTable("SmartDashboard");
     // constructor with input for swerve subsystem
     public AutonMover(SwerveSubsystem swerveSubsystem) {
         // add subsystem requirements
@@ -23,21 +26,40 @@ public class AutonMover extends CommandBase {
     @Override
     public void execute() {
     // x is fwd/back
-        Transform3d target = new Transform3d(new Translation3d(0.5,0.25,0), new Rotation3d(0,0,0.5));
-
-        ChassisSpeeds chassisSpeeds = calculateSpeedsToPoint(target);
-        SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-        System.out.println(swerveModuleStates);
-        swerveSubsystem.setModuleStates(swerveModuleStates);
+        gotoTag(0, 3);
     }
 
-    public ChassisSpeeds calculateSpeedsToPoint(Transform3d target) {
+    private void gotoTag(int camNum, int tagNum) {
+        Transform3d target = calculateTargetFromTag(camNum,tagNum);
+        ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
+        SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        if(target.getY() > 1) { 
+            swerveSubsystem.setModuleStates(swerveModuleStates);
+        }
+    }
+
+    private Transform3d calculateTargetFromTag(int camId, int tagId) {
+        String tagNum = String.valueOf(tagId);
+        String camNum = String.valueOf(camId);
+        System.out.print(table.getSubTable("processed0").getSubTable("tag3").getEntry("tx").getString(""));
+        double x = Double.valueOf(table.getSubTable("processed" + camNum).getSubTable("tag" + tagNum).getEntry("tx").getString(""));
+        double y = Double.valueOf(table.getSubTable("processed" + camNum).getSubTable("tag" + tagNum).getEntry("ty").getString(""));
+        double z = Double.valueOf(table.getSubTable("processed" + camNum).getSubTable("tag" + tagNum).getEntry("tz").getString(""));
+        //double yaw = table.getSubTable("processed" + camNum).getSubTable("tag" + tagNum).getEntry("yaw").getDouble(0.0);
+        double yaw = 0;
+        z--;
+        Transform3d target = new Transform3d(new Translation3d(z,y,x), new Rotation3d(0,0,yaw));
+        System.out.println(target);
+        return target;
+    }
+
+    public ChassisSpeeds calculateSpeedsToTarget(Transform3d target) {
         double angularDistance = target.getRotation().getZ();
-        double rotMultiplier = 1.5 * Math.abs(angularDistance / SwerveConstants.kMaxAngularSpeedRadiansPerSecond);
+        //double rotMultiplier = Math.abs(angularDistance / SwerveConstants.kMaxAngularSpeedRadiansPerSecond);
 
         double xSpeed = Math.min(target.getX(), SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond);
         double ySpeed = Math.min(target.getY(), SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond);
-        double turnSpeed = Math.min(angularDistance*rotMultiplier, SwerveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond);
+        double turnSpeed = Math.min(angularDistance, SwerveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond);
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
         return chassisSpeeds;
         

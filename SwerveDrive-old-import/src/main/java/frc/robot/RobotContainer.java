@@ -25,16 +25,25 @@ public class RobotContainer {
 
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
+    private final SwerveJoystickCmd teleopCmd = new SwerveJoystickCmd(
+        swerveSubsystem,
+        () -> -driverJoystick.getLeftY(),
+        () -> driverJoystick.getLeftX(),
+        () -> driverJoystick.getRightX(),
+        () -> !driverJoystick.getAButtonPressed());
+
+    private final AutonMover autonCmd = new AutonMover(swerveSubsystem);
+
     public static final XboxController driverJoystick = new XboxController(2);
 
     public RobotContainer() {
-        // swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
-        //         swerveSubsystem,
-        //         () -> -driverJoystick.getLeftY(),
-        //         () -> driverJoystick.getLeftX(),
-        //         () -> driverJoystick.getRightX(),
-        //         () -> !driverJoystick.getAButtonPressed()));
-        swerveSubsystem.setDefaultCommand(new AutonMover(swerveSubsystem));
+        swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
+                swerveSubsystem,
+                () -> -driverJoystick.getLeftY(),
+                () -> driverJoystick.getLeftX(),
+                () -> driverJoystick.getRightX(),
+                () -> !driverJoystick.getAButtonPressed()));
+        //swerveSubsystem.setDefaultCommand(new AutonMover(swerveSubsystem));
                 
 
         configureButtonBindings();
@@ -47,6 +56,14 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
+    }
+
+    public void autonomousInit() {
+        swerveSubsystem.setDefaultCommand(autonCmd);
+    }
+
+    public void teleopInit() {
+        swerveSubsystem.setDefaultCommand(teleopCmd);
     }
 
     public Command getAutonomousCommand() {
