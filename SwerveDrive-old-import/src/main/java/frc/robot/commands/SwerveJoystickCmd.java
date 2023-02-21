@@ -7,6 +7,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Components;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.SwerveConstants;
@@ -89,6 +90,8 @@ public class SwerveJoystickCmd extends CommandBase {
 
         // 6. Output each module states to wheels
         swerveSubsystem.setModuleStates(moduleStates);
+        System.out.println("Front: " + Components.frontLiftPot.getAverageVoltage());
+        System.out.println("Rear: " + Components.rearLiftPot.getAverageVoltage());
     }
 
     @Override
