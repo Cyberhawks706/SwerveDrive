@@ -16,6 +16,8 @@ import java.lang.Math;
 public class AutonMover extends CommandBase {
     private final SwerveSubsystem swerveSubsystem;
     public static NetworkTable table = NetworkTableInstance.getDefault().getTable("SmartDashboard");
+    private static float currentYaw;
+    private static boolean reachedRamp = false;
     // constructor with input for swerve subsystem
     public AutonMover(SwerveSubsystem swerveSubsystem) {
         // add subsystem requirements
@@ -26,7 +28,24 @@ public class AutonMover extends CommandBase {
     @Override
     public void execute() {
     // x is fwd/back
-        gotoTag(0, 3);
+        Transform3d target = calculateTargetForBalance();
+        ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
+        SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        swerveSubsystem.setModuleStates(swerveModuleStates);
+    }
+
+    private Transform3d calculateTargetForBalance() {
+        currentYaw = swerveSubsystem.gyro.getYaw();
+        Transform3d target = new Transform3d();
+        if(!reachedRamp && currentYaw < 10) {
+            target = new Transform3d(new Translation3d(0,4,0), new Rotation3d());
+        } else {
+            reachedRamp = true;
+        }
+        if(reachedRamp) {
+            target = new Transform3d(new Translation3d(0,currentYaw/25,0), new Rotation3d());
+        }
+        return target;
     }
 
     private void gotoTag(int camNum, int tagNum) {
