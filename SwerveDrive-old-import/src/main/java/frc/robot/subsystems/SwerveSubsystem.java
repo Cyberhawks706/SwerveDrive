@@ -16,7 +16,7 @@ import frc.robot.SwerveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
    
-    private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+    public final AHRS gyro = new AHRS(SPI.Port.kMXP);
     private SwerveDriveOdometry odometer;
 
     public final SwerveModule frontLeft = new SwerveModule(
