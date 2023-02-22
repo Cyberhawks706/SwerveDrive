@@ -14,8 +14,7 @@ import frc.robot.commands.LimelightTrack;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 
 
 
@@ -45,8 +44,8 @@ public class Components {
     public static Timer timer;
     public static Clock ClimbClock;
     
-    public static AnalogInput frontLiftPot;
-    public static AnalogInput rearLiftPot;
+    public static AnalogPotentiometer frontLiftPot;
+    public static AnalogPotentiometer rearLiftPot;
 
     
 
@@ -66,12 +65,11 @@ public class Components {
         //xboxDrive = new XboxController(2);
         chassis = new Chassis();
         limelight = new Limelight();
-        limelightTrack = new LimelightTrack(limelight);
         
         
 
-        frontLiftPot = new AnalogInput(4+0);
-        rearLiftPot = new AnalogInput(4+1);
+        frontLiftPot = new AnalogPotentiometer(4+0,3.28,0);
+        rearLiftPot = new AnalogPotentiometer(4+1,3.28,0);
 
         //ahrs = new AHRS();
         //ahrs.reset();

@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.Constants;
 import frc.robot.SwerveConstants;
 import java.lang.Math;
 
@@ -48,8 +49,8 @@ public class AutonMover extends CommandBase {
         return target;
     }
 
-    private void gotoTag(int camNum, int tagNum) {
-        Transform3d target = calculateTargetFromTag(camNum,tagNum);
+    public void gotoTag(int camNum, int tagNum) {
+        Transform3d target = calculateTagPos(camNum,tagNum);
         ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
         SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         if(target.getY() > 1) { 
@@ -57,7 +58,7 @@ public class AutonMover extends CommandBase {
         }
     }
 
-    private Transform3d calculateTargetFromTag(int camId, int tagId) {
+    private Transform3d calculateTagPos(int camId, int tagId) {
         String tagNum = String.valueOf(tagId);
         String camNum = String.valueOf(camId);
         System.out.print(table.getSubTable("processed0").getSubTable("tag3").getEntry("tx").getString(""));
@@ -72,7 +73,7 @@ public class AutonMover extends CommandBase {
         return target;
     }
 
-    public ChassisSpeeds calculateSpeedsToTarget(Transform3d target) {
+    private ChassisSpeeds calculateSpeedsToTarget(Transform3d target) {
         double angularDistance = target.getRotation().getZ();
         //double rotMultiplier = Math.abs(angularDistance / SwerveConstants.kMaxAngularSpeedRadiansPerSecond);
 
@@ -82,5 +83,13 @@ public class AutonMover extends CommandBase {
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
         return chassisSpeeds;
         
+    }
+
+    public Transform3d robotFieldRelativePos(int tagId) {
+        Transform3d robotPos, tagPos, tagRelativePos;
+        tagPos = calculateTagPos(0, tagId);
+        tagRelativePos = Constants.Auton.fieldRelativeTagPositions[tagId];
+        robotPos = tagPos.plus(tagRelativePos.inverse());
+        return robotPos;
     }
 }

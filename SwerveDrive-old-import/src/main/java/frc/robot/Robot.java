@@ -12,10 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.CameraDaemon;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.SwerveModule;
-import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.wpilibj.DriverStation;
 
 
 public class Robot extends TimedRobot {
@@ -84,7 +81,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotPeriodic(){
-		
+        System.out.println("Front: " + Components.frontLiftPot.get());
+        System.out.println("Rear: " + Components.rearLiftPot.get());
 		CommandScheduler.getInstance().run();
 	}
 

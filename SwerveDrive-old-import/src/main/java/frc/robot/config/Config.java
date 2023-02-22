@@ -1,10 +1,5 @@
 package frc.robot.config;
 
-
-
-import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Components;
-
 public final class Config {
 
    public static ConfigurableBool testBool = new ConfigurableBool("TESTBOOL", true);
