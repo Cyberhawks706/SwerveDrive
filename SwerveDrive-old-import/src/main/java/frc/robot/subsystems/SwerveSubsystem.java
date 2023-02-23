@@ -17,46 +17,66 @@ import frc.robot.SwerveConstants;
 public class SwerveSubsystem extends SubsystemBase {
    
     public final AHRS gyro = new AHRS(SPI.Port.kMXP);
+    private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
+
     private SwerveDriveOdometry odometer;
+
+
 
     public final SwerveModule frontLeft = new SwerveModule(
 		SwerveConstants.kFrontLeftDriveMotorPort,
 		SwerveConstants.kFrontLeftTurningMotorPort,
 		SwerveConstants.kFrontLeftDriveEncoderReversed,
-		SwerveConstants.kFrontLeftTurningEncoderReversed);
+		SwerveConstants.kFrontLeftTurningEncoderReversed,
+        SwerveConstants.kFrontLeftDriveAbsoluteEncoderPort,
+        SwerveConstants.kFrontLeftDriveAbsoluteEncoderOffsetrad,
+        SwerveConstants.kFrontLeftDriveAbsoluteEncoderReversed);
 
 	public final SwerveModule frontRight = new SwerveModule(
 		SwerveConstants.kFrontRightDriveMotorPort,
 		SwerveConstants.kFrontRightTurningMotorPort,
 		SwerveConstants.kFrontRightDriveEncoderReversed,
-		SwerveConstants.kFrontRightTurningEncoderReversed);
+		SwerveConstants.kFrontRightTurningEncoderReversed,
+        SwerveConstants.kFrontRightDriveAbsoluteEncoderPort,
+        SwerveConstants.kFrontRightDriveAbsoluteEncoderOffsetrad,
+        SwerveConstants.kFrontRightDriveAbsoluteEncoderReversed);
 
 	public final SwerveModule backLeft = new SwerveModule(
 		SwerveConstants.kBackLeftDriveMotorPort,
 		SwerveConstants.kBackLeftTurningMotorPort,
 		SwerveConstants.kBackLeftDriveEncoderReversed,
-		SwerveConstants.kBackLeftTurningEncoderReversed);
+		SwerveConstants.kBackLeftTurningEncoderReversed,
+        SwerveConstants.kBackLeftDriveAbsoluteEncoderPort,
+        SwerveConstants.kBackLeftDriveAbsoluteEncoderOffsetrad,
+        SwerveConstants.kBackLeftDriveAbsoluteEncoderReversed);
 
 	public final SwerveModule backRight = new SwerveModule(
 		SwerveConstants.kBackRightDriveMotorPort,
 		SwerveConstants.kBackRightTurningMotorPort,
 		SwerveConstants.kBackRightDriveEncoderReversed,
-		SwerveConstants.kBackRightTurningEncoderReversed);
+		SwerveConstants.kBackRightTurningEncoderReversed,
+        SwerveConstants.kBackRightDriveAbsoluteEncoderPort,
+        SwerveConstants.kBackRightDriveAbsoluteEncoderOffsetrad,
+        SwerveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
 
 
 		
 		
-		private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
 
 		
 
 
     public SwerveSubsystem() {
+
         modulePosition[0] = new SwerveModulePosition(frontLeft.driveEncoder.getPosition(), frontRight.getState().angle);
-		modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(), frontRight.getState().angle);
-		modulePosition[2] = new SwerveModulePosition(backLeft.driveEncoder.getPosition(), frontRight.getState().angle);
-		modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), frontRight.getState().angle);
+        modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(), frontRight.getState().angle);
+        modulePosition[2] = new SwerveModulePosition(backLeft.driveEncoder.getPosition(), frontRight.getState().angle);
+        modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), frontRight.getState().angle);
+
+        odometer = new SwerveDriveOdometry(SwerveConstants.kDriveKinematics, getRotation2d(), modulePosition);
+
+
 
         new Thread(() -> {
             try {
@@ -84,14 +104,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     public void resetOdometry(Pose2d pose) {
-        odometer.resetPosition(getRotation2d(), Robot.modulePosition, pose);
+        odometer.resetPosition(getRotation2d(), modulePosition, pose);
     }
     
     @Override
     public void periodic() {
-        //odometer = new SwerveDriveOdometry(SwerveConstants.kDriveKinematics ,new Rotation2d(), Robot.modulePosition);
 
-        //odometer.update(getRotation2d(), Robot.modulePosition);
+
+        odometer.update(getRotation2d(), modulePosition);
 
         SmartDashboard.putNumber("Robot Heading", getHeading());
     }
@@ -128,11 +148,6 @@ public class SwerveSubsystem extends SubsystemBase {
             desiredStates[3].speedMetersPerSecond = 0;
         }
 
-        desiredStates[0].angle = desiredStates[0].angle.plus(getRotation2d().fromDegrees(90));
-        desiredStates[1].angle = desiredStates[1].angle.plus(getRotation2d().fromDegrees(90));
-        desiredStates[2].angle = desiredStates[2].angle.plus(getRotation2d().fromDegrees(90));
-        desiredStates[3].angle = desiredStates[3].angle.plus(getRotation2d().fromDegrees(90));
-
         
 
 
@@ -142,5 +157,11 @@ public class SwerveSubsystem extends SubsystemBase {
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
+
+
+        System.out.println(frontLeft.absoluteEncoder.getVoltage());
+
+
+
     }
 }

@@ -6,6 +6,29 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public class SwerveConstants {
+     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     //Absolute Encoder Values
+
+     public static final int kFrontLeftDriveAbsoluteEncoderPort = 0;
+     public static final double kFrontLeftDriveAbsoluteEncoderOffsetrad = 0;
+     public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = false;
+
+     public static final int kBackLeftDriveAbsoluteEncoderPort = 1;
+     public static final double kBackLeftDriveAbsoluteEncoderOffsetrad = 1.74;
+     public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
+
+     public static final int kBackRightDriveAbsoluteEncoderPort = 2;
+     public static final double kBackRightDriveAbsoluteEncoderOffsetrad = -2.64;
+     public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
+
+     public static final int kFrontRightDriveAbsoluteEncoderPort = 3;
+     public static final double kFrontRightDriveAbsoluteEncoderOffsetrad = 0;
+     public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
+
+
+
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Module Constants
     
@@ -41,10 +64,10 @@ public class SwerveConstants {
     public static final int kFrontRightTurningMotorPort = 12;
     public static final int kBackRightTurningMotorPort = 7;
 
-    public static final boolean kFrontLeftTurningEncoderReversed = true;
-    public static final boolean kBackLeftTurningEncoderReversed = true;
-    public static final boolean kFrontRightTurningEncoderReversed = true;
-    public static final boolean kBackRightTurningEncoderReversed = true;
+    public static final boolean kFrontLeftTurningEncoderReversed = false;
+    public static final boolean kBackLeftTurningEncoderReversed = false;
+    public static final boolean kFrontRightTurningEncoderReversed = false;
+    public static final boolean kBackRightTurningEncoderReversed = false;
 
     public static final boolean kFrontLeftDriveEncoderReversed = false;
     public static final boolean kBackLeftDriveEncoderReversed = false;

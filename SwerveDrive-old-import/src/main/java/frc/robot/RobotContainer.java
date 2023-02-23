@@ -22,7 +22,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
 
-    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
     private final SwerveJoystickCmd teleopCmd = new SwerveJoystickCmd(
         swerveSubsystem,

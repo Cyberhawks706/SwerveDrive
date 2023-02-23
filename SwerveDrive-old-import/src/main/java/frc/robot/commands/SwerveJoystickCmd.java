@@ -90,8 +90,6 @@ public class SwerveJoystickCmd extends CommandBase {
 
         // 6. Output each module states to wheels
         swerveSubsystem.setModuleStates(moduleStates);
-        System.out.println("Front: " + Components.frontLiftPot.getAverageVoltage());
-        System.out.println("Rear: " + Components.rearLiftPot.getAverageVoltage());
     }
 
     @Override

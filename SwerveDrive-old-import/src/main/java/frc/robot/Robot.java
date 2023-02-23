@@ -29,7 +29,6 @@ public class Robot extends TimedRobot {
 	public static Chassis chassis;
 	public static boolean auto;
 	public static XboxController xboxDrive;
-	public static SwerveModulePosition[] modulePosition;
 	public static SwerveJoystickCmd swerveJoystickCmd;
 
 	private RobotContainer m_robotContainer;
@@ -84,8 +83,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotPeriodic(){
-		
 		CommandScheduler.getInstance().run();
+        //System.out.println("Front: " + Components.frontLiftPot.get());
+        //System.out.println("Rear: " + Components.rearLiftPot.get());
 	}
 
 
