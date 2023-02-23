@@ -1,8 +1,6 @@
 package frc.robot;
 
 
-import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
 public final class Auton {

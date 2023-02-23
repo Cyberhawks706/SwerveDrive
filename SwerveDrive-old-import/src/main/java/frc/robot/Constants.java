@@ -1,5 +1,9 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 public final class Constants {
 
 	public static class TimingArrays {
@@ -11,10 +15,21 @@ public final class Constants {
 
 	public static final int PID_TIMEOUT = 30;
 
-	public class Auton {
+	public static class Auton {
 		public static final double strafeModifier = 1;
 		public static final double rotationalModifier = 1;
 		public static final double tolerance = 2;
+		public static final Transform3d[] fieldRelativeTagPositions = {
+			new Transform3d(),//offset so we can just look up transform by tag id
+			new Transform3d(new Translation3d(7.243064, -2.936494,0), new Rotation3d(0,0,180)),
+			new Transform3d(new Translation3d(7.243064, -1.260094,0), new Rotation3d(0,0,180)),
+			new Transform3d(new Translation3d(7.243064, 0.416306,0), new Rotation3d(0,0,180)),
+			new Transform3d(new Translation3d(7.90829, 2.741676,0), new Rotation3d(0,0,180)),
+			new Transform3d(new Translation3d(-7.908544, 2.741676,0), new Rotation3d(0,0,0)),
+			new Transform3d(new Translation3d(-7.243064, 0.416306,0), new Rotation3d(0,0,0)),
+			new Transform3d(new Translation3d(-7.243064,-1.260094,0), new Rotation3d(0,0,0)),
+			new Transform3d(new Translation3d(-7.243064,-2.936494,0), new Rotation3d(0,0,0))
+		};
 	}
 
 	public class Chassis {

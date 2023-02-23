@@ -67,7 +67,6 @@ public class Components {
         //xboxDrive = new XboxController(2);
         chassis = new Chassis();
         limelight = new Limelight();
-        limelightTrack = new LimelightTrack(limelight);
         
         
 
