@@ -50,7 +50,7 @@ public class SwerveJoystickCmd extends CommandBase {
 
 
 
-        double xSpeed = -RobotContainer.driverJoystick.getLeftX();
+        double xSpeed = RobotContainer.driverJoystick.getLeftX();
         double ySpeed = -RobotContainer.driverJoystick.getLeftY();
         double turningSpeed = RobotContainer.driverJoystick.getRightX();
 

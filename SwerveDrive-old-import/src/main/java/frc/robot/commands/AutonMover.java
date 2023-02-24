@@ -19,6 +19,7 @@ public class AutonMover extends CommandBase {
     public static NetworkTable table = NetworkTableInstance.getDefault().getTable("SmartDashboard");
     private static float currentYaw;
     private static boolean reachedRamp = false;
+    private static int reachedLevel = 0;
     // constructor with input for swerve subsystem
     public AutonMover(SwerveSubsystem swerveSubsystem) {
         // add subsystem requirements
@@ -36,15 +37,19 @@ public class AutonMover extends CommandBase {
     }
 
     private Transform3d calculateTargetForBalance() {
-        currentYaw = swerveSubsystem.gyro.getYaw();
+        currentYaw = swerveSubsystem.gyro.getPitch();
         Transform3d target = new Transform3d();
         if(!reachedRamp && currentYaw < 10) {
-            target = new Transform3d(new Translation3d(0,4,0), new Rotation3d());
+            target = new Transform3d(new Translation3d(0,0.7,0), new Rotation3d());
         } else {
             reachedRamp = true;
         }
-        if(reachedRamp) {
-            target = new Transform3d(new Translation3d(0,currentYaw/25,0), new Rotation3d());
+        if(reachedRamp && reachedLevel < 3) {
+            target = new Transform3d(new Translation3d(0,currentYaw/25,0), new Rotation3d()); 
+            if(Math.abs(currentYaw) < 5) {
+                target = new Transform3d(new Translation3d(), new Rotation3d(0,0,5));
+                reachedLevel++;
+            }
         }
         return target;
     }
