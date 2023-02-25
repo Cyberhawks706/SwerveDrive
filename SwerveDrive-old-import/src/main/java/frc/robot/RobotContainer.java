@@ -34,6 +34,7 @@ public class RobotContainer {
     private final AutonMover autonCmd = new AutonMover(swerveSubsystem);
 
     public static final XboxController driverJoystick = new XboxController(2);
+    public static final XboxController manipulatorJoystick = new XboxController(3);
 
     public RobotContainer() {
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(

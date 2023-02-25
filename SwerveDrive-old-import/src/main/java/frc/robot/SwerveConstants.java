@@ -10,19 +10,19 @@ public class SwerveConstants {
      //Absolute Encoder Values
 
      public static final int kFrontLeftDriveAbsoluteEncoderPort = 0;
-     public static final double kFrontLeftDriveAbsoluteEncoderOffsetrad = -3.75;//-3.75
+     public static final double kFrontLeftDriveAbsoluteEncoderOffsetrad = 0;//-3.75
      public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = false;
 
      public static final int kBackLeftDriveAbsoluteEncoderPort = 1;
-     public static final double kBackLeftDriveAbsoluteEncoderOffsetrad = 1.6;//-0.08//1.6
+     public static final double kBackLeftDriveAbsoluteEncoderOffsetrad = 0;//0.328
      public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
 
      public static final int kBackRightDriveAbsoluteEncoderPort = 2;
-     public static final double kBackRightDriveAbsoluteEncoderOffsetrad = -0.6;//-0.6
+     public static final double kBackRightDriveAbsoluteEncoderOffsetrad = 0;//-0.6
      public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
      public static final int kFrontRightDriveAbsoluteEncoderPort = 3;
-     public static final double kFrontRightDriveAbsoluteEncoderOffsetrad = 0.32;//-0.122//0.32
+     public static final double kFrontRightDriveAbsoluteEncoderOffsetrad = 0;//-0.122//0.32
      public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
 
 
@@ -77,7 +77,7 @@ public class SwerveConstants {
     public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
     public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 
-    public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 4;
+    public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond;
     public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = //
             kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
     public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;

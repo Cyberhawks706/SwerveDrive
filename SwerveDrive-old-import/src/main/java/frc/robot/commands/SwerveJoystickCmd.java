@@ -53,10 +53,17 @@ public class SwerveJoystickCmd extends CommandBase {
         double xSpeed = RobotContainer.driverJoystick.getLeftX();
         double ySpeed = -RobotContainer.driverJoystick.getLeftY();
         double turningSpeed = RobotContainer.driverJoystick.getRightX();
+        double fSpeed = RobotContainer.manipulatorJoystick.getRightY();
+        double rSpeed = RobotContainer.manipulatorJoystick.getLeftY();
+        double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition();
+        double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition();
+        
 
         // 2. Apply deadband
         xSpeed = Math.abs(xSpeed) > SwerveConstants.kDeadband ? xSpeed : 0.0;
         ySpeed = Math.abs(ySpeed) > SwerveConstants.kDeadband ? ySpeed : 0.0;
+        fSpeed = Math.abs(fSpeed) > SwerveConstants.kDeadband ? fSpeed : 0.0;
+        rSpeed = Math.abs(rSpeed) > SwerveConstants.kDeadband ? rSpeed : 0.0;
         turningSpeed = Math.abs(turningSpeed) > SwerveConstants.kDeadband ? turningSpeed : 0.0;
         // 3. Make the driving smoother
         xSpeed *= SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond;
@@ -65,9 +72,21 @@ public class SwerveJoystickCmd extends CommandBase {
         turningSpeed = turningLimiter.calculate(turningSpeed)
                 * SwerveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
+        fLiftMotorPos -= fSpeed*10;
+        rLiftMotorPos -= rSpeed*10;
 
+
+        //Timmy Code DANGER DANGER DANGEr!!!!!!!!!!!
+        //DANGER Timmy Code!!!!!!!!!!!
+
+        double fClawTiltMotorPos = Components.sparkClawTilt.encoder.getPosition();
+
+
+        //End Timmy Code
+        //Back to Safety!!!!!!!!!
 
         // 4. Construct desired chassis speeds
+       
         ChassisSpeeds chassisSpeeds;
 
         
@@ -90,6 +109,10 @@ public class SwerveJoystickCmd extends CommandBase {
 
         // 6. Output each module states to wheels
         swerveSubsystem.setModuleStates(moduleStates);
+        Components.sparkLiftF.setPos(fLiftMotorPos);
+        Components.sparkLiftR.setPos(rLiftMotorPos);
+
+
     }
 
     @Override
