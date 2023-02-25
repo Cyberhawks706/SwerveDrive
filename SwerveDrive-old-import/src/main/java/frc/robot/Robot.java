@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.CameraDaemon;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 
@@ -27,6 +28,14 @@ public class Robot extends TimedRobot {
 	public static boolean auto;
 	public static XboxController xboxDrive;
 	public static SwerveJoystickCmd swerveJoystickCmd;
+
+	public static double frontLeftInitPos;
+	public static double frontRightInitPos;
+	public static double backLeftInitPos;
+	public static double backRightInitPos;
+	
+
+
 
 	private RobotContainer m_robotContainer;
 	
@@ -73,6 +82,11 @@ public class Robot extends TimedRobot {
 		Components.init();
 		m_robotContainer = new RobotContainer();
 
+		frontLeftInitPos = SwerveSubsystem.frontLeft.getAbsoluteEncoderRad();
+		frontRightInitPos = SwerveSubsystem.frontRight.getAbsoluteEncoderRad();
+		backLeftInitPos = SwerveSubsystem.backLeft.getAbsoluteEncoderRad();
+		backRightInitPos = SwerveSubsystem.backRight.getAbsoluteEncoderRad();
+
 
 		//Components.ahrs.calibrate();
 		
@@ -81,6 +95,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic(){
 		CommandScheduler.getInstance().run();
+
+	
+
         //System.out.println("Front: " + Components.frontLiftPot.get());
         //System.out.println("Rear: " + Components.rearLiftPot.get());
 	}
