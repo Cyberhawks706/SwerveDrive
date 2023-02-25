@@ -15,7 +15,7 @@ import frc.robot.Robot;
 import frc.robot.SwerveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
-   
+
     public final AHRS gyro = new AHRS(SPI.Port.kMXP);
     private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
 
@@ -68,18 +68,11 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveConstants.kBackRightDriveAbsoluteEncoderOffsetrad,
         SwerveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
-
-
-		
-		
-
-		
-
-
     public SwerveSubsystem() {
 
         modulePosition[0] = new SwerveModulePosition(frontLeft.driveEncoder.getPosition(), frontRight.getState().angle);
-        modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(), frontRight.getState().angle);
+        modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(),
+                frontRight.getState().angle);
         modulePosition[2] = new SwerveModulePosition(backLeft.driveEncoder.getPosition(), frontRight.getState().angle);
         modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), frontRight.getState().angle);
 
@@ -95,7 +88,6 @@ public class SwerveSubsystem extends SubsystemBase {
             }
         }).start();
 
-
     }
 
     public void zeroHeading() {
@@ -110,15 +102,12 @@ public class SwerveSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(getHeading());
     }
 
-
-
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(getRotation2d(), modulePosition, pose);
     }
-    
+
     @Override
     public void periodic() {
-
 
         odometer.update(getRotation2d(), modulePosition);
 
