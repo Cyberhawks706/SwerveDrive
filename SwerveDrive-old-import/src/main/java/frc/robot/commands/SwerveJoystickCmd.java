@@ -19,6 +19,9 @@ public class SwerveJoystickCmd extends CommandBase {
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
     private final Supplier<Boolean> fieldOrientedFunction;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+    public static SwerveModuleState[] moduleStates;
+    public static ChassisSpeeds chassisSpeeds;
+    
 
     public SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
             Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
@@ -42,10 +45,7 @@ public class SwerveJoystickCmd extends CommandBase {
     public void execute() {
         // 1. Get real-time joystick inputs
 
-        //double xSpeed = xSpdFunction.get();
-        //double ySpeed = ySpdFunction.get();
-        //double turningSpeed = turningSpdFunction.get();
-
+        
 
 
 
@@ -55,8 +55,8 @@ public class SwerveJoystickCmd extends CommandBase {
         double turningSpeed = RobotContainer.driverJoystick.getRightX();
         double fSpeed = RobotContainer.manipulatorJoystick.getRightY();
         double rSpeed = RobotContainer.manipulatorJoystick.getLeftY();
-        double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition();
-        double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition();
+        //double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition();
+        //double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition();
         
 
         // 2. Apply deadband
@@ -72,14 +72,14 @@ public class SwerveJoystickCmd extends CommandBase {
         turningSpeed = turningLimiter.calculate(turningSpeed)
                 * SwerveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
-        fLiftMotorPos -= fSpeed*10;
-        rLiftMotorPos -= rSpeed*10;
+        //fLiftMotorPos -= fSpeed*10;
+        //rLiftMotorPos -= rSpeed*10;
 
 
         //Timmy Code DANGER DANGER DANGEr!!!!!!!!!!!
         //DANGER Timmy Code!!!!!!!!!!!
 
-        double fClawTiltMotorPos = Components.sparkClawTilt.encoder.getPosition();
+        //double ClawTiltMotorPos = Components.sparkClawTilt.encoder.getPosition();
 
 
         //End Timmy Code
@@ -87,30 +87,33 @@ public class SwerveJoystickCmd extends CommandBase {
 
         // 4. Construct desired chassis speeds
        
-        ChassisSpeeds chassisSpeeds;
+        
 
         
-        
+
         if (fieldOrientedFunction.get()) {
             // Relative to field
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
 
             //chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
         } 
         else {
             // Relative to robot
-            chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+            System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+           chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
         }
+        
         
         
 
         // 5. Convert chassis speeds to individual module states
-        SwerveModuleState[] moduleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        moduleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
         // 6. Output each module states to wheels
         swerveSubsystem.setModuleStates(moduleStates);
-        Components.sparkLiftF.setPos(fLiftMotorPos);
-        Components.sparkLiftR.setPos(rLiftMotorPos);
+        //Components.sparkLiftF.setPos(fLiftMotorPos);
+        //Components.sparkLiftR.setPos(rLiftMotorPos);
 
 
     }

@@ -28,6 +28,8 @@ public class SwerveModule {
     final AnalogInput absoluteEncoder;
     private final boolean absoluteEncoderReversed;
     private final double absoluteEncoderOffsetRad;
+    private static boolean alligned = false;
+    private static double angle;
 
 
 
@@ -85,6 +87,7 @@ public class SwerveModule {
 
 
     }
+
 
 
     public void resetEncoders() {
