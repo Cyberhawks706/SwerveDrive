@@ -105,7 +105,7 @@ public class SwerveConstants {
 
         public static final int kDriverControllerPort = 2;
 
-        public static final double kDeadband = 0.05;
+        public static final double kDeadband = 0.1;
 
 
 }

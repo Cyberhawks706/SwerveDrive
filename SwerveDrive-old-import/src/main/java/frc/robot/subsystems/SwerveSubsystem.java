@@ -128,8 +128,7 @@ public class SwerveSubsystem extends SubsystemBase {
             frontRight.resetEncoders();
             reachedFrontRight = true;
         }
-            desiredStates[1].angle = Rotation2d.fromRadians(SwerveConstants.kFrontRightDriveAbsoluteEncoderOffsetrad);
-            frontRight.setDesiredState(desiredStates[1]);
+            
 
         
         if(!reachedFrontLeft){
@@ -139,8 +138,7 @@ public class SwerveSubsystem extends SubsystemBase {
             frontLeft.resetEncoders();
             reachedFrontLeft = true;
         }
-            desiredStates[0].angle = Rotation2d.fromRadians(SwerveConstants.kFrontLeftDriveAbsoluteEncoderOffsetrad);
-            frontLeft.setDesiredState(desiredStates[0]);
+            
 
 
         if(!reachedBackLeft){
@@ -150,8 +148,7 @@ public class SwerveSubsystem extends SubsystemBase {
             backLeft.resetEncoders();
             reachedBackLeft = true;
         }
-            desiredStates[2].angle = Rotation2d.fromRadians(SwerveConstants.kBackLeftDriveAbsoluteEncoderOffsetrad);
-            backLeft.setDesiredState(desiredStates[2]);
+            
 
 
         if(!reachedBackRight){
@@ -161,8 +158,7 @@ public class SwerveSubsystem extends SubsystemBase {
             backRight.resetEncoders();
             reachedBackRight = true;
         }
-            desiredStates[3].angle = Rotation2d.fromRadians(SwerveConstants.kBackRightDriveAbsoluteEncoderOffsetrad);
-            backRight.setDesiredState(desiredStates[3]);
+            
         
     }
 

@@ -41,10 +41,10 @@ public class Components {
     public static BrushlessSparkWithPID sparkWheelTurnFL;
     public static BrushlessSparkWithPID sparkWheelTurnBR;
     public static BrushlessSparkWithPID sparkWheelTurnBL;
-    //public static BrushlessSparkWithPID sparkLiftF;
-    //public static BrushlessSparkWithPID sparkLiftR;
-    //public static BrushlessSparkWithPID sparkClawTilt;
-    //public static BrushlessSparkWithPID sparkIntake;
+    public static BrushlessSparkWithPID sparkLiftF;
+    public static BrushlessSparkWithPID sparkLiftR;
+    public static BrushlessSparkWithPID sparkClawTilt;
+    public static BrushlessSparkWithPID sparkIntake;
     //public static AHRS ahrs;
    
     public static Timer timer;
@@ -73,8 +73,8 @@ public class Components {
         limelight = new Limelight();
         
         
-        //sparkLiftF = new BrushlessSparkWithPID(9, 0.0006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
-        //sparkLiftR = new BrushlessSparkWithPID(10, 0.0006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
+        sparkLiftF = new BrushlessSparkWithPID(9, 0.0006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
+        sparkLiftR = new BrushlessSparkWithPID(10, 0.0006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
         frontLiftPot = new AnalogPotentiometer(4+0, 3.28,0);
         rearLiftPot = new AnalogPotentiometer(4+1, 3.28,0);
 
@@ -83,8 +83,8 @@ public class Components {
         //Timmy Code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Timmy Code!!!!!!!!!!!!!!!!
 
-        //sparkClawTilt = new BrushlessSparkWithPID(4, 0.000006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
-        //sparkIntake = new BrushlessSparkWithPID(3, 0.000006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
+        sparkClawTilt = new BrushlessSparkWithPID(4, 0.000006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
+        sparkIntake = new BrushlessSparkWithPID(3, 0.000006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
 
         //End Timmy Code!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Back to Safety End Timmy Code!!!!!!!!!!!!
