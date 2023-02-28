@@ -92,7 +92,7 @@ public class SwerveJoystickCmd extends CommandBase {
 
         Components.sparkClawTilt.setPos(clawTiltMotorPos);
         Components.sparkIntake.setPower(intakeSpeed);
-        System.out.println(clawTiltMotorPos);
+        //System.out.println(clawTiltMotorPos);
 
         //End Timmy Code
         //Back to Safety!!!!!!!!!
