@@ -55,8 +55,8 @@ public class SwerveJoystickCmd extends CommandBase {
         double turningSpeed = RobotContainer.driverJoystick.getRightX();
         double fSpeed = RobotContainer.manipulatorJoystick.getRightY();
         double rSpeed = RobotContainer.manipulatorJoystick.getLeftY();
-        //double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition();
-        //double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition();
+        double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition();
+        double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition();
         
 
         // 2. Apply deadband
@@ -72,15 +72,27 @@ public class SwerveJoystickCmd extends CommandBase {
         turningSpeed = turningLimiter.calculate(turningSpeed)
                 * SwerveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
-        //fLiftMotorPos -= fSpeed*10;
-        //rLiftMotorPos -= rSpeed*10;
+        fLiftMotorPos -= fSpeed*10;
+        rLiftMotorPos -= rSpeed*10;
 
 
         //Timmy Code DANGER DANGER DANGEr!!!!!!!!!!!
         //DANGER Timmy Code!!!!!!!!!!!
 
-        //double ClawTiltMotorPos = Components.sparkClawTilt.encoder.getPosition();
+        double clawTiltMotorPos = Components.sparkClawTilt.encoder.getPosition();
+        double clawTiltSpeed = RobotContainer.manipulatorJoystick.getLeftTriggerAxis() - RobotContainer.manipulatorJoystick.getRightTriggerAxis();
+        double intakeSpeed = 0;
+        if(RobotContainer.manipulatorJoystick.getRightBumper())
+            intakeSpeed = 1;
+        if(RobotContainer.manipulatorJoystick.getLeftBumper())
+            intakeSpeed = -1;
 
+        if( ((clawTiltMotorPos + clawTiltSpeed * 0.5) > 0.43 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) < clawTiltMotorPos ||((clawTiltMotorPos + clawTiltSpeed * 0.5) < 20.75 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) > clawTiltMotorPos )))
+        clawTiltMotorPos += clawTiltSpeed * 0.5;
+
+        Components.sparkClawTilt.setPos(clawTiltMotorPos);
+        Components.sparkIntake.setPower(intakeSpeed);
+        System.out.println(clawTiltMotorPos);
 
         //End Timmy Code
         //Back to Safety!!!!!!!!!
@@ -93,15 +105,18 @@ public class SwerveJoystickCmd extends CommandBase {
 
         if (fieldOrientedFunction.get()) {
             // Relative to field
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            //System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
 
+            //chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
             //chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
         } 
         else {
             // Relative to robot
-            System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-           chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+            //System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+            chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+
+            //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
         }
         
         
@@ -112,8 +127,8 @@ public class SwerveJoystickCmd extends CommandBase {
 
         // 6. Output each module states to wheels
         swerveSubsystem.setModuleStates(moduleStates);
-        //Components.sparkLiftF.setPos(fLiftMotorPos);
-        //Components.sparkLiftR.setPos(rLiftMotorPos);
+        Components.sparkLiftF.setPos(fLiftMotorPos);
+        Components.sparkLiftR.setPos(rLiftMotorPos);
 
 
     }
