@@ -30,6 +30,7 @@ public final class Constants {
 			new Transform3d(new Translation3d(-7.243064,-1.260094,0), new Rotation3d(0,0,0)),
 			new Transform3d(new Translation3d(-7.243064,-2.936494,0), new Rotation3d(0,0,0))
 		};
+		public static final int balanceReverseDelay = 385; //385 works with back divisor of 40
 	}
 
 	public class Chassis {

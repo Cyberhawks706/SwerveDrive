@@ -38,20 +38,20 @@ public class AutonMover extends CommandBase {
     }
 
     private Transform3d calculateTargetForBalance() {
-        currentPitch = swerveSubsystem.gyro.getPitch()+2;
+        currentPitch = -swerveSubsystem.gyro.getPitch()-2;
         Transform3d target = new Transform3d();
         if(!reachedRamp && Math.abs(currentPitch) < 7) {
-            target = new Transform3d(new Translation3d(0,-1.5,0), new Rotation3d());
+            target = new Transform3d(new Translation3d(0,1.5,0), new Rotation3d());
         } else {
             reachedRamp = true;
         }
-        if(reachedRamp && reachedLevel < 365) {
-            target = new Transform3d(new Translation3d(0,-currentPitch/15,0), new Rotation3d()); 
+        if(reachedRamp && reachedLevel < Constants.Auton.balanceReverseDelay) {
+            target = new Transform3d(new Translation3d(0,currentPitch/15,0), new Rotation3d()); 
             if(currentPitch < -5) { //higher=stop earlier
-                target = new Transform3d(new Translation3d(0,-currentPitch/40,0), new Rotation3d(0,0,0));
+                target = new Transform3d(new Translation3d(0,currentPitch/40,0), new Rotation3d(0,0,0));
                 reachedLevel++;
             }
-        } else if(reachedRamp && reachedLevel < 370) {
+        } else if(reachedRamp && reachedLevel < Constants.Auton.balanceReverseDelay + 5) {
             target = new Transform3d(new Translation3d(), new Rotation3d(0,0,5));
             reachedLevel++;
         }
