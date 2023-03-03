@@ -50,10 +50,11 @@ public class SwerveJoystickCmd extends CommandBase {
 
 
 
-        double xSpeed = RobotContainer.driverJoystick.getLeftX();
-        double ySpeed = -RobotContainer.driverJoystick.getLeftY();
-        double turningSpeed = RobotContainer.driverJoystick.getRightX();
+        double xSpeed = -RobotContainer.driverJoystick.getLeftX();
+        double ySpeed = RobotContainer.driverJoystick.getLeftY();
+        double turningSpeed = -RobotContainer.driverJoystick.getRightX();
         double fSpeed = RobotContainer.manipulatorJoystick.getRightY();
+        System.out.print(fSpeed);
         double rSpeed = RobotContainer.manipulatorJoystick.getLeftY();
         double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition();
         double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition();
@@ -128,6 +129,7 @@ public class SwerveJoystickCmd extends CommandBase {
         // 6. Output each module states to wheels
         swerveSubsystem.setModuleStates(moduleStates);
         Components.sparkLiftF.setPos(fLiftMotorPos);
+        System.out.println(fLiftMotorPos);
         Components.sparkLiftR.setPos(rLiftMotorPos);
 
 

@@ -55,7 +55,7 @@ public final class Constants {
 		public static final int LEFT_JOY = 1;
 		public static final int RIGHT_JOY = 0;
 		public static final int XBOXDRIVE = 2;
-		public static final int XBOXMANIP = 5;
+		public static final int XBOXMANIP = 3;
 
 		// Joystick Buttons
 		public static final int TRIGGER = 1;

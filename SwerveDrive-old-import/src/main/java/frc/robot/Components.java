@@ -75,8 +75,8 @@ public class Components {
         
         sparkLiftF = new BrushlessSparkWithPID(9, 0.0006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
         sparkLiftR = new BrushlessSparkWithPID(10, 0.0006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
-        frontLiftPot = new AnalogPotentiometer(4+0, 3.28,0);
-        rearLiftPot = new AnalogPotentiometer(4+1, 3.28,0);
+        frontLiftPot = new AnalogPotentiometer(4+0, 3.48,-0.2);
+        rearLiftPot = new AnalogPotentiometer(4+1, 3.58,-0.3);
 
 
         //Timmy Code Probably Bad!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
