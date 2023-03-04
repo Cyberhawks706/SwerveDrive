@@ -31,24 +31,61 @@ public class AutonMover extends CommandBase {
     @Override
     public void execute() {
     // x is fwd/back
+        double targetDistance = findClosest()[0];
+        double targetAngle = findClosest()[1];
+        
+        Transform3d target;
+        if(targetDistance > 120){
+            target = new Transform3d(new Translation3d(0, -targetDistance/300, 0), new Rotation3d(0,0,-targetAngle));
+        } else{
+            //new Translation3d(0, (-targetDistance+25)/500, 0)
+            target = new Transform3d(new Translation3d(), new Rotation3d(0,0,-targetAngle));
+        }
+        ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
+        SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        swerveSubsystem.setModuleStates(swerveModuleStates);
+    }
+    
+
+    private double[] findClosest() {
+        double output[] = {0,0};
+        double lowestDist = 1000;
+        String closest = "";
+        for(String subtable : table.getSubTable("processed0").getSubTables()) {
+            double dist = table.getSubTable("processed0").getSubTable(subtable).getEntry("distance").getDouble(0);
+            if(dist < lowestDist && dist != 0) {
+                lowestDist = dist;
+                closest = subtable;
+            }
+        }
+        lowestDist = lowestDist > 999 ? 0 : lowestDist;
+        output[0] = lowestDist;
+        output[1] = table.getSubTable("processed0").getSubTable(closest).getEntry("xCenter").getDouble(0)-320;
+        output[1] /= 1000;
+        return output;
+    }
+
+    private void balance() {
         Transform3d target = calculateTargetForBalance();
         ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
         SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(swerveModuleStates);
     }
 
+
+
     private Transform3d calculateTargetForBalance() {
-        currentPitch = -swerveSubsystem.gyro.getPitch()-2;
+        currentPitch = swerveSubsystem.gyro.getPitch();
         Transform3d target = new Transform3d();
-        if(!reachedRamp && Math.abs(currentPitch) < 7) {
+        if(!reachedRamp && Math.abs(currentPitch) < 10) {
             target = new Transform3d(new Translation3d(0,1.5,0), new Rotation3d());
         } else {
             reachedRamp = true;
         }
         if(reachedRamp && reachedLevel < Constants.Auton.balanceReverseDelay) {
-            target = new Transform3d(new Translation3d(0,currentPitch/15,0), new Rotation3d()); 
-            if(currentPitch < -5) { //higher=stop earlier
-                target = new Transform3d(new Translation3d(0,currentPitch/40,0), new Rotation3d(0,0,0));
+            target = new Transform3d(new Translation3d(0,-currentPitch/15,0), new Rotation3d()); 
+            if(currentPitch >5) { //higher=stop earlier
+                target = new Transform3d(new Translation3d(0,-currentPitch/20,0), new Rotation3d(0,0,0));
                 reachedLevel++;
             }
         } else if(reachedRamp && reachedLevel < Constants.Auton.balanceReverseDelay + 5) {

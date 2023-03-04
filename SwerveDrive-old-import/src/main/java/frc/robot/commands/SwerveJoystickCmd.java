@@ -90,9 +90,9 @@ public class SwerveJoystickCmd extends CommandBase {
         
 
          if(RobotContainer.manipulatorJoystick.getAButton()){   // Ground Pickup Position
-           desiredClawPos = 10.42;
-           desiredRLift = 2.919;
-           desiredFLift = 1.162;
+           desiredClawPos = 11.3;//12.619
+           desiredRLift = 2.945;//2.919
+           desiredFLift = 1.515;
 
            fSpeed = frontPotPos - desiredFLift;
            rSpeed = rearPotPos - desiredRLift;
@@ -161,18 +161,18 @@ public class SwerveJoystickCmd extends CommandBase {
          else if(RobotContainer.manipulatorJoystick.getXButton()){   // Top Cone Score
             desiredClawPos = 19.428;
             desiredRLift = 2.99;
-            desiredFLift = 2.905;
+            desiredFLift = 2.955;
  
             fSpeed = frontPotPos - desiredFLift;
             rSpeed = rearPotPos - desiredRLift;
  
-            if(Math.abs(fSpeed) > 1) //Slow Down/Speed Up Front Arm
+            if(Math.abs(fSpeed) > 2) //Slow Down/Speed Up Front Arm
             fSpeed = fSpeed / Math.abs(fSpeed);
  
-            if(Math.abs(rSpeed) > 1) //Slow Down/Speed up Rear Arm
+            if(Math.abs(rSpeed) > 2) //Slow Down/Speed up Rear Arm
             rSpeed = rSpeed / Math.abs(rSpeed);
  
-            if(frontPotPos > 1.4)
+            if(frontPotPos > 2.45)
             clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
  
             if(Math.abs(clawTiltSpeed) > 1)  //Slow Down Claw
@@ -195,7 +195,7 @@ public class SwerveJoystickCmd extends CommandBase {
             if(Math.abs(rSpeed) > 1) //Slow Down/Speed up Rear Arm
             rSpeed = rSpeed / Math.abs(rSpeed);
  
-            if(frontPotPos > 1.4)
+            if(frontPotPos > 2)
             clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
  
             if(Math.abs(clawTiltSpeed) > 1)  //Slow Down Claw
