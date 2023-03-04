@@ -30,6 +30,7 @@ public final class Constants {
 			new Transform3d(new Translation3d(-7.243064,-1.260094,0), new Rotation3d(0,0,0)),
 			new Transform3d(new Translation3d(-7.243064,-2.936494,0), new Rotation3d(0,0,0))
 		};
+		public static final int balanceReverseDelay = 385; //385 works with back divisor of 40
 	}
 
 	public class Chassis {
@@ -54,7 +55,7 @@ public final class Constants {
 		public static final int LEFT_JOY = 1;
 		public static final int RIGHT_JOY = 0;
 		public static final int XBOXDRIVE = 2;
-		public static final int XBOXMANIP = 5;
+		public static final int XBOXMANIP = 3;
 
 		// Joystick Buttons
 		public static final int TRIGGER = 1;

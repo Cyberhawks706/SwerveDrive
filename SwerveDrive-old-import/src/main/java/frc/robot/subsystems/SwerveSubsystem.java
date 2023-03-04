@@ -9,11 +9,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.SwerveConstants;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.commands.Timer706;
 
 public class SwerveSubsystem extends SubsystemBase {
 
@@ -87,7 +90,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     }
 
-    public void zeroHeading() {
+    public void zeroHeading() { 
         gyro.reset();
     }
 
@@ -96,12 +99,14 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(getHeading());
+        return Rotation2d.fromDegrees(-getHeading());
     }
 
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(getRotation2d(), modulePosition, pose);
     }
+
+    
 
     @Override
     public void periodic() {
@@ -129,8 +134,6 @@ public class SwerveSubsystem extends SubsystemBase {
             reachedFrontRight = true;
         }
             
-
-        
         if(!reachedFrontLeft){
             desiredStates[0].angle = Rotation2d.fromRadians(Robot.frontLeftInitPos);
             desiredStates[0].angle = desiredStates[0].angle.plus(Rotation2d.fromRadians(SwerveConstants.kFrontLeftDriveAbsoluteEncoderOffsetrad));
@@ -139,8 +142,6 @@ public class SwerveSubsystem extends SubsystemBase {
             reachedFrontLeft = true;
         }
             
-
-
         if(!reachedBackLeft){
             desiredStates[2].angle = Rotation2d.fromRadians(Robot.backLeftInitPos);
             desiredStates[2].angle = desiredStates[2].angle.plus(Rotation2d.fromRadians(SwerveConstants.kBackLeftDriveAbsoluteEncoderOffsetrad));
@@ -149,8 +150,6 @@ public class SwerveSubsystem extends SubsystemBase {
             reachedBackLeft = true;
         }
             
-
-
         if(!reachedBackRight){
             desiredStates[3].angle = Rotation2d.fromRadians(Robot.backRightInitPos);
             desiredStates[3].angle = desiredStates[3].angle.plus(Rotation2d.fromRadians(SwerveConstants.kBackRightDriveAbsoluteEncoderOffsetrad));
@@ -166,12 +165,15 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.kPhysicalMaxSpeedMetersPerSecond);
         // get Front-Right Absolute Encoder Radians
         //System.out.println(frontRight.getAbsoluteEncoderRad());
-
+        
         
         
         //desiredStates[0].angle = desiredStates[0].angle.minus(getRotation2d().fromRadians(Robot.frontLeftInitPos));
 
-        
+        if(RobotContainer.driverJoystick.getAButtonPressed()){
+            zeroHeading();
+        }
+
         if(firstTime){
             robotAllign(desiredStates);
             firstTime = false;
@@ -208,10 +210,19 @@ public class SwerveSubsystem extends SubsystemBase {
         desiredStates[2].angle = desiredStates[2].angle.plus(Rotation2d.fromDegrees(90));
         desiredStates[3].angle = desiredStates[3].angle.plus(Rotation2d.fromDegrees(90));
 
+        // desiredStates[0].speedMetersPerSecond *= 0.3;//1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
+        // desiredStates[1].speedMetersPerSecond *= 0.3;//1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
+        // desiredStates[2].speedMetersPerSecond *= 0.3;//1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
+        // desiredStates[3].speedMetersPerSecond *= 0.3;//1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
+        
+        desiredStates[0].speedMetersPerSecond *= 1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
+        desiredStates[1].speedMetersPerSecond *= 1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
+        desiredStates[2].speedMetersPerSecond *= 1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
+        desiredStates[3].speedMetersPerSecond *= 1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
+
 
         
         
-
 
 
         frontLeft.setDesiredState(desiredStates[0]);

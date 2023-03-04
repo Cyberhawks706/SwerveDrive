@@ -7,8 +7,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.AutonMover;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.CameraDaemon;
 import frc.robot.subsystems.Chassis;
@@ -98,8 +100,8 @@ public class Robot extends TimedRobot {
 
 	
 
-        //System.out.println("Front: " + Components.frontLiftPot.get());
-        //System.out.println("Rear: " + Components.rearLiftPot.get());
+		SmartDashboard.putNumber("Front", Components.frontLiftPot.get());
+		SmartDashboard.putNumber("Rear", Components.rearLiftPot.get());
 	}
 
 
@@ -122,6 +124,8 @@ public class Robot extends TimedRobot {
 	  // schedule the autonomous command (example)
 	  if (m_autonomousCommand != null) {
 		m_autonomousCommand.schedule();
+		AutonMover.reachedLevel = 0;
+		AutonMover.reachedRamp = false;
 	  }
 	}
 

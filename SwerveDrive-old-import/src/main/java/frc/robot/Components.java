@@ -73,17 +73,17 @@ public class Components {
         limelight = new Limelight();
         
         
-        sparkLiftF = new BrushlessSparkWithPID(9, 0.0006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
-        sparkLiftR = new BrushlessSparkWithPID(10, 0.0006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
-        frontLiftPot = new AnalogPotentiometer(4+0, 3.28,0);
-        rearLiftPot = new AnalogPotentiometer(4+1, 3.28,0);
+        sparkLiftF = new BrushlessSparkWithPID(9, 0.0006, 0.000001, 0.0003, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
+        sparkLiftR = new BrushlessSparkWithPID(10, 0.0006, 0.000001, 0.0003, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
+        frontLiftPot = new AnalogPotentiometer(4, 3.48, -0.2);//(4+0, 3.48,-0.2);
+        rearLiftPot = new AnalogPotentiometer(4+1, 3.58,-0.3);
 
 
         //Timmy Code Probably Bad!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Timmy Code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Timmy Code!!!!!!!!!!!!!!!!
 
-        sparkClawTilt = new BrushlessSparkWithPID(4, 0.000006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
+        sparkClawTilt = new BrushlessSparkWithPID(4, 0.0006, 0.000001, 0.0005, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
         sparkIntake = new BrushlessSparkWithPID(3, 0.000006, 0.000001, 0.0001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
 
         //End Timmy Code!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -91,9 +91,12 @@ public class Components {
 
         //ahrs = new AHRS();
         //ahrs.reset();
+        //System.out.println("hello");
 
     
         ClimbClock = new Clock(Constants.TimingArrays.climbStateLengths);
+
+
         
       
         

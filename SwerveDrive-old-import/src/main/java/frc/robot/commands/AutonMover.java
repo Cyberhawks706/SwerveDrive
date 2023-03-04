@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.SwerveConstants;
 import java.lang.Math;
@@ -17,9 +18,9 @@ import java.lang.Math;
 public class AutonMover extends CommandBase {
     private final SwerveSubsystem swerveSubsystem;
     public static NetworkTable table = NetworkTableInstance.getDefault().getTable("SmartDashboard");
-    private static float currentYaw;
-    private static boolean reachedRamp = false;
-    private static int reachedLevel = 0;
+    private static float currentPitch;
+    public static boolean reachedRamp = false;
+    public static int reachedLevel = 0;
     // constructor with input for swerve subsystem
     public AutonMover(SwerveSubsystem swerveSubsystem) {
         // add subsystem requirements
@@ -37,20 +38,25 @@ public class AutonMover extends CommandBase {
     }
 
     private Transform3d calculateTargetForBalance() {
-        currentYaw = swerveSubsystem.gyro.getPitch();
+        currentPitch = -swerveSubsystem.gyro.getPitch()-2;
         Transform3d target = new Transform3d();
-        if(!reachedRamp && currentYaw < 10) {
-            target = new Transform3d(new Translation3d(0,0.7,0), new Rotation3d());
+        if(!reachedRamp && Math.abs(currentPitch) < 7) {
+            target = new Transform3d(new Translation3d(0,1.5,0), new Rotation3d());
         } else {
             reachedRamp = true;
         }
-        if(reachedRamp && reachedLevel < 3) {
-            target = new Transform3d(new Translation3d(0,currentYaw/25,0), new Rotation3d()); 
-            if(Math.abs(currentYaw) < 5) {
-                target = new Transform3d(new Translation3d(), new Rotation3d(0,0,5));
+        if(reachedRamp && reachedLevel < Constants.Auton.balanceReverseDelay) {
+            target = new Transform3d(new Translation3d(0,currentPitch/15,0), new Rotation3d()); 
+            if(currentPitch < -5) { //higher=stop earlier
+                target = new Transform3d(new Translation3d(0,currentPitch/40,0), new Rotation3d(0,0,0));
                 reachedLevel++;
             }
+        } else if(reachedRamp && reachedLevel < Constants.Auton.balanceReverseDelay + 5) {
+            target = new Transform3d(new Translation3d(), new Rotation3d(0,0,5));
+            reachedLevel++;
         }
+        //System.out.println(currentYaw);
+        SmartDashboard.putNumber("pitch", currentPitch);
         return target;
     }
 

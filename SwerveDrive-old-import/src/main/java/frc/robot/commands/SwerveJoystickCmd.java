@@ -3,6 +3,8 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -47,23 +49,23 @@ public class SwerveJoystickCmd extends CommandBase {
 
         
 
+        
 
 
-
-        double xSpeed = RobotContainer.driverJoystick.getLeftX();
-        double ySpeed = -RobotContainer.driverJoystick.getLeftY();
-        double turningSpeed = RobotContainer.driverJoystick.getRightX();
-        double fSpeed = RobotContainer.manipulatorJoystick.getRightY();
-        double rSpeed = RobotContainer.manipulatorJoystick.getLeftY();
+        double xSpeed = -RobotContainer.driverJoystick.getLeftX();
+        double ySpeed = RobotContainer.driverJoystick.getLeftY();
+        double turningSpeed = -RobotContainer.driverJoystick.getRightX();
+        double rSpeed = RobotContainer.manipulatorJoystick.getRightY();
+        double fSpeed = RobotContainer.manipulatorJoystick.getLeftY();
         double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition();
         double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition();
         
 
         // 2. Apply deadband
-        xSpeed = Math.abs(xSpeed) > SwerveConstants.kDeadband ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > SwerveConstants.kDeadband ? ySpeed : 0.0;
-        fSpeed = Math.abs(fSpeed) > SwerveConstants.kDeadband ? fSpeed : 0.0;
-        rSpeed = Math.abs(rSpeed) > SwerveConstants.kDeadband ? rSpeed : 0.0;
+        xSpeed = Math.abs(xSpeed) > 0.1 ? xSpeed : 0.0;
+        ySpeed = Math.abs(ySpeed) > 0.1 ? ySpeed : 0.0;
+        fSpeed = Math.abs(fSpeed) > 0.1 ? fSpeed : 0.0;
+        rSpeed = Math.abs(rSpeed) > 0.1 ? rSpeed : 0.0;
         turningSpeed = Math.abs(turningSpeed) > SwerveConstants.kDeadband ? turningSpeed : 0.0;
         // 3. Make the driving smoother
         xSpeed *= SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond;
@@ -72,33 +74,161 @@ public class SwerveJoystickCmd extends CommandBase {
         turningSpeed = turningLimiter.calculate(turningSpeed)
                 * SwerveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
-        fLiftMotorPos -= fSpeed*10;
-        rLiftMotorPos -= rSpeed*10;
+       
 
 
         //Timmy Code DANGER DANGER DANGEr!!!!!!!!!!!
         //DANGER Timmy Code!!!!!!!!!!!
 
         double clawTiltMotorPos = Components.sparkClawTilt.encoder.getPosition();
-        double clawTiltSpeed = RobotContainer.manipulatorJoystick.getLeftTriggerAxis() - RobotContainer.manipulatorJoystick.getRightTriggerAxis();
+        double clawTiltSpeed = -RobotContainer.manipulatorJoystick.getLeftTriggerAxis() + RobotContainer.manipulatorJoystick.getRightTriggerAxis();
+        double rearPotPos = Components.rearLiftPot.get();
+        double frontPotPos = Components.frontLiftPot.get();
+        double desiredClawPos = 0;
+        double desiredFLift = 0; //Desired position for preset positions
+        double desiredRLift = 0;
+        
+
+         if(RobotContainer.manipulatorJoystick.getAButton()){   // Ground Pickup Position
+           desiredClawPos = 10.42;
+           desiredRLift = 2.919;
+           desiredFLift = 1.162;
+
+           fSpeed = frontPotPos - desiredFLift;
+           rSpeed = rearPotPos - desiredRLift;
+
+           if(Math.abs(fSpeed) > 1) //Slow Down/Speed Up Front Arm
+           fSpeed = fSpeed / Math.abs(fSpeed);
+
+           if(Math.abs(rSpeed) > 1) //Slow Down/Speed Up Rear Arm
+           rSpeed = rSpeed / Math.abs(rSpeed);
+
+
+           clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
+
+           if(Math.abs(clawTiltSpeed) > 1)  //Slow Down Claw
+           clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
+
+
+        }
+
+       else if(RobotContainer.manipulatorJoystick.getYButton()){   // Human Pickup Position
+            desiredClawPos = 16.833;
+            desiredRLift = 2.888;
+            desiredFLift = 2.735;
+ 
+            fSpeed = frontPotPos - desiredFLift;
+            rSpeed = rearPotPos - desiredRLift;
+ 
+            if(Math.abs(fSpeed) > 1) //Slow Down/Speed Up Front Arm
+            fSpeed = fSpeed / Math.abs(fSpeed);
+ 
+            if(Math.abs(rSpeed) > 1) //Slow Down/Speed up Rear Arm
+            rSpeed = rSpeed / Math.abs(rSpeed);
+ 
+ 
+            clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
+ 
+            if(Math.abs(clawTiltSpeed) > 1)  //Slow Down Claw
+            clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
+ 
+ 
+         }
+
+        else if(RobotContainer.manipulatorJoystick.getRawButton(7)){   // Safe Drive Position BACK BUTTON
+            desiredClawPos = 0.3;
+            desiredRLift = 3.1;
+            desiredFLift = 0.44;
+ 
+            fSpeed = frontPotPos - desiredFLift;
+            rSpeed = rearPotPos - desiredRLift;
+ 
+            if(Math.abs(fSpeed) > 1) //Slow Down/Speed Up Front Arm
+            fSpeed = fSpeed / Math.abs(fSpeed);
+ 
+            if(Math.abs(rSpeed) > 1) //Slow Down/Speed up Rear Arm
+            rSpeed = rSpeed / Math.abs(rSpeed);
+ 
+ 
+            clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
+ 
+            if(Math.abs(clawTiltSpeed) > 1)  //Slow Down Claw
+            clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
+ 
+ 
+         }
+
+         else if(RobotContainer.manipulatorJoystick.getXButton()){   // Top Cone Score
+            desiredClawPos = 19.428;
+            desiredRLift = 2.99;
+            desiredFLift = 2.905;
+ 
+            fSpeed = frontPotPos - desiredFLift;
+            rSpeed = rearPotPos - desiredRLift;
+ 
+            if(Math.abs(fSpeed) > 1) //Slow Down/Speed Up Front Arm
+            fSpeed = fSpeed / Math.abs(fSpeed);
+ 
+            if(Math.abs(rSpeed) > 1) //Slow Down/Speed up Rear Arm
+            rSpeed = rSpeed / Math.abs(rSpeed);
+ 
+            if(frontPotPos > 1.4)
+            clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
+ 
+            if(Math.abs(clawTiltSpeed) > 1)  //Slow Down Claw
+            clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
+ 
+ 
+         }
+
+         else if(RobotContainer.manipulatorJoystick.getBButton()){   // Top Cone Score
+            desiredClawPos = 18.33;
+            desiredRLift = 2.69;
+            desiredFLift = 2.528;
+ 
+            fSpeed = frontPotPos - desiredFLift;
+            rSpeed = rearPotPos - desiredRLift;
+ 
+            if(Math.abs(fSpeed) > 1) //Slow Down/Speed Up Front Arm
+            fSpeed = fSpeed / Math.abs(fSpeed);
+ 
+            if(Math.abs(rSpeed) > 1) //Slow Down/Speed up Rear Arm
+            rSpeed = rSpeed / Math.abs(rSpeed);
+ 
+            if(frontPotPos > 1.4)
+            clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
+ 
+            if(Math.abs(clawTiltSpeed) > 1)  //Slow Down Claw
+            clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
+ 
+ 
+         }
+
+       
+        
+        fLiftMotorPos -= fSpeed*20;
+        rLiftMotorPos -= rSpeed*20;
+
+        if( ((clawTiltMotorPos + clawTiltSpeed * 0.5) > 0.43 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) < clawTiltMotorPos ||((clawTiltMotorPos + clawTiltSpeed * 0.5) < 20.75 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) > clawTiltMotorPos )))
+        clawTiltMotorPos += clawTiltSpeed * 1;
+
         double intakeSpeed = 0;
         if(RobotContainer.manipulatorJoystick.getRightBumper())
             intakeSpeed = 1;
         if(RobotContainer.manipulatorJoystick.getLeftBumper())
             intakeSpeed = -1;
 
-        if( ((clawTiltMotorPos + clawTiltSpeed * 0.5) > 0.43 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) < clawTiltMotorPos ||((clawTiltMotorPos + clawTiltSpeed * 0.5) < 20.75 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) > clawTiltMotorPos )))
-        clawTiltMotorPos += clawTiltSpeed * 0.5;
-
         Components.sparkClawTilt.setPos(clawTiltMotorPos);
         Components.sparkIntake.setPower(intakeSpeed);
-        System.out.println(clawTiltMotorPos);
+        System.out.println("CLAW: " + clawTiltMotorPos);
 
         //End Timmy Code
         //Back to Safety!!!!!!!!!
 
         // 4. Construct desired chassis speeds
        
+        System.out.println("r" + Components.rearLiftPot.get());
+        System.out.println(Components.frontLiftPot.get());
         
 
         
@@ -129,6 +259,8 @@ public class SwerveJoystickCmd extends CommandBase {
         swerveSubsystem.setModuleStates(moduleStates);
         Components.sparkLiftF.setPos(fLiftMotorPos);
         Components.sparkLiftR.setPos(rLiftMotorPos);
+        //System.out.println(fLiftMotorPos);
+        //System.out.println(rLiftMotorPos);
 
 
     }
