@@ -9,12 +9,15 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Components;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.SwerveConstants;
 import java.lang.Math;
+import java.util.concurrent.TimeUnit;
+import java.lang.Thread;
 
 // class to move the robot in autonomous
 public class AutonMover extends CommandBase {
@@ -27,6 +30,10 @@ public class AutonMover extends CommandBase {
     public static boolean pickedUp = false;
     public static double startingAngle;
     public static boolean turned = false;
+    public static int initialPlaced = 0;
+    public static int reverse = 0;
+    public static int timer = 0;
+    public static String position = "c"; // c for center, l for left, r for right
     // constructor with input for swerve subsystem
     public AutonMover(SwerveSubsystem swerveSubsystem) {
         // add subsystem requirements
@@ -43,31 +50,81 @@ public class AutonMover extends CommandBase {
         pickedUp = false;
         startingAngle = 0;
         turned = false;
+        initialPlaced = 0;
     }
 
     @Override
     public void execute() {
     // x is fwd/back
+        if (initialPlaced < 350) {
+            scoreTopCone();
+            //initialPlaced++;
+            return;
+        } 
+        
+        if (position == "c") {
+            Components.sparkIntake.setPower(0);
+            armDown();
+            balance();
+        } else {
+            pickupCone();
+            Transform3d target;         
+            //target = new Transform3d(new Translation3d(0,-0.3, 0), new Rotation3d());   
+            // if(reverse < 500) {
+            //     target = new Transform3d(new Translation3d(0,-1,0), new Rotation3d());
+                
+            // } else {target = new Transform3d();}
+            // Components.sparkIntake.setPower(0);
+            //ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
+            //SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+            //swerveSubsystem.setModuleStates(swerveModuleStates);
+            reverse++;
+        }
+    }
+
+    public void pickupCone() {
         double pickupHeading = startingAngle + 180;
         Transform3d target = new Transform3d();
-        if (Math.abs(swerveSubsystem.getHeading() - pickupHeading) > 5 && !turned) {
-            System.out.println(pickupHeading);
-            target = new Transform3d(new Translation3d(), new Rotation3d(0,0,180));
-            scoreTopCone();
-            Components.sparkIntake.setPower(0);
+        if (Math.abs(swerveSubsystem.getHeading() - pickupHeading) > 15 && !turned) {
+            if(timer < 800){
+                target = new Transform3d(new Translation3d(0,-0.65,0), new Rotation3d(0,0,0));
+                Components.sparkIntake.setPower(0);
+                System.out.println(timer);
+            }   else {
+                System.out.println("STOOOOOOP");
+                target = new Transform3d(new Translation3d(0,0,0), new Rotation3d(0,0,0));
+
+            }         
+
+            System.out.println("if #1");
+            //scoreTopCone();
+            ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
+            SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+            swerveSubsystem.setModuleStates(swerveModuleStates);
+            timer++;
+
+            return;
         } else {
             turned = true;
+            
+            
             double targetDistance = findClosest()[0]; 
             double targetAngle = findClosest()[1];
-            
+            SmartDashboard.putNumber("distance", targetDistance);
             if(targetDistance > 120 && !pickedUp) {
+                System.out.println("not picked up, >120");
                 target = new Transform3d(new Translation3d(0, -targetDistance/300, 0), new Rotation3d(0,0,-targetAngle));
                 Components.sparkIntake.setPower(0);
+                scoreTopCone();
             } else if(pickedUp) {
+
                 target = new Transform3d();
+                Components.sparkIntake.setPower(0);
             } else {
                 //new Translation3d(0, (-targetDistance+25)/500, 0)
-                target = new Transform3d(new Translation3d(0,-0.3,0), new Rotation3d(0,0,-targetAngle));
+                
+                System.out.println("else");
+                target = new Transform3d(new Translation3d(0,(-targetDistance)/400,0), new Rotation3d(0,0,-targetAngle));
                 pickup();
             }
         }
@@ -98,8 +155,8 @@ public class AutonMover extends CommandBase {
             rSpeed /= 10;
         
         
-        double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition() - fSpeed*40;
-        double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition() - rSpeed*40;
+        double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition() - fSpeed*50;
+        double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition() - rSpeed*50;
 
         double clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
 
@@ -111,20 +168,69 @@ public class AutonMover extends CommandBase {
         Components.sparkClawTilt.setPos(clawTiltMotorPos);
         Components.sparkLiftF.setPos(fLiftMotorPos);
         Components.sparkLiftR.setPos(rLiftMotorPos);
-        if(pickupCounter < 600) {Components.sparkIntake.setPower(1);}
+        if(pickupCounter < 700) {
+            Components.sparkIntake.setPower(1);
+        }
         else {
             Components.sparkIntake.setPower(0);
             pickedUp = true;
         }
         pickupCounter++;
-        System.out.println(Components.sparkIntake.getRawOutput());
     }
 
     public void scoreTopCone() {
+        
         double clawTiltMotorPos = Components.sparkClawTilt.encoder.getPosition();
         double rearPotPos = Components.rearLiftPot.get();
         double frontPotPos = Components.frontLiftPot.get();
-        double desiredClawPos = 12;//18.3
+
+       double desiredClawPos = 19.26;
+       double desiredRLift = 2.99;
+       double desiredFLift = 2.955;
+
+        double fSpeed = frontPotPos - desiredFLift;
+       double rSpeed = rearPotPos - desiredRLift;
+
+        if(Math.abs(fSpeed) > 0.25) //Slow Down/Speed Up Front Arm
+        fSpeed = fSpeed / Math.abs(fSpeed);
+    else if(Math.abs(fSpeed) < 0.02)
+        fSpeed /= 10;
+
+    if(Math.abs(rSpeed) > 0.25) //Slow Down/Speed up Rear Arm
+        rSpeed = rSpeed / Math.abs(rSpeed);
+    else if(Math.abs(rSpeed) < 0.02)
+        rSpeed /= 10;
+    double clawTiltSpeed = 0;
+        if(frontPotPos > 2.45)
+            clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
+
+        if(Math.abs(clawTiltSpeed) > 1)  //Slow Down Claw
+            clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
+
+            double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition() - fSpeed*40;
+            double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition() - rSpeed*40;
+    
+            if(Math.abs(clawTiltSpeed) > 1) clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
+    
+            if( ((clawTiltMotorPos + clawTiltSpeed * 0.5) > 0.43 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) < clawTiltMotorPos ||((clawTiltMotorPos + clawTiltSpeed * 0.5) < 20.75 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) > clawTiltMotorPos ))) {
+                clawTiltMotorPos += clawTiltSpeed * 2; 
+            }
+            Components.sparkClawTilt.setPos(clawTiltMotorPos);
+            Components.sparkLiftF.setPos(fLiftMotorPos);
+            Components.sparkLiftR.setPos(rLiftMotorPos);
+            //Components.sparkIntake.setPower(-1); 
+
+        if(Math.abs(clawTiltSpeed) < 0.1 && Math.abs(fSpeed) < 0.1 && Math.abs(rSpeed) < 0.1) {
+            int x = -1;
+           
+        System.out.println(x);
+            for(int i=0; i<=5250; i++){Components.sparkIntake.setPower(x); }
+            initialPlaced = 350;
+        }
+
+
+
+       /*  double desiredClawPos = 12;//18.3
         double desiredRLift = 3.19;//2.69
         double desiredFLift = 3.021;//2.528
 
@@ -154,9 +260,49 @@ public class AutonMover extends CommandBase {
         }
         Components.sparkClawTilt.setPos(clawTiltMotorPos);
         Components.sparkLiftF.setPos(fLiftMotorPos);
+        Components.sparkLiftR.setPos(rLiftMotorPos); */
+    } 
+    
+    public void armDown() {
+        double clawTiltMotorPos = Components.sparkClawTilt.encoder.getPosition();
+        double rearPotPos = Components.rearLiftPot.get();
+        double frontPotPos = Components.frontLiftPot.get();
+        double desiredClawPos = 12;//18.3
+        double desiredRLift = 3.19;//2.69
+        double desiredFLift = 3.021;//2.528
+
+        desiredClawPos = 0.75;
+        desiredRLift = 3.1;
+        desiredFLift = 1;
+
+        double fSpeed = frontPotPos - desiredFLift;
+        double rSpeed = rearPotPos - desiredRLift;
+
+        if(Math.abs(fSpeed) > 0.5) //Slow Down/Speed Up Front Arm
+            fSpeed = fSpeed / Math.abs(fSpeed);
+        else if(Math.abs(fSpeed) < 0.02)
+            fSpeed /= 10;
+
+        if(Math.abs(rSpeed) > 0.5) //Slow Down/Speed up Rear Arm
+            rSpeed = rSpeed / Math.abs(rSpeed);
+        else if(Math.abs(rSpeed) < 0.02)
+            rSpeed /= 10;
+        
+        
+        double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition() - fSpeed*40;
+        double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition() - rSpeed*40;
+
+        double clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
+
+        if(Math.abs(clawTiltSpeed) > 1) clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
+
+        if( ((clawTiltMotorPos + clawTiltSpeed * 0.5) > 0.43 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) < clawTiltMotorPos ||((clawTiltMotorPos + clawTiltSpeed * 0.5) < 20.75 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) > clawTiltMotorPos ))) {
+            clawTiltMotorPos += clawTiltSpeed * 1; 
+        }
+        Components.sparkClawTilt.setPos(clawTiltMotorPos);
+        Components.sparkLiftF.setPos(fLiftMotorPos);
         Components.sparkLiftR.setPos(rLiftMotorPos);
     }
-    
 
     private double[] findClosest() {
         double output[] = {0,0};
@@ -171,8 +317,9 @@ public class AutonMover extends CommandBase {
         }
         lowestDist = lowestDist > 999 ? 0 : lowestDist;
         output[0] = lowestDist;
-        output[1] = table.getSubTable("processed0").getSubTable(closest).getEntry("xCenter").getDouble(0)-320;
+        output[1] = table.getSubTable("processed0").getSubTable(closest).getEntry("xCenter").getDouble(320)-320;
         output[1] /= 1000;
+        DriverStation.reportWarning(String.valueOf(lowestDist), false);
         return output;
     }
 
@@ -189,20 +336,23 @@ public class AutonMover extends CommandBase {
         currentPitch = swerveSubsystem.gyro.getPitch();
         Transform3d target = new Transform3d();
         if(!reachedRamp && Math.abs(currentPitch) < 10) {
-            target = new Transform3d(new Translation3d(0,1.5,0), new Rotation3d());
+            target = new Transform3d(new Translation3d(0,-1,0), new Rotation3d());
         } else {
             reachedRamp = true;
         }
         if(reachedRamp && reachedLevel < Constants.Auton.balanceReverseDelay) {
-            target = new Transform3d(new Translation3d(0,-currentPitch/15,0), new Rotation3d()); 
+            target = new Transform3d(new Translation3d(0,currentPitch/30,0), new Rotation3d()); 
             if(currentPitch >5) { //higher=stop earlier
-                target = new Transform3d(new Translation3d(0,-currentPitch/20,0), new Rotation3d(0,0,0));
+                target = new Transform3d(new Translation3d(0,currentPitch/42,0), new Rotation3d(0,0,0));
                 reachedLevel++;
-            }
-        } else if(reachedRamp && reachedLevel < Constants.Auton.balanceReverseDelay + 5) {
+            } 
+        } else if(reachedRamp && reachedLevel < Constants.Auton.balanceReverseDelay + 6) { ///PLUS 5 ORIGINALLY
             target = new Transform3d(new Translation3d(), new Rotation3d(0,0,5));
             reachedLevel++;
         }
+
+        //System.out.println(currentYaw);
+        SmartDashboard.putNumber("pitch", currentPitch);
         //System.out.println(currentYaw);
         SmartDashboard.putNumber("pitch", currentPitch);
         return target;

@@ -30,7 +30,9 @@ public final class Constants {
 			new Transform3d(new Translation3d(-7.243064,-1.260094,0), new Rotation3d(0,0,0)),
 			new Transform3d(new Translation3d(-7.243064,-2.936494,0), new Rotation3d(0,0,0))
 		};
-		public static final int balanceReverseDelay = 230; //210
+
+		//public static final int balanceReverseDelay = 385; //210
+		public static final int balanceReverseDelay = 220;//220 //385 works with back divisor of 40
 	}
 
 	public class Chassis {
@@ -93,7 +95,7 @@ public final class Constants {
 			// Smart Motion Coefficients
 			public static final double maxVel = 2000; // rpm
 			public static final double minVel = 0; // rpm
-			public static final double 	maxAcc = 1500;
+			public static final double 	maxAcc = 1000;
 
 			public static final double allowedErr = 0;
 		}

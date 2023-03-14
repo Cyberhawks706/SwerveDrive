@@ -20,10 +20,12 @@ import frc.robot.commands.Timer706;
 
 public class SwerveSubsystem extends SubsystemBase {
 
-    public final AHRS gyro = new AHRS(SPI.Port.kMXP);
+    public final static AHRS gyro = new AHRS(SPI.Port.kMXP);
     private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
 
     private SwerveDriveOdometry odometer;
+
+    public static double offset = 0;
     
 
     public boolean firstTime = true;
@@ -90,8 +92,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     }
 
-    public void zeroHeading() { 
+    public static void zeroHeading() { 
         gyro.reset();
+        offset = 180;
     }
 
     public double getHeading() {
@@ -210,16 +213,25 @@ public class SwerveSubsystem extends SubsystemBase {
         desiredStates[2].angle = desiredStates[2].angle.plus(Rotation2d.fromDegrees(90));
         desiredStates[3].angle = desiredStates[3].angle.plus(Rotation2d.fromDegrees(90));
 
+        desiredStates[0].angle = desiredStates[0].angle.plus(Rotation2d.fromDegrees(offset));
+        desiredStates[1].angle = desiredStates[1].angle.plus(Rotation2d.fromDegrees(offset));
+        desiredStates[2].angle = desiredStates[2].angle.plus(Rotation2d.fromDegrees(offset));
+        desiredStates[3].angle = desiredStates[3].angle.plus(Rotation2d.fromDegrees(offset));
+
+
+
         // desiredStates[0].speedMetersPerSecond *= 0.3;//1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
         // desiredStates[1].speedMetersPerSecond *= 0.3;//1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
         // desiredStates[2].speedMetersPerSecond *= 0.3;//1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
         // desiredStates[3].speedMetersPerSecond *= 0.3;//1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
         
-        desiredStates[0].speedMetersPerSecond *= 1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
-        desiredStates[1].speedMetersPerSecond *= 1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
-        desiredStates[2].speedMetersPerSecond *= 1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
-        desiredStates[3].speedMetersPerSecond *= 1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
 
+            desiredStates[0].speedMetersPerSecond *= 8*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.22);
+            desiredStates[1].speedMetersPerSecond *= 8*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.22);
+            desiredStates[2].speedMetersPerSecond *= 8*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.22);
+            desiredStates[3].speedMetersPerSecond *= 8*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.22);
+        
+        
 
         
         
