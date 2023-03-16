@@ -33,6 +33,8 @@ public class AutonMover extends CommandBase {
     public static int initialPlaced = 0;
     public static int reverse = 0;
     public static int timer = 0;
+
+    public static int tester = 0;
     public static String position = "c"; // c for center, l for left, r for right
     // constructor with input for swerve subsystem
     public AutonMover(SwerveSubsystem swerveSubsystem) {
@@ -55,6 +57,8 @@ public class AutonMover extends CommandBase {
 
     @Override
     public void execute() {
+
+
     // x is fwd/back
         if (initialPlaced < 350) {
             scoreTopCone();
@@ -63,12 +67,12 @@ public class AutonMover extends CommandBase {
         } 
         
         if (position == "c") {
+            System.out.println("AAAAAAAAAAAAAAAAAAAAA");
             Components.sparkIntake.setPower(0);
             armDown();
             balance();
         } else {
             pickupCone();
-            Transform3d target;         
             //target = new Transform3d(new Translation3d(0,-0.3, 0), new Rotation3d());   
             // if(reverse < 500) {
             //     target = new Transform3d(new Translation3d(0,-1,0), new Rotation3d());
@@ -80,6 +84,7 @@ public class AutonMover extends CommandBase {
             //swerveSubsystem.setModuleStates(swerveModuleStates);
             reverse++;
         }
+        
     }
 
     public void pickupCone() {
@@ -184,10 +189,58 @@ public class AutonMover extends CommandBase {
         double rearPotPos = Components.rearLiftPot.get();
         double frontPotPos = Components.frontLiftPot.get();
 
-       double desiredClawPos = 19.26;
+       double desiredClawPos = 2;
        double desiredRLift = 2.99;
        double desiredFLift = 2.955;
 
+       System.out.println("clawPos "+clawTiltMotorPos);
+
+       double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition();
+        double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition();
+
+       double fSpeed = 2 * (frontPotPos - desiredFLift);
+        double rSpeed = 2 * (rearPotPos - desiredRLift);
+ 
+            if(Math.abs(fSpeed) > 1) //Slow Down/Speed Up Front Arm
+                fSpeed = fSpeed / Math.abs(fSpeed);
+            else if(Math.abs(fSpeed) < 0.05)
+                fSpeed /= 20;
+            else if(Math.abs(fSpeed) < 0.1)
+                fSpeed = 0.2 * (fSpeed / Math.abs(fSpeed));
+            else if(Math.abs(fSpeed) < 0.4)
+                fSpeed = 0.4 * (fSpeed / Math.abs(fSpeed));
+           
+ 
+            if(Math.abs(rSpeed) > 1) //Slow Down/Speed up Rear Arm
+                rSpeed = rSpeed / Math.abs(rSpeed);
+            else if(Math.abs(rSpeed) < 0.05)
+                rSpeed /= 20;
+            else if(Math.abs(rSpeed) < 0.1)
+                rSpeed = 0.2 * (rSpeed / Math.abs(rSpeed));
+            else if(Math.abs(rSpeed) < 0.4)
+                rSpeed = 0.4 * (rSpeed / Math.abs(rSpeed));
+            
+                System.out.println("BBBBBBBBBBBBBBBB");
+
+
+                double clawTiltSpeed = 0;
+        if(frontPotPos > 2)
+            clawTiltSpeed = desiredClawPos - clawTiltMotorPos;
+
+        if(Math.abs(clawTiltSpeed) > 1)  //Slow Down Claw
+            clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
+    
+            if(Math.abs(clawTiltSpeed) > 1) clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
+    
+            if( ((clawTiltMotorPos + clawTiltSpeed * 0.5) > 0.43 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) < clawTiltMotorPos ||((clawTiltMotorPos + clawTiltSpeed * 0.5) < 20.75 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) > clawTiltMotorPos ))) {
+                clawTiltMotorPos += clawTiltSpeed * 2; 
+            }
+            Components.sparkClawTilt.setPos(clawTiltMotorPos);
+            
+            System.out.println("clawS "+clawTiltSpeed);
+            System.out.println("fS "+fSpeed);
+            System.out.println("rS "+rSpeed);
+/*
         double fSpeed = frontPotPos - desiredFLift;
        double rSpeed = rearPotPos - desiredRLift;
 
@@ -207,20 +260,30 @@ public class AutonMover extends CommandBase {
         if(Math.abs(clawTiltSpeed) > 1)  //Slow Down Claw
             clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
 
-            double fLiftMotorPos = Components.sparkLiftF.encoder.getPosition() - fSpeed*40;
-            double rLiftMotorPos = Components.sparkLiftR.encoder.getPosition() - rSpeed*40;
+            
     
             if(Math.abs(clawTiltSpeed) > 1) clawTiltSpeed = clawTiltSpeed / Math.abs(clawTiltSpeed);
     
             if( ((clawTiltMotorPos + clawTiltSpeed * 0.5) > 0.43 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) < clawTiltMotorPos ||((clawTiltMotorPos + clawTiltSpeed * 0.5) < 20.75 &&  (clawTiltMotorPos + clawTiltSpeed * 0.5 ) > clawTiltMotorPos ))) {
                 clawTiltMotorPos += clawTiltSpeed * 2; 
             }
+
+            
             Components.sparkClawTilt.setPos(clawTiltMotorPos);
-            Components.sparkLiftF.setPos(fLiftMotorPos);
-            Components.sparkLiftR.setPos(rLiftMotorPos);
+            */
+        if(Math.abs(fSpeed) < 0.1)    
+        Components.sparkLiftF.setPos(fLiftMotorPos);
+        else
+        Components.sparkLiftF.setPower(-fSpeed);
+        if(Math.abs(rSpeed) < 0.1)
+        Components.sparkLiftR.setPos(rLiftMotorPos);
+        else
+        Components.sparkLiftR.setPower(-rSpeed*0.5);
             //Components.sparkIntake.setPower(-1); 
 
-        if(Math.abs(clawTiltSpeed) < 0.1 && Math.abs(fSpeed) < 0.1 && Math.abs(rSpeed) < 0.1) {
+    
+
+        if(Math.abs(clawTiltSpeed) < 0.75 && Math.abs(fSpeed) < 0.5 && Math.abs(rSpeed) < 0.5) {
             int x = -1;
            
         System.out.println(x);
