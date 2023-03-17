@@ -90,7 +90,7 @@ public class AutonMover extends CommandBase {
     public void pickupCone() {
         double pickupHeading = startingAngle + 180;
         Transform3d target = new Transform3d();
-        if (Math.abs(swerveSubsystem.getHeading() - pickupHeading) > 15 && !turned) {
+        if (Math.abs(swerveSubsystem.getHeading() - pickupHeading) > 15 && !turned) { //we need to turn it turn it
             if(timer < 800){
                 target = new Transform3d(new Translation3d(0,-0.65,0), new Rotation3d(0,0,0));
                 Components.sparkIntake.setPower(0);
@@ -109,7 +109,7 @@ public class AutonMover extends CommandBase {
             timer++;
 
             return;
-        } else {
+        } else { //go forward
             turned = true;
             
             
@@ -367,12 +367,12 @@ public class AutonMover extends CommandBase {
         Components.sparkLiftR.setPos(rLiftMotorPos);
     }
 
-    private double[] findClosest() {
+    public static double[] findClosest() {
         double output[] = {0,0};
         double lowestDist = 1000;
         String closest = "";
-        for(String subtable : table.getSubTable("processed0").getSubTables()) {
-            double dist = table.getSubTable("processed0").getSubTable(subtable).getEntry("distance").getDouble(0);
+        for(String subtable : table.getSubTable("processed1").getSubTables()) {
+            double dist = table.getSubTable("processed1").getSubTable(subtable).getEntry("distance").getDouble(0);
             if(dist < lowestDist && dist != 0) {
                 lowestDist = dist;
                 closest = subtable;
@@ -380,7 +380,7 @@ public class AutonMover extends CommandBase {
         }
         lowestDist = lowestDist > 999 ? 0 : lowestDist;
         output[0] = lowestDist;
-        output[1] = table.getSubTable("processed0").getSubTable(closest).getEntry("xCenter").getDouble(320)-320;
+        output[1] = table.getSubTable("processed1").getSubTable(closest).getEntry("xCenter").getDouble(320)-320;
         output[1] /= 1000;
         DriverStation.reportWarning(String.valueOf(lowestDist), false);
         return output;

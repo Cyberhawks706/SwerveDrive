@@ -16,6 +16,8 @@ import frc.robot.subsystems.CameraDaemon;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 
 public class Robot extends TimedRobot {
@@ -98,8 +100,9 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic(){
 		CommandScheduler.getInstance().run();
 
-	
-
+		SmartDashboard.putData(RobotContainer.m_pdp);
+		//System.out.println(NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("processed0").getSubTable("cube0").getEntry("distance").getDouble(0));
+		System.out.println(AutonMover.findClosest()[0]);
 		SmartDashboard.putNumber("Front", Components.frontLiftPot.get());
 		SmartDashboard.putNumber("Rear", Components.rearLiftPot.get());
 	}

@@ -10,7 +10,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -32,6 +34,8 @@ public class RobotContainer {
         () -> !driverJoystick.getAButtonPressed());
 
     private final AutonMover autonCmd = new AutonMover(swerveSubsystem);
+
+    public static final PowerDistribution m_pdp = new PowerDistribution(22, ModuleType.kRev);
 
     public static final XboxController driverJoystick = new XboxController(2);
     public static final XboxController manipulatorJoystick = new XboxController(3);
