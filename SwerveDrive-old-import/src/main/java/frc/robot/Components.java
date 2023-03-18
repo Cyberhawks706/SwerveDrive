@@ -17,6 +17,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 
 
 
@@ -88,8 +89,8 @@ public class Components {
         sparkLiftR = new BrushlessSparkWithPID(10, 0.0006, 0.000001, 0.0005, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, 4000, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
         frontLiftPot = new AnalogPotentiometer(4, 3.48, -0.2);//(4+0, 3.48,-0.2);
         rearLiftPot = new AnalogPotentiometer(4+1, 3.58,-0.3);
-        intakeSwitch = new DigitalInput(0);
-
+        intakeSwitch = new DigitalInput(4);
+        
 
         //Timmy Code Probably Bad!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Timmy Code!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

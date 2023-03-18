@@ -334,10 +334,10 @@ public class SwerveJoystickCmd extends CommandBase {
 
         // 4. Construct desired chassis speeds
 
-        System.out.println("r" + Components.rearLiftPot.get());
-        System.out.println(Components.frontLiftPot.get());
-        Components.sparkClawTilt.UpdateSensorValues();
-        System.out.println(Components.sparkClawTilt.motorPos);
+        // System.out.println("r" + Components.rearLiftPot.get());
+        // System.out.println(Components.frontLiftPot.get());
+        // Components.sparkClawTilt.UpdateSensorValues();
+        // System.out.println(Components.sparkClawTilt.motorPos);
 
         if (fieldOrientedFunction.get()) {
             // Relative to field

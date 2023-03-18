@@ -8,6 +8,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -15,6 +16,7 @@ import frc.robot.commands.AutonMover;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.CameraDaemon;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import java.util.function.BooleanSupplier;
@@ -36,11 +38,12 @@ public class Robot extends TimedRobot {
 	public static boolean auto;
 	public static XboxController xboxDrive;
 	public static SwerveJoystickCmd swerveJoystickCmd;
-
+	
 	public static double frontLeftInitPos;
 	public static double frontRightInitPos;
 	public static double backLeftInitPos;
 	public static double backRightInitPos;
+	public static ShuffleboardTab tab;
 	
 
 
@@ -50,7 +53,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-
+		tab = Shuffleboard.getTab("Espresso");
 
 
 	// 	    /$$$$$$  /$$       /$$             /$$      /$$ /$$   /$$ /$$$$$$$$ /$$$$$$$$ /$$        /$$$$$$                                     
@@ -89,26 +92,26 @@ public class Robot extends TimedRobot {
 		System.out.println("Started");
 		Components.init();
 		m_robotContainer = new RobotContainer();
-
+		Lighting.robotInit();
 		frontLeftInitPos = SwerveSubsystem.frontLeft.getAbsoluteEncoderRad();
 		frontRightInitPos = SwerveSubsystem.frontRight.getAbsoluteEncoderRad();
 		backLeftInitPos = SwerveSubsystem.backLeft.getAbsoluteEncoderRad();
 		backRightInitPos = SwerveSubsystem.backRight.getAbsoluteEncoderRad();
-		//Shuffleboard.getTab("Tab 4").addBoolean("Intake Switch", () -> !Components.intakeSwitch.get());
-
+		Shuffleboard.getTab("Espresso").addBoolean("Intake Switch", () -> !Components.intakeSwitch.get());
+		
 		//Components.ahrs.calibrate();
 		
 	}
-
 	@Override
 	public void robotPeriodic(){
 		CommandScheduler.getInstance().run();
 		SmartDashboard.putData(RobotContainer.m_pdp);
 		//System.out.println(NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("processed0").getSubTable("cube0").getEntry("distance").getDouble(0));
-		System.out.println(!Components.intakeSwitch.get());
-		SmartDashboard.putBoolean("Intake Switch", !Components.intakeSwitch.get());
+		//System.out.println(!Components.intakeSwitch.get());
+		//SmartDashboard.putBoolean("Intake Switch", !Components.intakeSwitch.get());
 		SmartDashboard.putNumber("Front", Components.frontLiftPot.get());
 		SmartDashboard.putNumber("Rear", Components.rearLiftPot.get());
+		Lighting.setLEDS(NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Espresso").getSubTable("Lighting").getEntry("Active").getString(""));
 	}
 
 	@Override

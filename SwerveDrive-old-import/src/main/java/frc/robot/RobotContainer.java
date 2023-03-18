@@ -13,6 +13,8 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -20,10 +22,13 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.AutonMover;
+import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
 
+    @Config
+    public final SendableChooser<String> lightChooser = new SendableChooser<>();
     private final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
     private final SwerveJoystickCmd teleopCmd = new SwerveJoystickCmd(
@@ -54,10 +59,14 @@ public class RobotContainer {
 
         configureButtonBindings();
 
+        lightChooser.setDefaultOption("Pink", "PINK");
+        lightChooser.addOption("Black", "BLACK");
+        lightChooser.addOption("Yellow", "YELLOW");
+        lightChooser.addOption("Purple", "PURPLE");
+        lightChooser.addOption("Red", "RED");
+        lightChooser.addOption("Blue", "BLUE");
+        Shuffleboard.getTab("Espresso").add("Lighting", lightChooser);
         
-
-
-
     }
 
     private void configureButtonBindings() {
