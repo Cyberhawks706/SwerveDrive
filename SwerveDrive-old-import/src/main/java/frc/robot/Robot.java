@@ -7,6 +7,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -15,6 +16,9 @@ import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.CameraDaemon;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.SwerveSubsystem;
+
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -90,7 +94,7 @@ public class Robot extends TimedRobot {
 		frontRightInitPos = SwerveSubsystem.frontRight.getAbsoluteEncoderRad();
 		backLeftInitPos = SwerveSubsystem.backLeft.getAbsoluteEncoderRad();
 		backRightInitPos = SwerveSubsystem.backRight.getAbsoluteEncoderRad();
-
+		//Shuffleboard.getTab("Tab 4").addBoolean("Intake Switch", () -> !Components.intakeSwitch.get());
 
 		//Components.ahrs.calibrate();
 		
@@ -99,14 +103,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic(){
 		CommandScheduler.getInstance().run();
-
 		SmartDashboard.putData(RobotContainer.m_pdp);
 		//System.out.println(NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("processed0").getSubTable("cube0").getEntry("distance").getDouble(0));
-		System.out.println(AutonMover.findClosest()[0]);
+		System.out.println(!Components.intakeSwitch.get());
+		SmartDashboard.putBoolean("Intake Switch", !Components.intakeSwitch.get());
 		SmartDashboard.putNumber("Front", Components.frontLiftPot.get());
 		SmartDashboard.putNumber("Rear", Components.rearLiftPot.get());
 	}
-
 
 	@Override
 	public void disabledInit() {

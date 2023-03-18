@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Components;
 import frc.robot.Constants;
@@ -90,41 +91,37 @@ public class AutonMover extends CommandBase {
     public void pickupCone() {
         double pickupHeading = startingAngle + 180;
         Transform3d target = new Transform3d();
-        if (Math.abs(swerveSubsystem.getHeading() - pickupHeading) > 15 && !turned) { //we need to turn it turn it
-            if(timer < 800){
-                target = new Transform3d(new Translation3d(0,-0.65,0), new Rotation3d(0,0,0));
-                Components.sparkIntake.setPower(0);
-                System.out.println(timer);
-            }   else {
-                System.out.println("STOOOOOOP");
-                target = new Transform3d(new Translation3d(0,0,0), new Rotation3d(0,0,0));
+        if (Math.abs(swerveSubsystem.getHeading() - pickupHeading) > 5 && !turned) { //we need to turn it turn it
+            // if(timer < 800){
+            //     target = new Transform3d(new Translation3d(0,-0.65,0), new Rotation3d(0,0,0));
+            //     Components.sparkIntake.setPower(0);
+            //     System.out.println(timer);
+            // }   else {
+            //     System.out.println("STOOOOOOP");
+            //     target = new Transform3d(new Translation3d(0,0,0), new Rotation3d(0,0,0));
 
-            }         
-
+            // }         
             System.out.println("if #1");
             //scoreTopCone();
-            ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
+            
+            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(1, 0, (swerveSubsystem.getHeading() - pickupHeading), swerveSubsystem.getRotation2d());
             SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
             swerveSubsystem.setModuleStates(swerveModuleStates);
             timer++;
 
             return;
-        } else { //go forward
+        } else if(turned && !pickedUp){ //go forward
             turned = true;
             
             
             double targetDistance = findClosest()[0]; 
             double targetAngle = findClosest()[1];
             SmartDashboard.putNumber("distance", targetDistance);
-            if(targetDistance > 120 && !pickedUp) {
-                System.out.println("not picked up, >120");
+            if(targetDistance > 36 && !pickedUp) {
+                System.out.println("not picked up, >36");
                 target = new Transform3d(new Translation3d(0, -targetDistance/300, 0), new Rotation3d(0,0,-targetAngle));
                 Components.sparkIntake.setPower(0);
                 scoreTopCone();
-            } else if(pickedUp) {
-
-                target = new Transform3d();
-                Components.sparkIntake.setPower(0);
             } else {
                 //new Translation3d(0, (-targetDistance+25)/500, 0)
                 
@@ -132,11 +129,35 @@ public class AutonMover extends CommandBase {
                 target = new Transform3d(new Translation3d(0,(-targetDistance)/400,0), new Rotation3d(0,0,-targetAngle));
                 pickup();
             }
+            ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
+            SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+            swerveSubsystem.setModuleStates(swerveModuleStates);
+        } else if(turned && pickedUp) {
+            Components.sparkIntake.setPower(0);
+            if (Math.abs(swerveSubsystem.getHeading() - startingAngle) > 5) { //need to turn back
+                ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(1, 0, (swerveSubsystem.getHeading() - startingAngle), swerveSubsystem.getRotation2d());
+            } else {
+                switch (DriverStation.getAlliance()) {
+                    case Blue:
+                        if(position == "l") {
+                            gotoTag(0,1);
+                        } else if(position == "r") {
+                            gotoTag(0, 3);
+                        }
+                        break;
+                    case Red:
+                        if(position == "l") {
+                            gotoTag(0,6);
+                        } else if(position == "r") {
+                            gotoTag(0, 8);
+                        }
+                        break;
+                    case Invalid: break;
+                }
+            }
         }
-        ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
-        SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-        swerveSubsystem.setModuleStates(swerveModuleStates);
-    }   
+        
+    }
 
     public void pickup() {
         double clawTiltMotorPos = Components.sparkClawTilt.encoder.getPosition();
@@ -433,7 +454,7 @@ public class AutonMover extends CommandBase {
     private Transform3d calculateTagPos(int camId, int tagId) {
         String tagNum = String.valueOf(tagId);
         String camNum = String.valueOf(camId);
-        System.out.print(table.getSubTable("processed0").getSubTable("tag3").getEntry("tx").getString(""));
+        System.out.print(table.getSubTable("processed1").getSubTable("tag3").getEntry("tx").getString(""));
         double x = Double.valueOf(table.getSubTable("processed" + camNum).getSubTable("tag" + tagNum).getEntry("tx").getString(""));
         double y = Double.valueOf(table.getSubTable("processed" + camNum).getSubTable("tag" + tagNum).getEntry("ty").getString(""));
         double z = Double.valueOf(table.getSubTable("processed" + camNum).getSubTable("tag" + tagNum).getEntry("tz").getString(""));
