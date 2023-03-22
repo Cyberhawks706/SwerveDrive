@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -11,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Components;
 import frc.robot.Constants;
@@ -19,6 +21,7 @@ import frc.robot.SwerveConstants;
 import java.lang.Math;
 import java.util.concurrent.TimeUnit;
 import java.lang.Thread;
+
 
 // class to move the robot in autonomous
 public class AutonMover extends CommandBase {
@@ -36,7 +39,7 @@ public class AutonMover extends CommandBase {
     public static int timer = 0;
 
     public static int tester = 0;
-    public static String position = "r"; // c for center, l for left, r for right
+    public static String position = "c"; // c for center, l for left, r for right
     // constructor with input for swerve subsystem
     public AutonMover(SwerveSubsystem swerveSubsystem) {
         // add subsystem requirements
@@ -71,7 +74,7 @@ public class AutonMover extends CommandBase {
             System.out.println("AAAAAAAAAAAAAAAAAAAAA");
             Components.sparkIntake.setPower(0);
             armDown();
-            balance();
+            //balance();
         } else {
             pickupCone();
             //target = new Transform3d(new Translation3d(0,-0.3, 0), new Rotation3d());   
@@ -103,17 +106,16 @@ public class AutonMover extends CommandBase {
 
             // }         
             System.out.println("if #1");
-            //scoreTopCone();
+            scoreTopCone();
             System.out.println(swerveSubsystem.getHeading() - pickupHeading);
             ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, -0.3, (swerveSubsystem.getHeading() - pickupHeading)/200, swerveSubsystem.getRotation2d());
             SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
             swerveSubsystem.setModuleStates(swerveModuleStates);
             timer++;
-
+                
             return;
         } else if(!pickedUp){ //go forward
             turned = true;
-            
             
             double targetDistance = findClosest()[0]; 
             double targetAngle = findClosest()[1];
@@ -125,7 +127,7 @@ public class AutonMover extends CommandBase {
                 Components.sparkIntake.setPower(0);
                 //scoreTopCone();
             } else {
-                target = new Transform3d();
+                target = new Transform3d(new Translation3d(0, 0.1,0), new Rotation3d());
                 pickedUp = !Components.intakeSwitch.get();
                 System.out.println("else");
                 pickup();
@@ -136,7 +138,7 @@ public class AutonMover extends CommandBase {
         } else if(turned && pickedUp) {
             Components.sparkIntake.setPower(0);
             if (Math.abs(swerveSubsystem.getHeading() - startingAngle) > 5) { //need to turn back
-                ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, -0.3, (swerveSubsystem.getHeading() - startingAngle)/200, swerveSubsystem.getRotation2d());
+                ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0.3, (swerveSubsystem.getHeading() - startingAngle)/200, swerveSubsystem.getRotation2d());
                 SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
                 swerveSubsystem.setModuleStates(swerveModuleStates);
             } else {
@@ -414,7 +416,7 @@ public class AutonMover extends CommandBase {
 
 
     private Transform3d calculateTargetForBalance() {
-        currentPitch = swerveSubsystem.gyro.getPitch();
+        currentPitch = SwerveSubsystem.gyro.getPitch();
         Transform3d target = new Transform3d();
         if(!reachedRamp && Math.abs(currentPitch) < 10) {
             target = new Transform3d(new Translation3d(0,-1,0), new Rotation3d());
