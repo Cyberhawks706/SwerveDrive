@@ -86,12 +86,12 @@ public class Components {
         sparkLiftF = new BrushlessSparkWithPID(9, 0.0006, 0.0000001, 0.0005, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, 4000, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc,Constants.PID.Wheels.allowedErr);
 
         //0.001, 0.0000001, 0.0002
-        sparkLiftR = new BrushlessSparkWithPID(10, 0.0006, 0.000001, 0.0005, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, 4000, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
+        sparkLiftR = new BrushlessSparkWithPID(10, 0.0008, 0.00001, 0.001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, 4000, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, Constants.PID.Wheels.allowedErr);
         frontLiftPot = new AnalogPotentiometer(4, 3.48, -0.2);//(4+0, 3.48,-0.2);
         rearLiftPot = new AnalogPotentiometer(4+1, 3.58,-0.3);
         intakeSwitch = new DigitalInput(4);
 
-        System.out.println(frontLiftPot.get());
+        //System.out.println(frontLiftPot.get());
         
 
         //Timmy Code Probably Bad!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -459,10 +459,10 @@ public class SwerveJoystickCmd extends CommandBase {
         else
             Components.sparkLiftR.setPower(-rSpeed * 0.5);
 
-    System.out.println("F" + frontPotPos);
+    //System.out.println("F" + frontPotPos);
     //System.out.println("F" + fSpeed);
-    System.out.println("RRR" + rearPotPos);
-    System.out.println(clawTiltPos);
+    //System.out.println("RRR" + rearPotPos);
+    //System.out.println(clawTiltPos);
     
 
     }
