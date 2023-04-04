@@ -133,9 +133,6 @@ public class Robot extends TimedRobot {
 	  // schedule the autonomous command (example)
 	  if (m_autonomousCommand != null) {
 		m_autonomousCommand.schedule();
-
-		AutonMover.reachedLevel = 0;
-		AutonMover.reachedRamp = false;
 		AutonMover.init();
 	  }
 	}

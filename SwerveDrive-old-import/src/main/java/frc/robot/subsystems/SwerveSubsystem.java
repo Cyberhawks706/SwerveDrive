@@ -1,15 +1,23 @@
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -24,7 +32,8 @@ public class SwerveSubsystem extends SubsystemBase {
     private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
 
     private SwerveDriveOdometry odometer;
-
+    private final Field2d m_field = new Field2d();
+    private Trajectory m_trajectory;
     public static double offset = 0;
     
 
@@ -79,9 +88,15 @@ public class SwerveSubsystem extends SubsystemBase {
         modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), frontRight.getState().angle);
 
         odometer = new SwerveDriveOdometry(SwerveConstants.kDriveKinematics, new Rotation2d(0), modulePosition);
+        SmartDashboard.putData("Field", m_field);
+        m_trajectory =
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+            new Pose2d(3, 0, Rotation2d.fromDegrees(0)),
+            new TrajectoryConfig(Units.feetToMeters(3.0), Units.feetToMeters(3.0)));
 
-
-        
+        m_field.getObject("traj").setTrajectory(m_trajectory);
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -115,7 +130,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
 
         odometer.update(getRotation2d(), modulePosition);
-
+        m_field.setRobotPose(odometer.getPoseMeters());
         SmartDashboard.putNumber("Robot Heading", getHeading());
 
         
@@ -226,10 +241,10 @@ public class SwerveSubsystem extends SubsystemBase {
         // desiredStates[3].speedMetersPerSecond *= 0.3;//1/(1+4*RobotContainer.driverJoystick.getRightTriggerAxis());
         
 
-            desiredStates[0].speedMetersPerSecond *= 8*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.22);
-            desiredStates[1].speedMetersPerSecond *= 8*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.22);
-            desiredStates[2].speedMetersPerSecond *= 8*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.22);
-            desiredStates[3].speedMetersPerSecond *= 8*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.22);
+            desiredStates[0].speedMetersPerSecond *= 16*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.11);
+            desiredStates[1].speedMetersPerSecond *= 16*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.11);
+            desiredStates[2].speedMetersPerSecond *= 16*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.11);
+            desiredStates[3].speedMetersPerSecond *= 16*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.11);
         
         
 

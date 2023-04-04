@@ -32,7 +32,7 @@ public final class Constants {
 		};
 
 		//public static final int balanceReverseDelay = 385; //210
-		public static final int balanceReverseDelay = 220;//220 //385 works with back divisor of 40
+		public static final int balanceReverseDelay = 180;//220 //385 works with back divisor of 40
 	}
 
 	public class Chassis {

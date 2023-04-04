@@ -1,5 +1,15 @@
 {
   "HALProvider": {
+    "Analog Inputs": {
+      "window": {
+        "visible": true
+      }
+    },
+    "DIO": {
+      "window": {
+        "visible": true
+      }
+    },
     "Other Devices": {
       "SPARK MAX [13]": {
         "header": {
@@ -10,6 +20,21 @@
         "header": {
           "open": true
         }
+      }
+    },
+    "PowerDistributions": {
+      "22": {
+        "PowerDistribution[22]": {
+          "open": true
+        }
+      },
+      "window": {
+        "visible": true
+      }
+    },
+    "RoboRIO": {
+      "window": {
+        "visible": true
       }
     }
   },
@@ -25,7 +50,22 @@
       "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
-      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro"
+      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/Shuffleboard/Espresso/Lighting": "String Chooser",
+      "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "traj": {
+          "arrowSize": 52,
+          "arrows": false,
+          "style": "Line"
+        },
+        "units": "meters",
+        "window": {
+          "visible": true
+        }
+      }
     }
   }
 }

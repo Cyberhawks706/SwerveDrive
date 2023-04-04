@@ -13,6 +13,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.AutonMover;
 import frc.robot.subsystems.Lighting;
@@ -71,6 +74,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         new JoystickButton(driverJoystick, 2).onTrue(new InstantCommand(() -> SwerveSubsystem.zeroHeading()));
+        //new Trigger(() -> manipulatorJoystick.getPOV() == 270 ? true : false).debounce(1).onTrue(new InstantCommand(() -> Components.sparkClawTilt.rezero()));
     }
 
     public void autonomousInit() {
