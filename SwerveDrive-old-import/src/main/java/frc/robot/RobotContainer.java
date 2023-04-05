@@ -2,6 +2,12 @@ package frc.robot;
 
 import java.util.List;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -86,24 +92,22 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new AutonMover(swerveSubsystem);
+        //return new AutonMover(swerveSubsystem);
 
-        /* 
+        
         // 1. Create trajectory settings
-        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-                SwerveConstants.kMaxSpeedMetersPerSecond,
-                SwerveConstants.kMaxAccelerationMetersPerSecondSquared)
-                        .setKinematics(SwerveConstants.kDriveKinematics);
+        // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+        //         SwerveConstants.kMaxSpeedMetersPerSecond,
+        //         SwerveConstants.kMaxAccelerationMetersPerSecondSquared)
+        //                 .setKinematics(SwerveConstants.kDriveKinematics);
 
         // 2. Generate trajectory
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0, 0, new Rotation2d(0)),
-                List.of(
-                        new Translation2d(0, 0),
-                        new Translation2d(0, 0)),
-                new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-                trajectoryConfig);
-
+        PathPlannerTrajectory traj = PathPlanner.generatePath(
+            new PathConstraints(0.05, 0.5), 
+            new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)), // position, heading
+            new PathPoint(new Translation2d(0.0, 1.0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)) // position, heading
+        );
+        swerveSubsystem.m_field.getObject("traj").setTrajectory(traj);
         // 3. Define PID controllers for tracking trajectory
         PIDController xController = new PIDController(SwerveConstants.kPXController, 0, 0);
         PIDController yController = new PIDController(SwerveConstants.kPYController, 0, 0);
@@ -112,23 +116,25 @@ public class RobotContainer {
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         // 4. Construct command to follow trajectory
-        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-                trajectory,
-                swerveSubsystem::getPose,
-                SwerveConstants.kDriveKinematics,
-                xController,
-                yController,
-                thetaController,
-                swerveSubsystem::setModuleStates,
-                swerveSubsystem);
+        PPSwerveControllerCommand swerveControllerCommand = new PPSwerveControllerCommand(
+                traj, 
+                swerveSubsystem::getPose, // Pose supplier
+                SwerveConstants.kDriveKinematics, // SwerveDriveKinematics
+                xController, // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                yController, // Y controller (usually the same values as X controller)
+                new PIDController(SwerveConstants.kPThetaController, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                swerveSubsystem::setModuleStates, // Module states consumer
+                false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+                swerveSubsystem // Requires this drive subsystem
+            );
 
         // 5. Add some init and wrap-up, and return everything
         return new SequentialCommandGroup(
-                new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
+                new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d())),
                 swerveControllerCommand,
                 new InstantCommand(() -> swerveSubsystem.stopModules()));
 
 
-        */
+        
     }
 }

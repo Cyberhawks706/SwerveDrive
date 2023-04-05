@@ -1,9 +1,12 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -15,6 +18,14 @@ import frc.robot.Components;
 import frc.robot.Constants;
 import frc.robot.SwerveConstants;
 import java.lang.Math;
+import java.util.HashMap;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 
 // class to move the robot in autonomous
@@ -34,12 +45,16 @@ public class AutonMover extends CommandBase {
 
     public static int tester = 0;
     public static String position = "c"; // c for center, l for left, r for right
+
+
     // constructor with input for swerve subsystem
     public AutonMover(SwerveSubsystem swerveSubsystem) {
         // add subsystem requireme nts
         addRequirements(swerveSubsystem);
         this.swerveSubsystem = swerveSubsystem;
         startingAngle = swerveSubsystem.getHeading();
+
+
     }
 
     public static void init() {

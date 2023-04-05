@@ -3,7 +3,13 @@ package frc.robot.subsystems;
 import java.util.List;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,15 +22,15 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.SwerveConstants;
-import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.commands.Timer706;
 
 public class SwerveSubsystem extends SubsystemBase {
 
@@ -32,7 +38,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
 
     private SwerveDriveOdometry odometer;
-    private final Field2d m_field = new Field2d();
+    public final Field2d m_field = new Field2d();
     private Trajectory m_trajectory;
     public static double offset = 0;
     
@@ -96,6 +102,9 @@ public class SwerveSubsystem extends SubsystemBase {
             new Pose2d(3, 0, Rotation2d.fromDegrees(0)),
             new TrajectoryConfig(Units.feetToMeters(3.0), Units.feetToMeters(3.0)));
 
+        
+
+
         m_field.getObject("traj").setTrajectory(m_trajectory);
         new Thread(() -> {
             try {
@@ -122,6 +131,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(getRotation2d(), modulePosition, pose);
+    }
+    public Pose2d getPose() {
+        return odometer.getPoseMeters();
     }
 
     
@@ -265,5 +277,27 @@ public class SwerveSubsystem extends SubsystemBase {
     
 
 
+    }
+    // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
+    public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> {
+            // Reset odometry for the first path you run during auto
+            if(isFirstPath){
+                this.resetOdometry(traj.getInitialHolonomicPose());
+            }
+            }),
+            new PPSwerveControllerCommand(
+                traj, 
+                this::getPose, // Pose supplier
+                SwerveConstants.kDriveKinematics, // SwerveDriveKinematics
+                new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
+                new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                this::setModuleStates, // Module states consumer
+                false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+                this // Requires this drive subsystem
+            )
+        );
     }
 }
