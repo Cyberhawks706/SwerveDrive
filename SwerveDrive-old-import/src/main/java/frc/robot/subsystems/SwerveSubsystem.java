@@ -88,10 +88,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public SwerveSubsystem() {
 
-        modulePosition[0] = new SwerveModulePosition(frontLeft.driveEncoder.getPosition(), frontRight.getState().angle);
-        modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(), frontRight.getState().angle);
-        modulePosition[2] = new SwerveModulePosition(backLeft.driveEncoder.getPosition(), frontRight.getState().angle);
-        modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), frontRight.getState().angle);
+        modulePosition[0] = new SwerveModulePosition(frontLeft.driveEncoder.getPosition(), new Rotation2d(frontLeft.getAbsoluteEncoderRad()));
+        modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(), new Rotation2d(frontRight.getAbsoluteEncoderRad()));
+        modulePosition[2] = new SwerveModulePosition(backLeft.driveEncoder.getPosition(), new Rotation2d(backRight.getAbsoluteEncoderRad()));
+        modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), new Rotation2d(backRight.getAbsoluteEncoderRad()));
 
         odometer = new SwerveDriveOdometry(SwerveConstants.kDriveKinematics, new Rotation2d(0), modulePosition);
         SmartDashboard.putData("Field", m_field);
@@ -103,9 +103,9 @@ public class SwerveSubsystem extends SubsystemBase {
             new TrajectoryConfig(Units.feetToMeters(3.0), Units.feetToMeters(3.0)));
 
         
+        
 
-
-        m_field.getObject("traj").setTrajectory(m_trajectory);
+        //m_field.getObject("traj").setTrajectory(m_trajectory);
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -140,9 +140,16 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        
+        modulePosition[0] = new SwerveModulePosition(frontLeft.driveEncoder.getPosition(), new Rotation2d(frontLeft.getAbsoluteEncoderRad()));
+        modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(), new Rotation2d(frontRight.getAbsoluteEncoderRad()));
+        modulePosition[2] = new SwerveModulePosition(backLeft.driveEncoder.getPosition(), new Rotation2d(backRight.getAbsoluteEncoderRad()));
+        modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), new Rotation2d(backRight.getAbsoluteEncoderRad()));
 
         odometer.update(getRotation2d(), modulePosition);
         m_field.setRobotPose(odometer.getPoseMeters());
+        //System.out.println(getPose());
+        //System.out.println(frontLeft.driveEncoder.getPosition());
         SmartDashboard.putNumber("Robot Heading", getHeading());
 
         

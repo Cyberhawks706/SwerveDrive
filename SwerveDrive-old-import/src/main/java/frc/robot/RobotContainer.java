@@ -36,9 +36,8 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
 
-    @Config
     public final SendableChooser<String> lightChooser = new SendableChooser<>();
-    private final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
     private final SwerveJoystickCmd teleopCmd = new SwerveJoystickCmd(
         swerveSubsystem,
@@ -79,7 +78,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        new JoystickButton(driverJoystick, 2).onTrue(new InstantCommand(() -> SwerveSubsystem.zeroHeading()));
+        new JoystickButton(driverJoystick, 2).onTrue(new InstantCommand(() -> SwerveSubsystem.zeroHeading()).alongWith(new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d()))));
         //new Trigger(() -> manipulatorJoystick.getPOV() == 270 ? true : false).debounce(1).onTrue(new InstantCommand(() -> Components.sparkClawTilt.rezero()));
     }
 
@@ -102,14 +101,10 @@ public class RobotContainer {
         //                 .setKinematics(SwerveConstants.kDriveKinematics);
 
         // 2. Generate trajectory
-        PathPlannerTrajectory traj = PathPlanner.generatePath(
-            new PathConstraints(0.05, 0.5), 
-            new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)), // position, heading
-            new PathPoint(new Translation2d(0.0, 1.0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)) // position, heading
-        );
+        PathPlannerTrajectory traj = PathPlanner.loadPath("New Path", new PathConstraints(1, 0.5));
         swerveSubsystem.m_field.getObject("traj").setTrajectory(traj);
         // 3. Define PID controllers for tracking trajectory
-        PIDController xController = new PIDController(SwerveConstants.kPXController, 0, 0);
+        PIDController xController = new PIDController(0, 0, 0);
         PIDController yController = new PIDController(SwerveConstants.kPYController, 0, 0);
         ProfiledPIDController thetaController = new ProfiledPIDController(
                 SwerveConstants.kPThetaController, 0, 0, SwerveConstants.kThetaControllerConstraints);
@@ -121,16 +116,16 @@ public class RobotContainer {
                 swerveSubsystem::getPose, // Pose supplier
                 SwerveConstants.kDriveKinematics, // SwerveDriveKinematics
                 xController, // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                yController, // Y controller (usually the same values as X controller)
-                new PIDController(SwerveConstants.kPThetaController, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                xController, // Y controller (usually the same values as X controller)
+                new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 swerveSubsystem::setModuleStates, // Module states consumer
                 false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
                 swerveSubsystem // Requires this drive subsystem
             );
-
+        
         // 5. Add some init and wrap-up, and return everything
         return new SequentialCommandGroup(
-                new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d())),
+                new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0,0,Rotation2d.fromDegrees(-90)))),
                 swerveControllerCommand,
                 new InstantCommand(() -> swerveSubsystem.stopModules()));
 

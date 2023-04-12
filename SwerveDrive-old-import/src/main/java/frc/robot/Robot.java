@@ -21,6 +21,8 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 import java.util.function.BooleanSupplier;
 
+import com.pathplanner.lib.server.PathPlannerServer;
+
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -98,6 +100,7 @@ public class Robot extends TimedRobot {
 		backLeftInitPos = SwerveSubsystem.backLeft.getAbsoluteEncoderRad();
 		backRightInitPos = SwerveSubsystem.backRight.getAbsoluteEncoderRad();
 		Shuffleboard.getTab("Espresso").addBoolean("Intake Switch", () -> !Components.intakeSwitch.get());
+		PathPlannerServer.startServer(5811); // 5811 = port number. adjust this according to your needs
 		
 		//Components.ahrs.calibrate();
 		
@@ -111,6 +114,7 @@ public class Robot extends TimedRobot {
 		//SmartDashboard.putBoolean("Intake Switch", !Components.intakeSwitch.get());
 		SmartDashboard.putNumber("Front", Components.frontLiftPot.get());
 		SmartDashboard.putNumber("Rear", Components.rearLiftPot.get());
+		RobotContainer.swerveSubsystem.periodic();
 		Lighting.setLEDS(NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Espresso").getSubTable("Lighting").getEntry("Active").getString(""));
 	}
 
