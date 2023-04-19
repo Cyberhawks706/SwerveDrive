@@ -33,9 +33,9 @@ public class SwerveConstants {
     //Module Constants
     
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-    public static final double kDriveMotorGearRatio = 1/10000000;
+    public static final double kDriveMotorGearRatio = 1/8.14;
     public static final double kTurningMotorGearRatio = 1/12.8;
-    public static final double kDriveEncoderRot2Meter = 1/28; //kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters
+    public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
     public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
     public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
     public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60;
@@ -44,15 +44,15 @@ public class SwerveConstants {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Drive Constants
 
-    public static final double kTrackWidth = Units.inchesToMeters(21);
+    public static final double kTrackWidth = Units.inchesToMeters(22.5);
     // Distance between right and left wheels
-    public static final double kWheelBase = Units.inchesToMeters(25.5);
+    public static final double kWheelBase = Units.inchesToMeters(22.5);
     // Distance between front and back wheels
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+    		new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+			new Translation2d(kWheelBase / 2, kTrackWidth / 2),
             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-            new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-            new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+			new Translation2d(kWheelBase / 2, -kTrackWidth / 2));
 
     public static final int kFrontLeftDriveMotorPort = 6;
     public static final int kBackLeftDriveMotorPort = 1;

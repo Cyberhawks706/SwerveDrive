@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -101,7 +102,7 @@ public class RobotContainer {
         //                 .setKinematics(SwerveConstants.kDriveKinematics);
 
         // 2. Generate trajectory
-        PathPlannerTrajectory traj = PathPlanner.loadPath("New Path", new PathConstraints(1, 0.5));
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Straight Path", new PathConstraints(1, 0.35));
         swerveSubsystem.m_field.getObject("traj").setTrajectory(traj);
         // 3. Define PID controllers for tracking trajectory
         PIDController xController = new PIDController(0, 0, 0);
@@ -113,19 +114,20 @@ public class RobotContainer {
         // 4. Construct command to follow trajectory
         PPSwerveControllerCommand swerveControllerCommand = new PPSwerveControllerCommand(
                 traj, 
-                swerveSubsystem::getPose, // Pose supplier
+                swerveSubsystem::getPose, // Pose supplier, swerveSubsystem::getPose
                 SwerveConstants.kDriveKinematics, // SwerveDriveKinematics
                 xController, // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 xController, // Y controller (usually the same values as X controller)
-                new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                new PIDController(0.3, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 swerveSubsystem::setModuleStates, // Module states consumer
                 false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
                 swerveSubsystem // Requires this drive subsystem
             );
         
+        // traj.getInitialHolonomicPose().getTranslation()
         // 5. Add some init and wrap-up, and return everything
         return new SequentialCommandGroup(
-                new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0,0,Rotation2d.fromDegrees(-90)))),
+                new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(-traj.getInitialHolonomicPose().getY()/3, traj.getInitialHolonomicPose().getX()/3, Rotation2d.fromDegrees(-90)))),//new Pose2d(-1,0.3,Rotation2d.fromDegrees(-90))
                 swerveControllerCommand,
                 new InstantCommand(() -> swerveSubsystem.stopModules()));
 

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.List;
+import java.util.Map;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathConstraints;
@@ -92,8 +93,9 @@ public class SwerveSubsystem extends SubsystemBase {
         modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(), new Rotation2d(frontRight.getAbsoluteEncoderRad()));
         modulePosition[2] = new SwerveModulePosition(backLeft.driveEncoder.getPosition(), new Rotation2d(backRight.getAbsoluteEncoderRad()));
         modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), new Rotation2d(backRight.getAbsoluteEncoderRad()));
-
+        
         odometer = new SwerveDriveOdometry(SwerveConstants.kDriveKinematics, new Rotation2d(0), modulePosition);
+        
         SmartDashboard.putData("Field", m_field);
         m_trajectory =
         TrajectoryGenerator.generateTrajectory(
@@ -133,7 +135,7 @@ public class SwerveSubsystem extends SubsystemBase {
         odometer.resetPosition(getRotation2d(), modulePosition, pose);
     }
     public Pose2d getPose() {
-        return odometer.getPoseMeters();
+        return new Pose2d(odometer.getPoseMeters().getTranslation().times(-3).rotateBy(Rotation2d.fromDegrees(-90)), odometer.getPoseMeters().getRotation());
     }
 
     
@@ -145,10 +147,10 @@ public class SwerveSubsystem extends SubsystemBase {
         modulePosition[1] = new SwerveModulePosition(frontRight.driveEncoder.getPosition(), new Rotation2d(frontRight.getAbsoluteEncoderRad()));
         modulePosition[2] = new SwerveModulePosition(backLeft.driveEncoder.getPosition(), new Rotation2d(backRight.getAbsoluteEncoderRad()));
         modulePosition[3] = new SwerveModulePosition(backRight.driveEncoder.getPosition(), new Rotation2d(backRight.getAbsoluteEncoderRad()));
-
+        
         odometer.update(getRotation2d(), modulePosition);
-        m_field.setRobotPose(odometer.getPoseMeters());
-        //System.out.println(getPose());
+        m_field.setRobotPose(getPose());
+        // System.out.println(getPose());
         //System.out.println(frontLeft.driveEncoder.getPosition());
         SmartDashboard.putNumber("Robot Heading", getHeading());
 
@@ -241,7 +243,7 @@ public class SwerveSubsystem extends SubsystemBase {
         desiredStates[1].angle = desiredStates[1].angle.plus(Rotation2d.fromRadians(SwerveConstants.kFrontRightDriveAbsoluteEncoderOffsetrad));
         desiredStates[2].angle = desiredStates[2].angle.plus(Rotation2d.fromRadians(SwerveConstants.kBackLeftDriveAbsoluteEncoderOffsetrad));
         desiredStates[3].angle = desiredStates[3].angle.plus(Rotation2d.fromRadians(SwerveConstants.kBackRightDriveAbsoluteEncoderOffsetrad));
-
+        
         desiredStates[0].angle = desiredStates[0].angle.plus(Rotation2d.fromDegrees(90));
         desiredStates[1].angle = desiredStates[1].angle.plus(Rotation2d.fromDegrees(90));
         desiredStates[2].angle = desiredStates[2].angle.plus(Rotation2d.fromDegrees(90));
