@@ -29,14 +29,10 @@ jobs:
     - name: Add repository to git safe directories
       run: git config --global --add safe.directory $GITHUB_WORKSPACE
 
-    # change to the right directory
-    - name: Change to the right directory because our folder structure is bad
-      run: cd ./SwerveDrive-old-import
-
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: chmod +x SwerveDrive-old-import/gradlew
 
     # Runs a single command using the runners shell
     - name: Compile and run tests on robot code
-      run: ./gradlew build
+      run: SwerveDrive-old-import/gradlew build
