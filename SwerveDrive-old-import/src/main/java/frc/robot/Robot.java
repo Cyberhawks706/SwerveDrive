@@ -6,25 +6,15 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.AutonMover;
 import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.subsystems.CameraDaemon;
-import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Lighting;
-import frc.robot.subsystems.SwerveSubsystem;
-
-import java.util.function.BooleanSupplier;
-
 import com.pathplanner.lib.server.PathPlannerServer;
 
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 
@@ -32,22 +22,7 @@ public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
 	public static boolean emergencyDisabled = false;
 
-	//Command autonomousCommand;
-	//SendableChooser<Command> chooser = new SendableChooser<>();
-
-
-	public static Chassis chassis;
-	public static boolean auto;
-	public static XboxController xboxDrive;
 	public static SwerveJoystickCmd swerveJoystickCmd;
-	
-	public static double frontLeftInitPos;
-	public static double frontRightInitPos;
-	public static double backLeftInitPos;
-	public static double backRightInitPos;
-	public static ShuffleboardTab tab;
-	
-
 
 
 	private RobotContainer m_robotContainer;
@@ -55,7 +30,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-		tab = Shuffleboard.getTab("Espresso");
 
 
 	// 	    /$$$$$$  /$$       /$$             /$$      /$$ /$$   /$$ /$$$$$$$$ /$$$$$$$$ /$$        /$$$$$$                                     
@@ -90,15 +64,10 @@ public class Robot extends TimedRobot {
 	// 	\______/ |__/  |__/|__/     |__/|________/      |_______/ |______/|__/  |__/|________/ \______/    |__/   |______/ \______/ |__/  \__/
 																																			  
 																							  
-		CameraDaemon.robotInit(); //Starts cameraserver
+	
 		System.out.println("Started");
 		Components.init();
 		m_robotContainer = new RobotContainer();
-		Lighting.robotInit();
-		frontLeftInitPos = SwerveSubsystem.frontLeft.getAbsoluteEncoderRad();
-		frontRightInitPos = SwerveSubsystem.frontRight.getAbsoluteEncoderRad();
-		backLeftInitPos = SwerveSubsystem.backLeft.getAbsoluteEncoderRad();
-		backRightInitPos = SwerveSubsystem.backRight.getAbsoluteEncoderRad();
 		Shuffleboard.getTab("Espresso").addBoolean("Intake Switch", () -> !Components.intakeSwitch.get());
 		PathPlannerServer.startServer(5811); // 5811 = port number. adjust this according to your needs
 		
@@ -109,12 +78,8 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic(){
 		CommandScheduler.getInstance().run();
 		SmartDashboard.putData(RobotContainer.m_pdp);
-		//System.out.println(NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("processed0").getSubTable("cube0").getEntry("distance").getDouble(0));
-		//System.out.println(!Components.intakeSwitch.get());
-		//SmartDashboard.putBoolean("Intake Switch", !Components.intakeSwitch.get());
 		SmartDashboard.putNumber("Front", Components.frontLiftPot.get());
 		SmartDashboard.putNumber("Rear", Components.rearLiftPot.get());
-		RobotContainer.swerveSubsystem.periodic();
 		Lighting.setLEDS(NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Espresso").getSubTable("Lighting").getEntry("Active").getString(""));
 	}
 

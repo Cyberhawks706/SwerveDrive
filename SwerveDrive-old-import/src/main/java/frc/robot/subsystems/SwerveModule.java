@@ -1,36 +1,33 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.SwerveConstants;
+import frc.robot.Constants;
 
 
 public class SwerveModule {
 
-    public final CANSparkMax driveMotor;
-    public final CANSparkMax turningMotor;
+    private final CANSparkMax driveMotor;
+    private final CANSparkMax turningMotor;
 
-    public final CANEncoder driveEncoder;
-    public final CANEncoder turningEncoder;
+    private final RelativeEncoder driveEncoder;
+    private final RelativeEncoder turningEncoder;
 
     private final PIDController turningPidController;
 
-    private final PIDController drivingPidController;
 
     final AnalogInput absoluteEncoder;
     private final boolean absoluteEncoderReversed;
     private final double absoluteEncoderOffsetRad;
-    private static boolean alligned = false;
-    private static double angle;
-
+    public final double initPos;
 
 
     public SwerveModule(int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed, int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
@@ -49,18 +46,15 @@ public class SwerveModule {
         driveEncoder = driveMotor.getEncoder();
         turningEncoder = turningMotor.getEncoder();
 
-        driveEncoder.setPositionConversionFactor(SwerveConstants.kDriveEncoderRot2Meter);
-        driveEncoder.setVelocityConversionFactor(SwerveConstants.kDriveEncoderRPM2MeterPerSec);
-        turningEncoder.setPositionConversionFactor(SwerveConstants.kTurningEncoderRot2Rad);
-        turningEncoder.setVelocityConversionFactor(SwerveConstants.kTurningEncoderRPM2RadPerSec);
+        driveEncoder.setPositionConversionFactor(Constants.Swerve.kDriveEncoderRot2Meter);
+        driveEncoder.setVelocityConversionFactor(Constants.Swerve.kDriveEncoderRPM2MeterPerSec);
+        turningEncoder.setPositionConversionFactor(Constants.Swerve.kTurningEncoderRot2Rad);
+        turningEncoder.setVelocityConversionFactor(Constants.Swerve.kTurningEncoderRPM2RadPerSec);
 
-        turningPidController = new PIDController(SwerveConstants.kPTurning, 0, 0); 
+        turningPidController = new PIDController(Constants.Swerve.kPTurning, 0, 0); 
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
-        drivingPidController = new PIDController(0, 0, 0);
-
-
-
+        initPos = getAbsoluteEncoderRad();
     }
 
     public double getDrivePosition() {
@@ -88,8 +82,6 @@ public class SwerveModule {
 
     }
 
-
-
     public void resetEncoders() {
         driveEncoder.setPosition(0);
         turningEncoder.setPosition(getAbsoluteEncoderRad());
@@ -99,6 +91,10 @@ public class SwerveModule {
         return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
     }
 
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getTurningPosition()));
+    }
+
     public void setDesiredState(SwerveModuleState state) {
         if (Math.abs(state.speedMetersPerSecond) < 0.001) {
             stop();
@@ -106,12 +102,10 @@ public class SwerveModule {
         }
         
         state = SwerveModuleState.optimize(state, getState().angle);
-        driveMotor.set(state.speedMetersPerSecond / SwerveConstants.kPhysicalMaxSpeedMetersPerSecond);
+        driveMotor.set(state.speedMetersPerSecond / Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
 
-
-
-        SmartDashboard.putString("Swerve[" + "] state", state.toString());
+        //SmartDashboard.putString("Swerve[" + "] state", state.toString());
     }
 
     public void stop() {

@@ -1,12 +1,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lighting extends SubsystemBase {
-    public static DigitalOutput out0, out1, out2, out3;
+    private final SendableChooser<String> chooser = new SendableChooser<>();
+    private static DigitalOutput out0, out1, out2, out3;
     
-    public static void robotInit() {
+    public void robotInit() {
         out0 = new DigitalOutput(0);
         out1 = new DigitalOutput(1);
         out2 = new DigitalOutput(2);
@@ -15,8 +17,17 @@ public class Lighting extends SubsystemBase {
         out1.set(false);
         out2.set(false);
         out3.set(false);
+        chooser.setDefaultOption("Pink", "PINK");
+		chooser.addOption("Black", "BLACK");
+		chooser.addOption("Yellow", "YELLOW");
+		chooser.addOption("Purple", "PURPLE");
+		chooser.addOption("Red", "RED");
+		chooser.addOption("Blue", "BLUE");
     }
     
+    public SendableChooser<String> getChooser() {
+        return chooser;
+    }
     public static void setLEDS(String color) {
         switch (color) {
             case "BLACK":

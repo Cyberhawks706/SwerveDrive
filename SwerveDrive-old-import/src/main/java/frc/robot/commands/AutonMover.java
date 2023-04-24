@@ -1,12 +1,9 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -16,16 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Components;
 import frc.robot.Constants;
-import frc.robot.SwerveConstants;
 import java.lang.Math;
-import java.util.HashMap;
-
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 
 // class to move the robot in autonomous
@@ -40,7 +28,6 @@ public class AutonMover extends CommandBase {
     public static double startingAngle;
     public static boolean turned = false;
     public static int initialPlaced = 0;
-    private static int reverse = 0;
     private static int timer = 0;
 
     public static int tester = 0;
@@ -148,7 +135,7 @@ public class AutonMover extends CommandBase {
             Transform3d target1 = new Transform3d();
             target1 = new Transform3d(new Translation3d(0,-1.0,0), new Rotation3d(0,0,0));            
             ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target1);
-            SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+            SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
             swerveSubsystem.setModuleStates(swerveModuleStates);
 
             } if (timer > 500 && timer < 2000) {
@@ -161,14 +148,14 @@ public class AutonMover extends CommandBase {
                 Transform3d target1 = new Transform3d(); //-0.6
                 target1 = new Transform3d(new Translation3d(0,-1,0), new Rotation3d(0,0,0));            
                 ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target1);
-                SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+                SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
                 swerveSubsystem.setModuleStates(swerveModuleStates);
 
 
         } else if (timer > 720){
             Transform3d target1 = new Transform3d();
             ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target1);
-            SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+            SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
             swerveSubsystem.setModuleStates(swerveModuleStates);
 
 
@@ -252,7 +239,7 @@ public class AutonMover extends CommandBase {
             //scoreTopCone();
             System.out.println(swerveSubsystem.getHeading() - pickupHeading);
             ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, -0.3, (swerveSubsystem.getHeading() - pickupHeading)/200, swerveSubsystem.getRotation2d());
-            SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+            SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
             swerveSubsystem.setModuleStates(swerveModuleStates);
             //timer++;
                 
@@ -275,16 +262,16 @@ public class AutonMover extends CommandBase {
                 armDown();
             }
             ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
-            SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+            SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
             swerveSubsystem.setModuleStates(swerveModuleStates);
         } else if(turned && pickedUp) {
             // Components.sparkIntake.setPower(0);
             // ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-            // SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+            // SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
             // swerveSubsystem.setModuleStates(swerveModuleStates);
             if (Math.abs(swerveSubsystem.getHeading() - startingAngle) > 5) { //need to turn back
                 ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0.3, (swerveSubsystem.getHeading() - startingAngle)/200, swerveSubsystem.getRotation2d());
-                SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+                SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
                 swerveSubsystem.setModuleStates(swerveModuleStates);
             } else {
                 switch (DriverStation.getAlliance()) {
@@ -520,7 +507,7 @@ public class AutonMover extends CommandBase {
     private void balance() {
         Transform3d target = calculateTargetForBalance();
         ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
-        SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(swerveModuleStates);
     }
 
@@ -551,7 +538,7 @@ public class AutonMover extends CommandBase {
     public void gotoTag(int camNum, int tagNum) {
         Transform3d target = calculateTagPos(camNum,tagNum);
         ChassisSpeeds chassisSpeeds = calculateSpeedsToTarget(target);
-        SwerveModuleState[] swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
         if(target.getY() > 1) { 
             swerveSubsystem.setModuleStates(swerveModuleStates);
         }
@@ -574,11 +561,11 @@ public class AutonMover extends CommandBase {
 
     private ChassisSpeeds calculateSpeedsToTarget(Transform3d target) {
         double angularDistance = target.getRotation().getZ();
-        //double rotMultiplier = Math.abs(angularDistance / SwerveConstants.kMaxAngularSpeedRadiansPerSecond);
+        //double rotMultiplier = Math.abs(angularDistance / Constants.Swerve.kMaxAngularSpeedRadiansPerSecond);
 
-        double xSpeed = Math.min(target.getX(), SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond);
-        double ySpeed = Math.min(target.getY(), SwerveConstants.kTeleDriveMaxSpeedMetersPerSecond);
-        double turnSpeed = Math.min(angularDistance, SwerveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond);
+        double xSpeed = Math.min(target.getX(), Constants.Swerve.kTeleDriveMaxSpeedMetersPerSecond);
+        double ySpeed = Math.min(target.getY(), Constants.Swerve.kTeleDriveMaxSpeedMetersPerSecond);
+        double turnSpeed = Math.min(angularDistance, Constants.Swerve.kTeleDriveMaxAngularSpeedRadiansPerSecond);
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
         return chassisSpeeds;
         
