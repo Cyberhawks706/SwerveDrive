@@ -28,21 +28,21 @@ import static frc.robot.Constants.Swerve.*;
 public class SwerveSubsystem extends SubsystemBase {
 
     public final static AHRS gyro = new AHRS(SPI.Port.kMXP);
+    
     private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
 
     private SwerveDriveOdometry odometer;
     public final Field2d m_field = new Field2d();
-    public static double offset = 0;
 
     private final SwerveDriveKinematics kDriveKinematics;
 
     private final SlewRateLimiter xLimiter, yLimiter, turnLimiter;    
 
-    public boolean firstTime = true;
-    public boolean reachedFrontRight = false;
-    public boolean reachedFrontLeft = false;
-    public boolean reachedBackLeft = false;
-    public boolean reachedBackRight = false;
+    private boolean firstTime = true;
+    private boolean reachedFrontRight = false;
+    private boolean reachedFrontLeft = false;
+    private boolean reachedBackLeft = false;
+    private boolean reachedBackRight = false;
 
 
     public final static SwerveModule frontLeft = new SwerveModule(
@@ -89,7 +89,7 @@ public class SwerveSubsystem extends SubsystemBase {
             new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
             new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
-        odometer = new SwerveDriveOdometry(kDriveKinematics, new Rotation2d(0), modulePosition);
+        odometer = new SwerveDriveOdometry(kDriveKinematics, getRotation2d(), modulePosition);
         
         SmartDashboard.putData("Field", m_field);
         
@@ -105,7 +105,6 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     public static void zeroHeading() {
         gyro.reset();
-        offset = 180;
     }
     
     public double getHeading() {
@@ -113,7 +112,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(-getHeading());
+        return gyro.getRotation2d();
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -140,7 +139,7 @@ public class SwerveSubsystem extends SubsystemBase {
         if (Math.abs(xSpeed) < kDeadband) xSpeed = 0;
         if (Math.abs(ySpeed) < kDeadband) ySpeed = 0;
         if (Math.abs(rot) < kDeadband) rot = 0;
-        SwerveModuleState[] moduleStates = kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, rot, getRotation2d()));
+        SwerveModuleState[] moduleStates = kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d()));
         
         setModuleStates(moduleStates);
     }
@@ -158,8 +157,6 @@ public class SwerveSubsystem extends SubsystemBase {
         
         odometer.update(getRotation2d(), modulePosition);
         m_field.setRobotPose(getPose());
-        // System.out.println(getPose());
-        //System.out.println(frontLeft.driveEncoder.getPosition());
         SmartDashboard.putNumber("Robot Heading", getHeading());
 
         
@@ -218,24 +215,6 @@ public class SwerveSubsystem extends SubsystemBase {
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond);
         
-
-        if(firstTime){
-            robotAlign(desiredStates);
-            firstTime = false;
-        }
-
-        desiredStates[0].angle = desiredStates[0].angle.plus(Rotation2d.fromRadians(Constants.Swerve.kFrontLeftDriveAbsoluteEncoderOffsetrad));
-        desiredStates[1].angle = desiredStates[1].angle.plus(Rotation2d.fromRadians(Constants.Swerve.kFrontRightDriveAbsoluteEncoderOffsetrad));
-        desiredStates[2].angle = desiredStates[2].angle.plus(Rotation2d.fromRadians(Constants.Swerve.kBackLeftDriveAbsoluteEncoderOffsetrad));
-        desiredStates[3].angle = desiredStates[3].angle.plus(Rotation2d.fromRadians(Constants.Swerve.kBackRightDriveAbsoluteEncoderOffsetrad));
-        
-        for (SwerveModuleState desiredState : desiredStates) {
-            if(desiredState.speedMetersPerSecond > 20) {
-                desiredState.speedMetersPerSecond = 0;
-            }
-            desiredState.angle = desiredState.angle.plus(Rotation2d.fromDegrees(90));
-            desiredState.angle = desiredState.angle.plus(Rotation2d.fromDegrees(offset));
-        }
 
         // desiredStates[0].speedMetersPerSecond *= 16*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.11);
         // desiredStates[1].speedMetersPerSecond *= 16*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.11);

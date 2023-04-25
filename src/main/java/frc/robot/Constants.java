@@ -11,9 +11,6 @@ public final class Constants {
 	public static final int PID_TIMEOUT = 30;
 
 	public static final class Auton {
-		public static final double strafeModifier = 1;
-		public static final double rotationalModifier = 1;
-		public static final double tolerance = 2;
 		public static final Transform3d[] fieldRelativeTagPositions = {
 				new Transform3d(), // offset so we can just look up transform by tag id
 				new Transform3d(new Translation3d(7.243064, -2.936494, 0), new Rotation3d(0, 0, 180)),

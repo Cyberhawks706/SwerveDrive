@@ -100,7 +100,7 @@ public class SwerveModule {
             stop();
             return;
         }
-        
+        state.angle = state.angle.plus(new Rotation2d(absoluteEncoderOffsetRad));
         state = SwerveModuleState.optimize(state, getState().angle);
         driveMotor.set(state.speedMetersPerSecond / Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
