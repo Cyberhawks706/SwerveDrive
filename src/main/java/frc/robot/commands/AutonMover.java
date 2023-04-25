@@ -36,15 +36,6 @@ public class AutonMover extends CommandBase {
 
     // constructor with input for swerve subsystem
     public AutonMover(SwerveSubsystem swerveSubsystem) {
-        // add subsystem requireme nts
-        addRequirements(swerveSubsystem);
-        this.swerveSubsystem = swerveSubsystem;
-        startingAngle = swerveSubsystem.getHeading();
-
-
-    }
-
-    public static void init() {
         currentPitch = 0;
         reachedRamp = false;
         reachedLevel = 0;
@@ -53,6 +44,14 @@ public class AutonMover extends CommandBase {
         startingAngle = 0;
         turned = false;
         initialPlaced = 0;
+        // add subsystem requirements
+        addRequirements(swerveSubsystem);
+        this.swerveSubsystem = swerveSubsystem;
+        startingAngle = swerveSubsystem.getHeading();
+    }
+
+    public static void init() {
+        
     }
 
     @Override

@@ -8,8 +8,6 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
 
-	public static final int PID_TIMEOUT = 30;
-
 	public static final class Auton {
 		public static final Transform3d[] fieldRelativeTagPositions = {
 				new Transform3d(), // offset so we can just look up transform by tag id
@@ -28,11 +26,6 @@ public final class Constants {
 	}
 
 
-	public class Drive {
-		public static final double PI = 3.2;
-		public static final double ROT_SIZE = 12.8; // length of 1 full rotation
-		public static final double PWR_MODIFIER = 0.25;
-	}
 	//all the drive stuff
 	public static final class Swerve {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,40 +112,13 @@ public final class Constants {
 						kMaxAngularSpeedRadiansPerSecond,
 						kMaxAngularAccelerationRadiansPerSecondSquared);
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// OI Constants
-
-		public static final int kDriverControllerPort = 2;
-
-		public static final double kDeadband = 0.05;
-
+		
 	}
 
 	public class IO {
-		// Joystick Ports
-		public static final int LEFT_JOY = 1;
-		public static final int RIGHT_JOY = 0;
-		public static final int XBOXDRIVE = 2;
-		public static final int XBOXMANIP = 3;
-
-		// Joystick Buttons
-		public static final int TRIGGER = 1;
-		public static final int CLIMB = 2;
-
-		// Xbox Buttons
-		public static final int A = 1;
-		public static final int B = 2;
-		public static final int X = 3;
-		public static final int Y = 4;
-		public static final int LB = 5;
-		public static final int RB = 6;
-		public static final int BACK = 7;
-		public static final int START = 8;
-		public static final int MANIP = 9;
-		public static final int VISION_TRIGGER = 2;
-
-		// Xbox deadband
-		public static final double xboxDeadband = 0.08;
+		public static final int kDriverControllerPort = 2;
+		public static final int kManipulatorControllerPort = 3;
+		public static final double kDeadband = 0.05;
 	}
 
 	public class PID {

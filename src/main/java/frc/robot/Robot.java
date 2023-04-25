@@ -6,25 +6,15 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.AutonMover;
-import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.subsystems.Lighting;
 import com.pathplanner.lib.server.PathPlannerServer;
-
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 
 public class Robot extends TimedRobot {
+
 	private Command m_autonomousCommand;
-	public static boolean emergencyDisabled = false;
-
-	public static SwerveJoystickCmd swerveJoystickCmd;
-
-
 	private RobotContainer m_robotContainer;
 	
 
@@ -65,12 +55,11 @@ public class Robot extends TimedRobot {
 																																			  
 																							  
 	
-		System.out.println("Started");
+		
 		Components.init();
 		m_robotContainer = new RobotContainer();
-		Shuffleboard.getTab("Espresso").addBoolean("Intake Switch", () -> !Components.intakeSwitch.get());
 		PathPlannerServer.startServer(5811); // 5811 = port number. adjust this according to your needs
-		
+		System.out.println("Started");
 		//Components.ahrs.calibrate();
 		
 	}
@@ -78,9 +67,6 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic(){
 		CommandScheduler.getInstance().run();
 		SmartDashboard.putData(RobotContainer.m_pdp);
-		SmartDashboard.putNumber("Front", Components.frontLiftPot.get());
-		SmartDashboard.putNumber("Rear", Components.rearLiftPot.get());
-		Lighting.setLEDS(NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Espresso").getSubTable("Lighting").getEntry("Active").getString(""));
 	}
 
 	@Override
@@ -102,14 +88,12 @@ public class Robot extends TimedRobot {
 	  // schedule the autonomous command (example)
 	  if (m_autonomousCommand != null) {
 		m_autonomousCommand.schedule();
-		AutonMover.init();
 	  }
 	}
 
 
 	@Override
 	public void autonomousPeriodic() {
-		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -121,9 +105,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-
-		
-
 	}
 
 }
