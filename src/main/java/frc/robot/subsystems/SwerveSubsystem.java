@@ -38,11 +38,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private final SlewRateLimiter xLimiter, yLimiter, turnLimiter;
 
-    private boolean reachedFrontRight = false;
-    private boolean reachedFrontLeft = false;
-    private boolean reachedBackLeft = false;
-    private boolean reachedBackRight = false;
-
     public final static SwerveModule frontLeft = new SwerveModule(
             Constants.Swerve.kFrontLeftDriveMotorPort,
             Constants.Swerve.kFrontLeftTurningMotorPort,
@@ -90,7 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
         odometer = new SwerveDriveOdometry(kDriveKinematics, getRotation2d(), modulePosition);
 
         SmartDashboard.putData("Field", m_field);
-
+        recenter();
         xLimiter = new SlewRateLimiter(kTeleDriveMaxAccelerationUnitsPerSecond);
         yLimiter = new SlewRateLimiter(kTeleDriveMaxAccelerationUnitsPerSecond);
         turnLimiter = new SlewRateLimiter(kTeleDriveMaxAngularAccelerationUnitsPerSecond);
@@ -133,9 +128,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * move the robot
      * 
      * @param xSpeed forwards speed, positive is away from our alliance wall
-     * 
      * @param ySpeed sideways speed, positive is left
-     * 
      * @param rot rotation speed, positive is counterclockwise
      */
     public void drive(double xSpeed, double ySpeed, double rot) {
@@ -153,9 +146,9 @@ public class SwerveSubsystem extends SubsystemBase {
         if (Math.abs(xSpeed) < Constants.IO.kDeadband) xSpeed = 0;
         if (Math.abs(ySpeed) < Constants.IO.kDeadband) ySpeed = 0;
         if (Math.abs(rot) < Constants.IO.kDeadband) rot = 0;
-        ySpeed *= kTeleDriveMaxSpeedMetersPerSecond * (accelMultiplier + 0.11);
-        xSpeed *= kTeleDriveMaxSpeedMetersPerSecond * (accelMultiplier + 0.11);
-        rot *= kTeleDriveMaxAngularSpeedRadiansPerSecond * (accelMultiplier + 0.11);
+        ySpeed *= kTeleDriveMaxSpeedMetersPerSecond * (accelMultiplier + 0.15);
+        xSpeed *= kTeleDriveMaxSpeedMetersPerSecond * (accelMultiplier + 0.15);
+        rot *= kTeleDriveMaxAngularSpeedRadiansPerSecond * (accelMultiplier + 0.25);
         drive(xSpeed, ySpeed, rot);
     }
 
@@ -183,56 +176,8 @@ public class SwerveSubsystem extends SubsystemBase {
         backRight.stop();
     }
 
-    public void robotAlign(SwerveModuleState[] desiredStates) {
-        if (!reachedFrontRight) {
-            desiredStates[1].angle = Rotation2d.fromRadians(frontRight.initPos);
-            desiredStates[1].angle = desiredStates[1].angle
-                    .plus(Rotation2d.fromRadians(Constants.Swerve.kFrontRightDriveAbsoluteEncoderOffsetrad));
-            frontRight.setDesiredState(desiredStates[1]);
-            frontRight.resetEncoders();
-            reachedFrontRight = true;
-        }
-
-        if (!reachedFrontLeft) {
-            desiredStates[0].angle = Rotation2d.fromRadians(frontLeft.initPos);
-            desiredStates[0].angle = desiredStates[0].angle
-                    .plus(Rotation2d.fromRadians(Constants.Swerve.kFrontLeftDriveAbsoluteEncoderOffsetrad));
-            frontLeft.setDesiredState(desiredStates[0]);
-            frontLeft.resetEncoders();
-            reachedFrontLeft = true;
-        }
-
-        if (!reachedBackLeft) {
-            desiredStates[2].angle = Rotation2d.fromRadians(backLeft.initPos);
-            desiredStates[2].angle = desiredStates[2].angle
-                    .plus(Rotation2d.fromRadians(Constants.Swerve.kBackLeftDriveAbsoluteEncoderOffsetrad));
-            backLeft.setDesiredState(desiredStates[2]);
-            backLeft.resetEncoders();
-            reachedBackLeft = true;
-        }
-
-        if (!reachedBackRight) {
-            desiredStates[3].angle = Rotation2d.fromRadians(backRight.initPos);
-            desiredStates[3].angle = desiredStates[3].angle
-                    .plus(Rotation2d.fromRadians(Constants.Swerve.kBackRightDriveAbsoluteEncoderOffsetrad));
-            backRight.setDesiredState(desiredStates[3]);
-            backRight.resetEncoders();
-            reachedBackRight = true;
-        }
-
-    }
-
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond);
-
-        // desiredStates[0].speedMetersPerSecond *=
-        // 16*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.11);
-        // desiredStates[1].speedMetersPerSecond *=
-        // 16*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.11);
-        // desiredStates[2].speedMetersPerSecond *=
-        // 16*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.11);
-        // desiredStates[3].speedMetersPerSecond *=
-        // 16*(RobotContainer.driverJoystick.getRightTriggerAxis()+0.11);
 
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
@@ -255,11 +200,11 @@ public class SwerveSubsystem extends SubsystemBase {
                         traj,
                         this::getPose, // Pose supplier
                         kDriveKinematics, // SwerveDriveKinematics
-                        new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                        new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-                        new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                        new PIDController(kPXController, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                        new PIDController(kPYController, 0, 0), // Y controller (usually the same values as X controller)
+                        new PIDController(kPThetaController, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                         this::setModuleStates, // Module states consumer
-                        true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+                        false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
                         this // Requires this drive subsystem
                 ),
                 new InstantCommand(() -> stopModules()));
@@ -268,9 +213,9 @@ public class SwerveSubsystem extends SubsystemBase {
     public Command xboxDriveCommand(CommandXboxController controller) {
         return this.run(
                 () -> this.teleDrive(
-                        controller.getLeftY(),
-                        controller.getLeftX(),
-                        controller.getRightX(),
+                        -controller.getLeftY(), //invert because xbox controllers give negative values
+                        -controller.getLeftX(),
+                        -controller.getRightX(),
                         controller.getRightTriggerAxis()));
     }
 }

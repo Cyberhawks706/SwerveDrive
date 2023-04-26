@@ -5,12 +5,16 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
@@ -19,18 +23,26 @@ public class RobotContainer {
 	private final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
 	static final PowerDistribution m_pdp = new PowerDistribution(22, ModuleType.kRev);
-
+	private static final GenericHID thrustJoystick = new GenericHID(1);
 	private static final CommandXboxController driverJoystick = new CommandXboxController(2);
 	public static final XboxController manipulatorJoystick = new XboxController(3);
 
 	public RobotContainer() {
 		swerveSubsystem.setDefaultCommand(swerveSubsystem.xboxDriveCommand(driverJoystick));
+		if (thrustJoystick.isConnected()) {
+		swerveSubsystem.setDefaultCommand(new RunCommand(() -> swerveSubsystem.teleDrive(
+			-thrustJoystick.getRawAxis(1),
+			-thrustJoystick.getRawAxis(0),
+			-thrustJoystick.getRawAxis(2),
+			Math.abs((thrustJoystick.getRawAxis(3)-1)/2)), swerveSubsystem));
+		}
 		DriverStation.silenceJoystickConnectionWarning(true);
-		configureButtonBindings();
+		configureButtonBindings(); 
 	}
 
 	private void configureButtonBindings() {
 		driverJoystick.a().onTrue(new InstantCommand(() -> swerveSubsystem.recenter()));
+		new Trigger(()-> thrustJoystick.getRawButton(1)).onTrue(new InstantCommand(() -> swerveSubsystem.recenter()));
 	}
 
 	public Command getAutonomousCommand() {
@@ -43,7 +55,7 @@ public class RobotContainer {
 		// .setKinematics(Constants.Swerve.kDriveKinematics);
 
 		// 2. Generate trajectory
-		PathPlannerTrajectory traj = PathPlanner.loadPath("Straight Path", new PathConstraints(1, 0.35));
+		PathPlannerTrajectory traj = PathPlanner.loadPath("New New Path", 0.5, 0.35);
 		swerveSubsystem.m_field.getObject("traj").setTrajectory(traj);
 
 		return swerveSubsystem.followTrajectoryCommand(traj, true);

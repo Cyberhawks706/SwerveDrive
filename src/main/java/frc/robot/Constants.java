@@ -51,7 +51,7 @@ public final class Constants {
 		// Module Constants
 		
 		public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-		public static final double kDriveMotorGearRatio = 1 / 8.14;
+		public static final double kDriveMotorGearRatio = 1 / 3.3;
 		public static final double kTurningMotorGearRatio = 1 / 12.8;
 		public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
 		public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
@@ -62,9 +62,9 @@ public final class Constants {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Drive Constants
 
-		public static final double kTrackWidth = Units.inchesToMeters(22.5);
+		public static final double kTrackWidth = Units.inchesToMeters(22.25);
 		// Distance between right and left wheels
-		public static final double kWheelBase = Units.inchesToMeters(22.5);
+		public static final double kWheelBase = Units.inchesToMeters(22.25);
 		// Distance between front and back wheels
 		
 		public static final int kFrontLeftDriveMotorPort = 6;
@@ -91,10 +91,9 @@ public final class Constants {
 		public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 
 		public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond;
-		public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = //
-				kPhysicalMaxAngularSpeedRadiansPerSecond;
-		public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
-		public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
+		public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond;
+		public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 6;
+		public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 8;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Auto Constants
@@ -103,8 +102,8 @@ public final class Constants {
 		public static final double kMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
 		public static final double kMaxAccelerationMetersPerSecondSquared = 3;
 		public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
-		public static final double kPXController = 1.5;
-		public static final double kPYController = 1.5;
+		public static final double kPXController = 2;
+		public static final double kPYController = 2;
 		public static final double kPThetaController = 3;
 
 		public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
