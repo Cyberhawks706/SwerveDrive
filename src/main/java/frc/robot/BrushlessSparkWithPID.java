@@ -49,9 +49,14 @@ public class BrushlessSparkWithPID {
         PIDController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);//spark ID is used as the smart motion id
     }
 
-    public void UpdateSensorValues(){
+    public void updateSensorValues(){
         motorPos = encoder.getPosition()-positionOffset;
         motorVel = encoder.getVelocity();
+    }
+
+    public double getPos(){
+        updateSensorValues();
+        return motorPos;
     }
 
     public void setPower(double value){

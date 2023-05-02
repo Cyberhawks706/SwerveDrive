@@ -25,6 +25,29 @@ public final class Constants {
 		public static final int balanceReverseDelay = 180;// 220 //385 works with back divisor of 40
 	}
 
+	public static final class Arm {
+		public static final int frontLiftMotorId = 9;
+		public static final int rearLiftMotorId = 10;
+		public static final int frontLiftPotPort = 4;
+		public static final int rearLiftPotPort = 5;
+		public static final double heightTolerance = 0.05;
+		public static final double tiltTolerance = 0.05;
+		public static final double maxAcc = 500;
+
+		public static final int intakeMotorId = 3;
+	}
+
+	public static final class ArmPositions {
+		public static final double[] conePickup = {1.81, 2.77, 15.4};
+		public static final double[] cubePickup = {0.87, 2.77, 11.2};
+		public static final double[] groundPickup = {1.4, 2.77, 13.5};
+		public static final double[] humanPickup = {2.865, 2.756, 19.5};
+		public static final double[] topCone = {2.906, 2.82, 17.66};
+		public static final double[] topCube = {3.021, 3.19, 12};
+		public static final double[] midCone = {2.59, 2.71, 16.7};
+		public static final double[] midCube = {2.42, 2.69, 12};
+		public static final double[] safeDrive = {1, 3, 1};
+	}
 
 	//all the drive stuff
 	public static final class Swerve {

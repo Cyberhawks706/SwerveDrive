@@ -4,14 +4,15 @@ import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
@@ -31,7 +32,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
 
-    private SwerveDriveOdometry odometer;
+    private SwerveDrivePoseEstimator poseEstimator;
     public final Field2d m_field = new Field2d();
 
     private final SwerveDriveKinematics kDriveKinematics;
@@ -82,8 +83,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
                 new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
-        odometer = new SwerveDriveOdometry(kDriveKinematics, getRotation2d(), modulePosition);
-
+        poseEstimator = new SwerveDrivePoseEstimator(kDriveKinematics, getRotation2d(), modulePosition, getPose());
         SmartDashboard.putData("Field", m_field);
         recenter();
         xLimiter = new SlewRateLimiter(kTeleDriveMaxAccelerationUnitsPerSecond);
@@ -109,7 +109,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        odometer.resetPosition(getRotation2d(), modulePosition, pose);
+        poseEstimator.resetPosition(getRotation2d(), modulePosition, pose);
     }
 
     public void recenter() {
@@ -118,13 +118,10 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return odometer.getPoseMeters();
-        // return new
-        // Pose2d(odometer.getPoseMeters().getTranslation().times(-3).rotateBy(Rotation2d.fromDegrees(-90)),
-        // odometer.getPoseMeters().getRotation());
+        return poseEstimator.getEstimatedPosition();
     }
 
-    /*
+    /**
      * move the robot
      * 
      * @param xSpeed forwards speed, positive is away from our alliance wall
@@ -132,20 +129,18 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param rot rotation speed, positive is counterclockwise
      */
     public void drive(double xSpeed, double ySpeed, double rot) {
-        // limit acceleration
-        xSpeed = xLimiter.calculate(xSpeed);
-        ySpeed = yLimiter.calculate(ySpeed);
-        rot = turnLimiter.calculate(rot);
-
         SwerveModuleState[] moduleStates = kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d()));
-
         setModuleStates(moduleStates);
     }
 
     public void teleDrive(double xSpeed, double ySpeed, double rot, double accelMultiplier) {
-        if (Math.abs(xSpeed) < Constants.IO.kDeadband) xSpeed = 0;
-        if (Math.abs(ySpeed) < Constants.IO.kDeadband) ySpeed = 0;
-        if (Math.abs(rot) < Constants.IO.kDeadband) rot = 0;
+        xSpeed = MathUtil.applyDeadband(xSpeed, Constants.IO.kDeadband);
+        ySpeed = MathUtil.applyDeadband(ySpeed, Constants.IO.kDeadband);
+        rot = MathUtil.applyDeadband(rot, Constants.IO.kDeadband);
+        xSpeed = xLimiter.calculate(xSpeed);
+        ySpeed = yLimiter.calculate(ySpeed);
+        rot = turnLimiter.calculate(rot);
+
         ySpeed *= kTeleDriveMaxSpeedMetersPerSecond * (accelMultiplier + 0.15);
         xSpeed *= kTeleDriveMaxSpeedMetersPerSecond * (accelMultiplier + 0.15);
         rot *= kTeleDriveMaxAngularSpeedRadiansPerSecond * (accelMultiplier + 0.25);
@@ -156,7 +151,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
         updatePositions();
 
-        odometer.update(getRotation2d(), modulePosition);
+        poseEstimator.update(getRotation2d(), modulePosition);
         m_field.setRobotPose(getPose());
         SmartDashboard.putNumber("Robot Heading", getHeading());
 

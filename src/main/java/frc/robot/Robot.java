@@ -6,7 +6,6 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import com.pathplanner.lib.server.PathPlannerServer;
@@ -56,17 +55,14 @@ public class Robot extends TimedRobot {
 																							  
 	
 		
-		Components.init();
+		
 		m_robotContainer = new RobotContainer();
 		PathPlannerServer.startServer(5811); // 5811 = port number. adjust this according to your needs
 		System.out.println("Started");
-		//Components.ahrs.calibrate();
-		
 	}
 	@Override
 	public void robotPeriodic(){
 		CommandScheduler.getInstance().run();
-		SmartDashboard.putData(RobotContainer.m_pdp);
 	}
 
 	@Override
