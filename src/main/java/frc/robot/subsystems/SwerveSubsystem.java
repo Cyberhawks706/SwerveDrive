@@ -28,52 +28,52 @@ import static frc.robot.Constants.Swerve.*;
 
 public class SwerveSubsystem extends SubsystemBase {
 
-    public final static AHRS gyro = new AHRS(SPI.Port.kMXP);
+    AHRS gyro = new AHRS(SPI.Port.kMXP);
 
     private SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
 
-    private SwerveDrivePoseEstimator poseEstimator;
-    public final Field2d m_field = new Field2d();
+    private static SwerveDrivePoseEstimator poseEstimator;
+    private final Field2d m_field = new Field2d();
 
     private final SwerveDriveKinematics kDriveKinematics;
 
     private final SlewRateLimiter xLimiter, yLimiter, turnLimiter;
 
     public final static SwerveModule frontLeft = new SwerveModule(
-            Constants.Swerve.kFrontLeftDriveMotorPort,
-            Constants.Swerve.kFrontLeftTurningMotorPort,
-            Constants.Swerve.kFrontLeftDriveEncoderReversed,
-            Constants.Swerve.kFrontLeftTurningEncoderReversed,
-            Constants.Swerve.kFrontLeftDriveAbsoluteEncoderPort,
-            Constants.Swerve.kFrontLeftDriveAbsoluteEncoderOffsetrad,
-            Constants.Swerve.kFrontLeftDriveAbsoluteEncoderReversed);
+            kFrontLeftDriveMotorPort,
+            kFrontLeftTurningMotorPort,
+            kFrontLeftDriveEncoderReversed,
+            kFrontLeftTurningEncoderReversed,
+            kFrontLeftDriveAbsoluteEncoderPort,
+            kFrontLeftDriveAbsoluteEncoderOffsetrad,
+            kFrontLeftDriveAbsoluteEncoderReversed);
 
     public final static SwerveModule frontRight = new SwerveModule(
-            Constants.Swerve.kFrontRightDriveMotorPort,
-            Constants.Swerve.kFrontRightTurningMotorPort,
-            Constants.Swerve.kFrontRightDriveEncoderReversed,
-            Constants.Swerve.kFrontRightTurningEncoderReversed,
-            Constants.Swerve.kFrontRightDriveAbsoluteEncoderPort,
-            Constants.Swerve.kFrontRightDriveAbsoluteEncoderOffsetrad,
-            Constants.Swerve.kFrontRightDriveAbsoluteEncoderReversed);
+            kFrontRightDriveMotorPort,
+            kFrontRightTurningMotorPort,
+            kFrontRightDriveEncoderReversed,
+            kFrontRightTurningEncoderReversed,
+            kFrontRightDriveAbsoluteEncoderPort,
+            kFrontRightDriveAbsoluteEncoderOffsetrad,
+            kFrontRightDriveAbsoluteEncoderReversed);
 
     public final static SwerveModule backLeft = new SwerveModule(
-            Constants.Swerve.kBackLeftDriveMotorPort,
-            Constants.Swerve.kBackLeftTurningMotorPort,
-            Constants.Swerve.kBackLeftDriveEncoderReversed,
-            Constants.Swerve.kBackLeftTurningEncoderReversed,
-            Constants.Swerve.kBackLeftDriveAbsoluteEncoderPort,
-            Constants.Swerve.kBackLeftDriveAbsoluteEncoderOffsetrad,
-            Constants.Swerve.kBackLeftDriveAbsoluteEncoderReversed);
+            kBackLeftDriveMotorPort,
+            kBackLeftTurningMotorPort,
+            kBackLeftDriveEncoderReversed,
+            kBackLeftTurningEncoderReversed,
+            kBackLeftDriveAbsoluteEncoderPort,
+            kBackLeftDriveAbsoluteEncoderOffsetrad,
+            kBackLeftDriveAbsoluteEncoderReversed);
 
     public final static SwerveModule backRight = new SwerveModule(
-            Constants.Swerve.kBackRightDriveMotorPort,
-            Constants.Swerve.kBackRightTurningMotorPort,
-            Constants.Swerve.kBackRightDriveEncoderReversed,
-            Constants.Swerve.kBackRightTurningEncoderReversed,
-            Constants.Swerve.kBackRightDriveAbsoluteEncoderPort,
-            Constants.Swerve.kBackRightDriveAbsoluteEncoderOffsetrad,
-            Constants.Swerve.kBackRightDriveAbsoluteEncoderReversed);
+            kBackRightDriveMotorPort,
+            kBackRightTurningMotorPort,
+            kBackRightDriveEncoderReversed,
+            kBackRightTurningEncoderReversed,
+            kBackRightDriveAbsoluteEncoderPort,
+            kBackRightDriveAbsoluteEncoderOffsetrad,
+            kBackRightDriveAbsoluteEncoderReversed);
 
     public SwerveSubsystem() {
 
@@ -96,7 +96,7 @@ public class SwerveSubsystem extends SubsystemBase {
         return kDriveKinematics;
     }
 
-    public static void zeroHeading() {
+    public void zeroHeading() {
         gyro.reset();
     }
 
@@ -154,7 +154,6 @@ public class SwerveSubsystem extends SubsystemBase {
         poseEstimator.update(getRotation2d(), modulePosition);
         m_field.setRobotPose(getPose());
         SmartDashboard.putNumber("Robot Heading", getHeading());
-
     }
 
     private void updatePositions() {
@@ -172,8 +171,8 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond);
-
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, kPhysicalMaxSpeedMetersPerSecond);
+        
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
