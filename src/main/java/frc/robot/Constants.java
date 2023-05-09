@@ -31,7 +31,7 @@ public final class Constants {
 		public static final int frontLiftPotPort = 4;
 		public static final int rearLiftPotPort = 5;
 		public static final double heightTolerance = 0.05;
-		public static final double tiltTolerance = 0.05;
+		public static final double tiltTolerance = 0.5;
 		public static final double maxAcc = 500;
 
 		public static final int intakeMotorId = 3;

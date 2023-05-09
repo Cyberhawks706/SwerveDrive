@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BrushlessSparkWithPID;
@@ -16,6 +17,10 @@ public class ArmSubsystem extends SubsystemBase{
     private final AnalogPotentiometer frontLiftPot;
     private final AnalogPotentiometer rearLiftPot;
 
+    private final SlewRateLimiter fLimiter;
+    private final SlewRateLimiter rLimiter;
+    private final SlewRateLimiter tiltLimiter;
+
     private double fSetpoint = 0;
     private double rSetpoint = 0;
     private double tiltSetpoint = 0;
@@ -26,11 +31,15 @@ public class ArmSubsystem extends SubsystemBase{
 
     public ArmSubsystem() {
         sparkLiftF = new BrushlessSparkWithPID(frontLiftMotorId, 0.0006, 0.0000001, 0.0005, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, 4000, Constants.PID.Wheels.minVel, maxAcc,Constants.PID.Wheels.allowedErr);
-        sparkLiftR = new BrushlessSparkWithPID(rearLiftMotorId, 0.0008, 0.00001, 0.001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, 4000, Constants.PID.Wheels.minVel, maxAcc, Constants.PID.Wheels.allowedErr);
-        sparkIntakeTilt = new BrushlessSparkWithPID(4, 0.0005, 0.000001, 0.0015, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, 0.03);
+        sparkLiftR = new BrushlessSparkWithPID(rearLiftMotorId, 0.0006, 0.000001, 0.001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, 4000, Constants.PID.Wheels.minVel, maxAcc, Constants.PID.Wheels.allowedErr);
+        sparkIntakeTilt = new BrushlessSparkWithPID(4, 0.01, 10^-3, 0.0005, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, 0.03); //10^-21, 10^-7, 10^-35, 0.07
         
         frontLiftPot = new AnalogPotentiometer(frontLiftPotPort, 3.48, -0.2);
         rearLiftPot = new AnalogPotentiometer(rearLiftPotPort, 3.58,-0.3);
+
+        fLimiter = new SlewRateLimiter(0.5);
+        rLimiter = new SlewRateLimiter(0.5);
+        tiltLimiter = new SlewRateLimiter(0.5);
        
         fSetpoint = getFPot();
         rSetpoint = getRPot();
@@ -52,14 +61,16 @@ public class ArmSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        double fDiff = MathUtil.clamp(fSetpoint - getFPot(), -1, 1);
-        double rDiff = MathUtil.clamp(rSetpoint - getRPot(), -1, 1);
-        double tiltDiff = MathUtil.clamp(tiltSetpoint - getTiltPos(), -1, 1);
+        double fDiff = MathUtil.clamp(fSetpoint - getFPot(), -0.5, 0.5);
+        double rDiff = MathUtil.clamp(rSetpoint - getRPot(), -0.25, 0.25);
+        double tiltDiff = MathUtil.clamp(tiltSetpoint - getTiltPos(), -0.25, 0.25);
+        System.out.println(tiltSetpoint + " " + getTiltPos());
         if(fSpeed == 0 && rSpeed == 0 && tiltSpeed == 0) {
             if(reachedSetpoint()) {
                 sparkLiftF.setPos(sparkLiftF.getPos());
                 sparkLiftR.setPos(sparkLiftR.getPos());
                 sparkIntakeTilt.setPos(sparkIntakeTilt.getPos());
+                //sparkIntakeTilt.setPower(tiltDiff/5);
             }
             else {
                 sparkLiftF.setPower(fDiff);
@@ -116,6 +127,9 @@ public class ArmSubsystem extends SubsystemBase{
      * @param tiltSpeed speed of intake tilt
      */
     public void setSpeeds(double fSpeed, double rSpeed, double tiltSpeed) {
+        // this.fSpeed = fLimiter.calculate(fSpeed);
+        // this.rSpeed = rLimiter.calculate(rSpeed);
+        // this.tiltSpeed = tiltLimiter.calculate(tiltSpeed);
         this.fSpeed = fSpeed;
         this.rSpeed = rSpeed;
         this.tiltSpeed = tiltSpeed;

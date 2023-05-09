@@ -73,7 +73,7 @@ public class RobotContainer {
 		driverJoystick.a().onTrue(new InstantCommand(() -> swerveSubsystem.recenter()));
 		thrustJoystick.button(1).onTrue(new InstantCommand(() -> swerveSubsystem.recenter()));
 
-		manipulatorJoystick.leftStick().or(manipulatorJoystick.rightStick()).whileTrue(armCommand);
+		manipulatorJoystick.leftStick().or(manipulatorJoystick.rightStick()).whileTrue(armCommand).onFalse(new InstantCommand(() -> arm.setSpeeds(0, 0, 0)));
 		manipulatorJoystick.rightBumper().whileTrue(Commands.startEnd(() -> intake.set(1), () -> intake.stop(), intake));
 		manipulatorJoystick.leftBumper().whileTrue(Commands.startEnd(() -> intake.set(-1), () -> intake.stop(), intake));
 		manipulatorJoystick.a().
