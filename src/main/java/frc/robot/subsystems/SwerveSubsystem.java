@@ -4,10 +4,8 @@ import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,11 +18,14 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants;
 import static frc.robot.Constants.Swerve.*;
+
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 
 public class SwerveSubsystem extends SubsystemBase {
 
@@ -37,7 +38,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private final SwerveDriveKinematics kDriveKinematics;
 
-    private final SlewRateLimiter xLimiter, yLimiter, turnLimiter;
+    private PhotonCameraWrapper[] cameras;
 
     public final static SwerveModule frontLeft = new SwerveModule(
             kFrontLeftDriveMotorPort,
@@ -75,9 +76,9 @@ public class SwerveSubsystem extends SubsystemBase {
             kBackRightDriveAbsoluteEncoderOffsetrad,
             kBackRightDriveAbsoluteEncoderReversed);
 
-    public SwerveSubsystem() {
-
+    public SwerveSubsystem(PhotonCameraWrapper... cameras) {
         updatePositions();
+        this.cameras = cameras;
         kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBase / 2, kTrackWidth / 2), // FL,FR,BL,BR
                 new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
@@ -86,9 +87,6 @@ public class SwerveSubsystem extends SubsystemBase {
         poseEstimator = new SwerveDrivePoseEstimator(kDriveKinematics, getRotation2d(), modulePosition, getPose());
         SmartDashboard.putData("Field", m_field);
         recenter();
-        xLimiter = new SlewRateLimiter(kTeleDriveMaxAccelerationUnitsPerSecond);
-        yLimiter = new SlewRateLimiter(kTeleDriveMaxAccelerationUnitsPerSecond);
-        turnLimiter = new SlewRateLimiter(kTeleDriveMaxAngularAccelerationUnitsPerSecond);
 
     }
 
@@ -127,31 +125,23 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param xSpeed forwards speed, positive is away from our alliance wall
      * @param ySpeed sideways speed, positive is left
      * @param rot rotation speed, positive is counterclockwise
+     * @param fieldRelative whether the xSpeed and ySpeed are relative to the field
      */
-    public void drive(double xSpeed, double ySpeed, double rot) {
-        SwerveModuleState[] moduleStates = kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d()));
+    public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+        SwerveModuleState[] moduleStates = kDriveKinematics.toSwerveModuleStates(fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d()) : new ChassisSpeeds(xSpeed, ySpeed, rot));
         setModuleStates(moduleStates);
-    }
-
-    public void teleDrive(double xSpeed, double ySpeed, double rot, double accelMultiplier) {
-        xSpeed = MathUtil.applyDeadband(xSpeed, Constants.IO.kDeadband);
-        ySpeed = MathUtil.applyDeadband(ySpeed, Constants.IO.kDeadband);
-        rot = MathUtil.applyDeadband(rot, Constants.IO.kDeadband);
-        xSpeed = xLimiter.calculate(xSpeed);
-        ySpeed = yLimiter.calculate(ySpeed);
-        rot = turnLimiter.calculate(rot);
-
-        ySpeed *= kTeleDriveMaxSpeedMetersPerSecond * (accelMultiplier + 0.15);
-        xSpeed *= kTeleDriveMaxSpeedMetersPerSecond * (accelMultiplier + 0.15);
-        rot *= kTeleDriveMaxAngularSpeedRadiansPerSecond * (accelMultiplier + 0.25);
-        drive(xSpeed, ySpeed, rot);
     }
 
     @Override
     public void periodic() {
         updatePositions();
-
         poseEstimator.update(getRotation2d(), modulePosition);
+        for (PhotonCameraWrapper camera : cameras) {
+            Optional<EstimatedRobotPose> result = camera.getEstimatedGlobalPose(getPose());
+            if (result.isPresent()) {
+                poseEstimator.addVisionMeasurement(result.get().estimatedPose.toPose2d(), result.get().timestampSeconds);
+            }
+        }
         m_field.setRobotPose(getPose());
         SmartDashboard.putNumber("Robot Heading", getHeading());
     }
@@ -172,12 +162,22 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, kPhysicalMaxSpeedMetersPerSecond);
-        
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
 
+    }
+
+    public void lockModules() {
+        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+        backLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+        backRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+    }
+
+    public Command lockModulesCommand() {
+        return new RepeatCommand(new InstantCommand(() -> lockModules())).withTimeout(1).andThen(this::stopModules);
     }
 
     // Assuming this method is part of a drivetrain subsystem that provides the
@@ -204,12 +204,4 @@ public class SwerveSubsystem extends SubsystemBase {
                 new InstantCommand(() -> stopModules()));
     }
 
-    public Command xboxDriveCommand(CommandXboxController controller) {
-        return this.run(
-                () -> this.teleDrive(
-                        -controller.getLeftY(), //invert because xbox controllers give negative values
-                        -controller.getLeftX(),
-                        -controller.getRightX(),
-                        controller.getRightTriggerAxis()));
-    }
 }

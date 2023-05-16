@@ -113,26 +113,26 @@ public final class Constants {
 		public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
 		public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 
-		public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond;
-		public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond;
-		public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 6;
-		public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 8;
+		public static final double kMaxVelTele = kPhysicalMaxSpeedMetersPerSecond;
+		public static final double kMaxAngularVelTele = kPhysicalMaxAngularSpeedRadiansPerSecond;
+		public static final double kMaxAccelTele = 6;
+		public static final double kMaxAngularAccelTele = 8;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Auto Constants
 
-		public static final double kMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 4;
-		public static final double kMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
-		public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-		public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
+		public static final double kMaxVelAuto = kPhysicalMaxSpeedMetersPerSecond / 4;
+		public static final double kMaxAngularVelAuto = kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
+		public static final double kMaxAccelAuto = 3;
+		public static final double kMaxAngularAccelAuto = Math.PI / 4;
 		public static final double kPXController = 2;
 		public static final double kPYController = 2;
 		public static final double kPThetaController = 3;
 
 		public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
 				new TrapezoidProfile.Constraints(
-						kMaxAngularSpeedRadiansPerSecond,
-						kMaxAngularAccelerationRadiansPerSecondSquared);
+						kMaxAngularVelAuto,
+						kMaxAngularAccelAuto);
 
 		
 	}

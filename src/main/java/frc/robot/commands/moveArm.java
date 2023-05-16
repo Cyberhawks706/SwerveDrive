@@ -6,7 +6,7 @@ import frc.robot.subsystems.ArmSubsystem;
 /**
  * A command that sets the arm to a given position, finishes when the arm reaches the setpoint.
  */
-public class moveArm extends CommandBase{
+public class MoveArm extends CommandBase {
     private ArmSubsystem armSubsystem;
     private double[] positions;
 
@@ -15,7 +15,7 @@ public class moveArm extends CommandBase{
      * @param armSubsystem The subsystem used by this command.
      * @param positions The positions to set the arm to, in order of front, back, tilt.
      */
-    public moveArm(ArmSubsystem armSubsystem, double[] positions) {
+    public MoveArm(ArmSubsystem armSubsystem, double[] positions) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(armSubsystem);
         this.armSubsystem = armSubsystem;

@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.moveArm;
+import frc.robot.commands.MoveArm;
+import frc.robot.commands.XboxDriveCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -33,20 +33,20 @@ public class RobotContainer {
 	private final CommandXboxController driverJoystick = new CommandXboxController(2);
 	private final CommandXboxController manipulatorJoystick = new CommandXboxController(3);
 
-	private RunCommand armCommand = new RunCommand(() -> arm.setSpeeds(
+	private Command armCommand = arm.runEnd(() -> arm.setSpeeds(
 		manipulatorJoystick.getLeftY(), 
 		manipulatorJoystick.getRightY(),
-		manipulatorJoystick.getRightTriggerAxis() - manipulatorJoystick.getLeftTriggerAxis()), arm);
+		manipulatorJoystick.getRightTriggerAxis() - manipulatorJoystick.getLeftTriggerAxis()), () -> arm.setSpeeds(0, 0, 0));
 
 	public RobotContainer() {
-		swerveSubsystem.setDefaultCommand(swerveSubsystem.xboxDriveCommand(driverJoystick));
-		if (thrustJoystick.getHID().isConnected()) {
-			swerveSubsystem.setDefaultCommand(new RunCommand(() -> swerveSubsystem.teleDrive(
-				-thrustJoystick.getRawAxis(1),
-				-thrustJoystick.getRawAxis(0),
-				-thrustJoystick.getRawAxis(2),
-				Math.abs((thrustJoystick.getRawAxis(3)-1)/2)), swerveSubsystem));
-		}
+		swerveSubsystem.setDefaultCommand(new XboxDriveCommand(driverJoystick, swerveSubsystem));
+		// if (thrustJoystick.getHID().isConnected()) {
+		// 	swerveSubsystem.setDefaultCommand(new RunCommand(() -> swerveSubsystem.calculate(
+		// 		-thrustJoystick.getRawAxis(1),
+		// 		-thrustJoystick.getRawAxis(0),
+		// 		-thrustJoystick.getRawAxis(2),
+		// 		Math.abs((thrustJoystick.getRawAxis(3)-1)/2)), swerveSubsystem));
+		// }
 		DriverStation.silenceJoystickConnectionWarning(true);
 		configureButtonBindings(); 
 		configureDashboard();
@@ -73,21 +73,21 @@ public class RobotContainer {
 		driverJoystick.a().onTrue(new InstantCommand(() -> swerveSubsystem.recenter()));
 		thrustJoystick.button(1).onTrue(new InstantCommand(() -> swerveSubsystem.recenter()));
 
-		manipulatorJoystick.leftStick().or(manipulatorJoystick.rightStick()).whileTrue(armCommand).onFalse(new InstantCommand(() -> arm.setSpeeds(0, 0, 0)));
+		manipulatorJoystick.leftStick().or(manipulatorJoystick.rightStick()).whileTrue(armCommand);
 		manipulatorJoystick.rightBumper().whileTrue(Commands.startEnd(() -> intake.set(1), () -> intake.stop(), intake));
 		manipulatorJoystick.leftBumper().whileTrue(Commands.startEnd(() -> intake.set(-1), () -> intake.stop(), intake));
 		manipulatorJoystick.a().
-			onTrue(new moveArm(arm, Constants.ArmPositions.groundPickup).unless(
+			onTrue(new MoveArm(arm, Constants.ArmPositions.groundPickup).unless(
 				manipulatorJoystick.rightBumper().or(manipulatorJoystick.leftBumper())
 		));
-		manipulatorJoystick.a().and(manipulatorJoystick.leftBumper()).onTrue(new moveArm(arm, Constants.ArmPositions.cubePickup));
-		manipulatorJoystick.a().and(manipulatorJoystick.rightBumper()).onTrue(new moveArm(arm, Constants.ArmPositions.conePickup));
-		manipulatorJoystick.y().onTrue(new moveArm(arm, Constants.ArmPositions.humanPickup));
-		manipulatorJoystick.x().onTrue(new moveArm(arm, Constants.ArmPositions.topCone));
-		manipulatorJoystick.b().onTrue(new moveArm(arm, Constants.ArmPositions.midCone));
-		manipulatorJoystick.povRight().onTrue(new moveArm(arm, Constants.ArmPositions.midCube));
-		manipulatorJoystick.povLeft().onTrue(new moveArm(arm, Constants.ArmPositions.topCube));
-		manipulatorJoystick.back().onTrue(new moveArm(arm, Constants.ArmPositions.safeDrive));
+		manipulatorJoystick.a().and(manipulatorJoystick.leftBumper()).onTrue(new MoveArm(arm, Constants.ArmPositions.cubePickup));
+		manipulatorJoystick.a().and(manipulatorJoystick.rightBumper()).onTrue(new MoveArm(arm, Constants.ArmPositions.conePickup));
+		manipulatorJoystick.y().onTrue(new MoveArm(arm, Constants.ArmPositions.humanPickup));
+		manipulatorJoystick.x().onTrue(new MoveArm(arm, Constants.ArmPositions.topCone));
+		manipulatorJoystick.b().onTrue(new MoveArm(arm, Constants.ArmPositions.midCone));
+		manipulatorJoystick.povRight().onTrue(new MoveArm(arm, Constants.ArmPositions.midCube));
+		manipulatorJoystick.povLeft().onTrue(new MoveArm(arm, Constants.ArmPositions.topCube));
+		manipulatorJoystick.back().onTrue(new MoveArm(arm, Constants.ArmPositions.safeDrive));
 	}
 
 	public Command getAutonomousCommand() {

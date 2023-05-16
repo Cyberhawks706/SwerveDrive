@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BrushlessSparkWithPID;
 import frc.robot.Constants;
@@ -16,10 +16,6 @@ public class ArmSubsystem extends SubsystemBase{
 
     private final AnalogPotentiometer frontLiftPot;
     private final AnalogPotentiometer rearLiftPot;
-
-    private final SlewRateLimiter fLimiter;
-    private final SlewRateLimiter rLimiter;
-    private final SlewRateLimiter tiltLimiter;
 
     private double fSetpoint = 0;
     private double rSetpoint = 0;
@@ -36,10 +32,6 @@ public class ArmSubsystem extends SubsystemBase{
         
         frontLiftPot = new AnalogPotentiometer(frontLiftPotPort, 3.48, -0.2);
         rearLiftPot = new AnalogPotentiometer(rearLiftPotPort, 3.58,-0.3);
-
-        fLimiter = new SlewRateLimiter(0.5);
-        rLimiter = new SlewRateLimiter(0.5);
-        tiltLimiter = new SlewRateLimiter(0.5);
        
         fSetpoint = getFPot();
         rSetpoint = getRPot();
@@ -127,14 +119,15 @@ public class ArmSubsystem extends SubsystemBase{
      * @param tiltSpeed speed of intake tilt
      */
     public void setSpeeds(double fSpeed, double rSpeed, double tiltSpeed) {
-        // this.fSpeed = fLimiter.calculate(fSpeed);
-        // this.rSpeed = rLimiter.calculate(rSpeed);
-        // this.tiltSpeed = tiltLimiter.calculate(tiltSpeed);
         this.fSpeed = fSpeed;
         this.rSpeed = rSpeed;
         this.tiltSpeed = tiltSpeed;
         fSetpoint = getFPot();
         rSetpoint = getRPot();
         tiltSetpoint = getTiltPos();
+    }
+
+    public Command setPositionsCommand(double[] setpoints) {
+        return this.runOnce(() -> setPositions(setpoints));
     }
 }
