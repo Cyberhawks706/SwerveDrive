@@ -22,12 +22,13 @@ public class XboxDriveCommand extends CommandBase{
         this.xLimiter = new SlewRateLimiter(kMaxAccelTele);
         this.yLimiter = new SlewRateLimiter(kMaxAccelTele);
         this.turnLimiter = new SlewRateLimiter(kMaxAngularAccelTele);
+		addRequirements(swerveSubsystem);
     }
 
 	@Override
 	public void execute() {
-		double x = -controller.getLeftX();
-		double y = -controller.getLeftY();
+		double x = -controller.getLeftY();
+		double y = -controller.getLeftX();
 		double rot = -controller.getRightX();
 		double accelMultiplier = controller.getRightTriggerAxis();
 		x = MathUtil.applyDeadband(x, Constants.IO.kDeadband);

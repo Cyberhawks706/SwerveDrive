@@ -115,8 +115,8 @@ public final class Constants {
 
 		public static final double kMaxVelTele = kPhysicalMaxSpeedMetersPerSecond;
 		public static final double kMaxAngularVelTele = kPhysicalMaxAngularSpeedRadiansPerSecond;
-		public static final double kMaxAccelTele = 6;
-		public static final double kMaxAngularAccelTele = 8;
+		public static final double kMaxAccelTele = 15;
+		public static final double kMaxAngularAccelTele = 10;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Auto Constants

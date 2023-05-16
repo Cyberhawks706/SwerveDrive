@@ -7,6 +7,10 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 import com.pathplanner.lib.PathPlanner;
+
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
@@ -20,12 +24,13 @@ import frc.robot.commands.MoveArm;
 import frc.robot.commands.XboxDriveCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PhotonCameraWrapper;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
 
-
-	private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+	private final PhotonCameraWrapper topCam = new PhotonCameraWrapper("topCam", new Transform3d(new Translation3d(0,0,1), new Rotation3d()));
+	private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(topCam);
 	private final ArmSubsystem arm = new ArmSubsystem();
 	private final Intake intake = new Intake();
 	private final SendableChooser<Command> autoChooser = new SendableChooser<>();

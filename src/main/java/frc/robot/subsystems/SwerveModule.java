@@ -55,6 +55,7 @@ public class SwerveModule {
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
         initPos = getAbsoluteEncoderRad();
+        resetEncoders();
     }
 
     public double getDrivePosition() {

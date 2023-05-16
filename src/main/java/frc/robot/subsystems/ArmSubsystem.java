@@ -56,19 +56,19 @@ public class ArmSubsystem extends SubsystemBase{
         double fDiff = MathUtil.clamp(fSetpoint - getFPot(), -0.5, 0.5);
         double rDiff = MathUtil.clamp(rSetpoint - getRPot(), -0.25, 0.25);
         double tiltDiff = MathUtil.clamp(tiltSetpoint - getTiltPos(), -0.25, 0.25);
-        System.out.println(tiltSetpoint + " " + getTiltPos());
+        //System.out.println(tiltSetpoint + " " + getTiltPos());
         if(fSpeed == 0 && rSpeed == 0 && tiltSpeed == 0) {
-            if(reachedSetpoint()) {
-                sparkLiftF.setPos(sparkLiftF.getPos());
-                sparkLiftR.setPos(sparkLiftR.getPos());
-                sparkIntakeTilt.setPos(sparkIntakeTilt.getPos());
-                //sparkIntakeTilt.setPower(tiltDiff/5);
-            }
-            else {
-                sparkLiftF.setPower(fDiff);
-                sparkLiftR.setPower(rDiff);
-                sparkIntakeTilt.setPower(tiltDiff);
-            }
+            // if(reachedSetpoint()) {
+            //     sparkLiftF.setPos(sparkLiftF.getPos());
+            //     sparkLiftR.setPos(sparkLiftR.getPos());
+            //     sparkIntakeTilt.setPos(sparkIntakeTilt.getPos());
+            //     //sparkIntakeTilt.setPower(tiltDiff/5);
+            // }
+            // else {
+            //     sparkLiftF.setPower(fDiff);
+            //     sparkLiftR.setPower(rDiff);
+            //     sparkIntakeTilt.setPower(tiltDiff);
+            // }
         } else {
             sparkLiftF.setPower(fSpeed);
             sparkLiftR.setPower(rSpeed);
