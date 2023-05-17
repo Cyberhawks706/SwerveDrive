@@ -11,6 +11,9 @@ import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogTrigger;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
@@ -20,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.XboxDriveCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -37,11 +41,12 @@ public class RobotContainer {
 	private final CommandGenericHID thrustJoystick = new CommandGenericHID(1);
 	private final CommandXboxController driverJoystick = new CommandXboxController(2);
 	private final CommandXboxController manipulatorJoystick = new CommandXboxController(3);
+	private final DigitalInput intakeSwitch = new DigitalInput(0);
 
-	private Command armCommand = arm.runEnd(() -> arm.setSpeeds(
+	private Command armCommand = arm.run(() -> arm.setSpeeds(
 		manipulatorJoystick.getLeftY(), 
 		manipulatorJoystick.getRightY(),
-		manipulatorJoystick.getRightTriggerAxis() - manipulatorJoystick.getLeftTriggerAxis()), () -> arm.setSpeeds(0, 0, 0));
+		manipulatorJoystick.getRightTriggerAxis() - manipulatorJoystick.getLeftTriggerAxis()));
 
 	public RobotContainer() {
 		swerveSubsystem.setDefaultCommand(new XboxDriveCommand(driverJoystick, swerveSubsystem));
@@ -78,7 +83,7 @@ public class RobotContainer {
 		driverJoystick.a().onTrue(new InstantCommand(() -> swerveSubsystem.recenter()));
 		thrustJoystick.button(1).onTrue(new InstantCommand(() -> swerveSubsystem.recenter()));
 
-		manipulatorJoystick.leftStick().or(manipulatorJoystick.rightStick()).whileTrue(armCommand);
+		manipulatorJoystick.leftStick().or(manipulatorJoystick.rightStick()).whileTrue(armCommand).onFalse(new InstantCommand(() -> arm.setSpeeds(0, 0, 0)));
 		manipulatorJoystick.rightBumper().whileTrue(Commands.startEnd(() -> intake.set(1), () -> intake.stop(), intake));
 		manipulatorJoystick.leftBumper().whileTrue(Commands.startEnd(() -> intake.set(-1), () -> intake.stop(), intake));
 		manipulatorJoystick.a().
@@ -93,6 +98,8 @@ public class RobotContainer {
 		manipulatorJoystick.povRight().onTrue(new MoveArm(arm, Constants.ArmPositions.midCube));
 		manipulatorJoystick.povLeft().onTrue(new MoveArm(arm, Constants.ArmPositions.topCube));
 		manipulatorJoystick.back().onTrue(new MoveArm(arm, Constants.ArmPositions.safeDrive));
+
+		new Trigger(intakeSwitch::get).onTrue(arm.resetIntakeCommand());
 	}
 
 	public Command getAutonomousCommand() {

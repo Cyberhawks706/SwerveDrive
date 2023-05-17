@@ -9,6 +9,8 @@ import frc.robot.Constants;
 
 import static frc.robot.Constants.Arm.*;
 
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
+
 public class ArmSubsystem extends SubsystemBase{
     private final BrushlessSparkWithPID sparkLiftF;
     private final BrushlessSparkWithPID sparkLiftR;
@@ -28,8 +30,9 @@ public class ArmSubsystem extends SubsystemBase{
     public ArmSubsystem() {
         sparkLiftF = new BrushlessSparkWithPID(frontLiftMotorId, 0.0006, 0.0000001, 0.0005, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, 4000, Constants.PID.Wheels.minVel, maxAcc,Constants.PID.Wheels.allowedErr);
         sparkLiftR = new BrushlessSparkWithPID(rearLiftMotorId, 0.0006, 0.000001, 0.001, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, 4000, Constants.PID.Wheels.minVel, maxAcc, Constants.PID.Wheels.allowedErr);
-        sparkIntakeTilt = new BrushlessSparkWithPID(4, 0.01, 10^-3, 0.0005, Constants.PID.Wheels.kFF, Constants.PID.Wheels.kIz, Constants.PID.Wheels.kMinOutput, Constants.PID.Wheels.kMaxOutput, Constants.PID.Wheels.maxVel, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, 0.03); //10^-21, 10^-7, 10^-35, 0.07
-        
+        sparkIntakeTilt = new BrushlessSparkWithPID(4, 0.0005, 0.000002, 0, 0, 0, -0.5, 0.5, 2000, Constants.PID.Wheels.minVel, Constants.PID.Wheels.maxAcc, 0.03); //10^-21, 10^-7, 10^-35, 0.07
+        sparkIntakeTilt.spark.getPIDController().setIMaxAccum(20, 0);
+        sparkIntakeTilt.spark.setSoftLimit(SoftLimitDirection.kReverse, 0);
         frontLiftPot = new AnalogPotentiometer(frontLiftPotPort, 3.48, -0.2);
         rearLiftPot = new AnalogPotentiometer(rearLiftPotPort, 3.58,-0.3);
        
@@ -58,20 +61,23 @@ public class ArmSubsystem extends SubsystemBase{
         double tiltDiff = MathUtil.clamp(tiltSetpoint - getTiltPos(), -0.25, 0.25);
         //System.out.println(tiltSetpoint + " " + getTiltPos());
         if(fSpeed == 0 && rSpeed == 0 && tiltSpeed == 0) {
-            // if(reachedSetpoint()) {
-            //     sparkLiftF.setPos(sparkLiftF.getPos());
-            //     sparkLiftR.setPos(sparkLiftR.getPos());
-            //     sparkIntakeTilt.setPos(sparkIntakeTilt.getPos());
-            //     //sparkIntakeTilt.setPower(tiltDiff/5);
-            // }
-            // else {
+            if(reachedSetpoint()) {
+                // sparkLiftF.setPos(sparkLiftF.getPos());
+                // sparkLiftR.setPos(sparkLiftR.getPos());
+                sparkIntakeTilt.setPos(sparkIntakeTilt.getPos());
+                //sparkIntakeTilt.setPower(tiltDiff/5);
+            }
+            else {
             //     sparkLiftF.setPower(fDiff);
             //     sparkLiftR.setPower(rDiff);
             //     sparkIntakeTilt.setPower(tiltDiff);
-            // }
+            // sparkLiftF.setPos(sparkLiftF.getPos());
+            // sparkLiftR.setPos(sparkLiftR.getPos());
+            sparkIntakeTilt.setPos(tiltSetpoint);
+            }
         } else {
-            sparkLiftF.setPower(fSpeed);
-            sparkLiftR.setPower(rSpeed);
+            // sparkLiftF.setPower(fSpeed);
+            // sparkLiftR.setPower(rSpeed);
             sparkIntakeTilt.setPower(tiltSpeed);
         }
         
@@ -129,5 +135,9 @@ public class ArmSubsystem extends SubsystemBase{
 
     public Command setPositionsCommand(double[] setpoints) {
         return this.runOnce(() -> setPositions(setpoints));
+    }
+
+    public Command resetIntakeCommand() {
+        return this.runOnce(() -> sparkIntakeTilt.rezero());
     }
 }

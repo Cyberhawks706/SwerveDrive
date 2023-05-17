@@ -2,6 +2,7 @@ package frc.robot;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class BrushlessSparkWithPID {
@@ -68,7 +69,6 @@ public class BrushlessSparkWithPID {
     }
 
     public void setVel(double value){
-        
         PIDController.setReference(value, CANSparkMax.ControlType.kSmartVelocity);//set the velocity of the spark
     }
 
