@@ -151,6 +151,10 @@ public class SwerveSubsystem extends SubsystemBase {
         modulePosition[1] = frontRight.getPosition();
         modulePosition[2] = backLeft.getPosition();
         modulePosition[3] = backRight.getPosition();
+        SmartDashboard.putString("Swerve[FL] state", frontLeft.getPosition().toString());
+        SmartDashboard.putString("Swerve[FR] state", frontRight.getPosition().toString());
+        SmartDashboard.putString("Swerve[BL] state", backLeft.getPosition().toString());
+        SmartDashboard.putString("Swerve[BR] state", backRight.getPosition().toString());
     }
 
     public void stopModules() {

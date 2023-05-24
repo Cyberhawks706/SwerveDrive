@@ -55,26 +55,26 @@ public final class Constants {
 		// Absolute Encoder Values
 
 		public static final int kFrontLeftDriveAbsoluteEncoderPort = 0;
-		public static final double kFrontLeftDriveAbsoluteEncoderOffsetrad = 2.07;// -3.75
+		public static final double kFrontLeftDriveAbsoluteEncoderOffsetrad = 4.14;// 2.07
 		public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = false;
 
 		public static final int kBackLeftDriveAbsoluteEncoderPort = 1;
-		public static final double kBackLeftDriveAbsoluteEncoderOffsetrad = 0.03;// 0.328
+		public static final double kBackLeftDriveAbsoluteEncoderOffsetrad = 3.14;// 0.03 //Math.PI/2 + 0.03
 		public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
 
 		public static final int kBackRightDriveAbsoluteEncoderPort = 2;
-		public static final double kBackRightDriveAbsoluteEncoderOffsetrad = -2.7;// -0.6
+		public static final double kBackRightDriveAbsoluteEncoderOffsetrad = 0.94;// -2.7
 		public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
 		public static final int kFrontRightDriveAbsoluteEncoderPort = 3;
-		public static final double kFrontRightDriveAbsoluteEncoderOffsetrad = 4.07;// -0.122//0.32
+		public static final double kFrontRightDriveAbsoluteEncoderOffsetrad = 1.85;//4.07
 		public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Module Constants
 		
 		public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-		public static final double kDriveMotorGearRatio = 1 / 3.3;
+		public static final double kDriveMotorGearRatio = 1 / 4.07; //gear ratio should be 8.14:1, half of that works for some reason
 		public static final double kTurningMotorGearRatio = 1 / 12.8;
 		public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
 		public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
@@ -106,7 +106,7 @@ public final class Constants {
 		public static final boolean kBackRightTurningEncoderReversed = false;
 
 		public static final boolean kFrontLeftDriveEncoderReversed = false;
-		public static final boolean kBackLeftDriveEncoderReversed = true;
+		public static final boolean kBackLeftDriveEncoderReversed = false;
 		public static final boolean kFrontRightDriveEncoderReversed = false;
 		public static final boolean kBackRightDriveEncoderReversed = false;
 
@@ -125,9 +125,9 @@ public final class Constants {
 		public static final double kMaxAngularVelAuto = kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
 		public static final double kMaxAccelAuto = 3;
 		public static final double kMaxAngularAccelAuto = Math.PI / 4;
-		public static final double kPXController = 2;
-		public static final double kPYController = 2;
-		public static final double kPThetaController = 3;
+		public static final double kPXController = 4.5;
+		public static final double kPYController = 4.5;
+		public static final double kPThetaController = 5;
 
 		public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
 				new TrapezoidProfile.Constraints(

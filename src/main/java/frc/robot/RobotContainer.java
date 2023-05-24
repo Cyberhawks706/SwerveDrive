@@ -72,7 +72,7 @@ public class RobotContainer {
 				.sorted()
 				.map(pathName -> pathName.substring(0, pathName.lastIndexOf(".")))
 				.forEach(pathName -> autoChooser.addOption(pathName,
-					swerveSubsystem.followTrajectoryCommand(PathPlanner.loadPath(pathName, 0.5, 0.35), true)));
+					swerveSubsystem.followTrajectoryCommand(PathPlanner.loadPath(pathName, 1.2, 0.5), true)));
 		} catch (IOException e) {
 			System.out.println("********* Failed to list PathPlanner paths. *********");
 		}
