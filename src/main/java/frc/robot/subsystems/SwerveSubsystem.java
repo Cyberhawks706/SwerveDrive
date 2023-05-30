@@ -43,38 +43,26 @@ public class SwerveSubsystem extends SubsystemBase {
     public final static SwerveModule frontLeft = new SwerveModule(
             kFrontLeftDriveMotorPort,
             kFrontLeftTurningMotorPort,
-            kFrontLeftDriveEncoderReversed,
-            kFrontLeftTurningEncoderReversed,
             kFrontLeftDriveAbsoluteEncoderPort,
-            kFrontLeftDriveAbsoluteEncoderOffsetrad,
-            kFrontLeftDriveAbsoluteEncoderReversed);
+            kFrontLeftDriveAbsoluteEncoderOffsetrad);
 
     public final static SwerveModule frontRight = new SwerveModule(
             kFrontRightDriveMotorPort,
             kFrontRightTurningMotorPort,
-            kFrontRightDriveEncoderReversed,
-            kFrontRightTurningEncoderReversed,
             kFrontRightDriveAbsoluteEncoderPort,
-            kFrontRightDriveAbsoluteEncoderOffsetrad,
-            kFrontRightDriveAbsoluteEncoderReversed);
+            kFrontRightDriveAbsoluteEncoderOffsetrad);
 
     public final static SwerveModule backLeft = new SwerveModule(
             kBackLeftDriveMotorPort,
             kBackLeftTurningMotorPort,
-            kBackLeftDriveEncoderReversed,
-            kBackLeftTurningEncoderReversed,
             kBackLeftDriveAbsoluteEncoderPort,
-            kBackLeftDriveAbsoluteEncoderOffsetrad,
-            kBackLeftDriveAbsoluteEncoderReversed);
+            kBackLeftDriveAbsoluteEncoderOffsetrad);
 
     public final static SwerveModule backRight = new SwerveModule(
             kBackRightDriveMotorPort,
             kBackRightTurningMotorPort,
-            kBackRightDriveEncoderReversed,
-            kBackRightTurningEncoderReversed,
             kBackRightDriveAbsoluteEncoderPort,
-            kBackRightDriveAbsoluteEncoderOffsetrad,
-            kBackRightDriveAbsoluteEncoderReversed);
+            kBackRightDriveAbsoluteEncoderOffsetrad);
 
     public SwerveSubsystem(PhotonCameraWrapper... cameras) {
         updatePositions();
