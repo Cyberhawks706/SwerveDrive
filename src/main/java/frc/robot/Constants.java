@@ -55,16 +55,16 @@ public final class Constants {
 		// Absolute Encoder Values
 
 		public static final int kFrontLeftDriveAbsoluteEncoderPort = 0;
-		public static final double kFrontLeftDriveAbsoluteEncoderOffsetrad = Math.PI + 1;// 2.07
+		public static final double kFrontLeftDriveAbsoluteEncoderOffsetrad = 1 - Math.PI;//Math.PI + 1;// 2.07
 
 		public static final int kBackLeftDriveAbsoluteEncoderPort = 1;
-		public static final double kBackLeftDriveAbsoluteEncoderOffsetrad = Math.PI;// 0.03 //Math.PI/2 + 0.03
+		public static final double kBackLeftDriveAbsoluteEncoderOffsetrad = 0 - Math.PI;// 0.03 //Math.PI
 
 		public static final int kBackRightDriveAbsoluteEncoderPort = 2;
 		public static final double kBackRightDriveAbsoluteEncoderOffsetrad = 0.94;// -2.7
 
 		public static final int kFrontRightDriveAbsoluteEncoderPort = 3;
-		public static final double kFrontRightDriveAbsoluteEncoderOffsetrad = 1.85;//4.07
+		public static final double kFrontRightDriveAbsoluteEncoderOffsetrad = 1.85 - Math.PI;//4.07
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Module Constants

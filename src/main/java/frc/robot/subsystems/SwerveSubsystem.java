@@ -156,11 +156,8 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, kPhysicalMaxSpeedMetersPerSecond);
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
-        //SmartDashboard.putNumber("FR angle", desiredStates[1].angle.getDegrees());
-        SmartDashboard.putNumber("FR", frontRight.getAbsoluteEncoderRad());
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
-
     }
 
     public void lockModules() {

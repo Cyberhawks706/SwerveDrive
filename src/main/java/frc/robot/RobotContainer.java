@@ -19,9 +19,11 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.MoveArm;
@@ -50,13 +52,14 @@ public class RobotContainer {
 
 	public RobotContainer() {
 		swerveSubsystem.setDefaultCommand(new XboxDriveCommand(driverJoystick, swerveSubsystem));
-		// if (thrustJoystick.getHID().isConnected()) {
-		// 	swerveSubsystem.setDefaultCommand(new RunCommand(() -> swerveSubsystem.calculate(
-		// 		-thrustJoystick.getRawAxis(1),
-		// 		-thrustJoystick.getRawAxis(0),
-		// 		-thrustJoystick.getRawAxis(2),
-		// 		Math.abs((thrustJoystick.getRawAxis(3)-1)/2)), swerveSubsystem));
-		// }
+		if (thrustJoystick.getHID().isConnected()) {
+			swerveSubsystem.setDefaultCommand(new RunCommand(() -> swerveSubsystem.drive(
+				-thrustJoystick.getRawAxis(1) * Math.abs((thrustJoystick.getRawAxis(3)-1)/2) * 4,
+				-thrustJoystick.getRawAxis(0) * Math.abs((thrustJoystick.getRawAxis(3)-1)/2) * 4,
+				-thrustJoystick.getRawAxis(2) * Math.abs((thrustJoystick.getRawAxis(3)-1)/2) * 3,
+				false), swerveSubsystem));
+		}
+		//, Math.abs((thrustJoystick.getRawAxis(3)-1)/2)
 		DriverStation.silenceJoystickConnectionWarning(true);
 		configureButtonBindings(); 
 		configureDashboard();
@@ -77,6 +80,7 @@ public class RobotContainer {
 			System.out.println("********* Failed to list PathPlanner paths. *********");
 		}
 		Shuffleboard.getTab("Espresso").add("Auto Chooser", autoChooser);
+		SmartDashboard.putData(swerveSubsystem);
 	}
 
 	private void configureButtonBindings() {
