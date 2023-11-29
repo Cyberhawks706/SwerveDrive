@@ -35,8 +35,8 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
 
-	private final PhotonCameraWrapper topCam = new PhotonCameraWrapper("topCam", new Transform3d(new Translation3d(0,0,1), new Rotation3d()));
-	private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(topCam);
+	//private final PhotonCameraWrapper topCam = new PhotonCameraWrapper("topCam", new Transform3d(new Translation3d(0,0,1), new Rotation3d()));
+	private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 	private final ArmSubsystem arm = new ArmSubsystem();
 	private final Intake intake = new Intake();
 	private final SendableChooser<Command> autoChooser = new SendableChooser<>();
